@@ -55,5 +55,30 @@
   <footer>
     <p>© 2025 GoathBet - Todos os direitos reservados.</p>
   </footer>
+
+  <!-- SCRIPT para redirecionar se já logado -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const ref = doc(db, "assinaturas", user.uid);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          const dados = snap.data();
+          const hoje = new Date();
+          const validade = dados.validade?.toDate ? dados.validade.toDate() : new Date(dados.validade);
+
+          if (dados.status === "ATIVO" && validade > hoje) {
+            // 🔥 Redireciona direto para o dashboard
+            window.location.href = "dashboard.html";
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
