@@ -7,6 +7,29 @@
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
   <script type="module" src="dashboard.js"></script>
+  <style>
+    /* Estilo adicional para o relatório */
+    .relatorio {
+      margin-top: 20px;
+      background: #111;
+      padding: 15px;
+      border-radius: 10px;
+      color: #fff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table th, table td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: center;
+    }
+    table th {
+      background: #222;
+    }
+  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -24,14 +47,23 @@
 
   <!-- CONTEÚDO -->
   <main class="dashboard-container">
+    <!-- Plataforma -->
     <section class="plataforma">
       <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
+
+    <!-- Relatório de rodadas -->
     <section class="relatorio">
       <h2>📊 Relatório de Rodadas</h2>
-      <div id="historico">
-        <!-- Aqui você pode popular via Firestore ou API -->
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Horário</th>
+            <th>Multiplicador</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaVelas"></tbody>
+      </table>
     </section>
   </main>
 
@@ -47,23 +79,53 @@
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Se for admin, mostra o botão
         if (user.email === adminEmail) {
           document.getElementById("adminLink").style.display = "inline-block";
           document.getElementById("adminLink").href = "admin.html";
         }
       } else {
-        // Se não estiver logado, manda pro login
         window.location.href = "login.html";
       }
     });
 
-    // Função sair
     window.logout = function() {
       signOut(auth).then(() => {
         window.location.href = "login.html";
       });
     };
+
+    // ============================
+    // DADOS FAKE DAS VELAS
+    // ============================
+    const velasFake = [
+      { horario: "11:40:05", valor: 1.23 },
+      { horario: "11:39:42", valor: 8.54 },
+      { horario: "11:39:18", valor: 2.10 },
+      { horario: "11:38:55", valor: 12.34 },
+      { horario: "11:38:29", valor: 1.01 },
+      { horario: "11:38:02", valor: 5.67 },
+      { horario: "11:37:41", valor: 3.25 },
+      { horario: "11:37:10", valor: 20.12 },
+      { horario: "11:36:48", valor: 1.44 },
+      { horario: "11:36:22", valor: 7.89 }
+    ];
+
+    function carregarVelasFake() {
+      const tabela = document.getElementById("tabelaVelas");
+      tabela.innerHTML = "";
+
+      velasFake.forEach(v => {
+        const row = `
+          <tr>
+            <td>${v.horario}</td>
+            <td style="color:${v.valor >= 2 ? '#2ecc71':'#e74c3c'}">${v.valor}x</td>
+          </tr>
+        `;
+        tabela.innerHTML += row;
+      });
+    }
+
+    carregarVelasFake();
   </script>
 </body>
 </html>
