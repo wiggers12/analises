@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoathBet - Carregando</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #0d0d0d;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+      text-align: center;
+    }
+    .splash {
+      animation: fadeIn 2s ease-in-out;
+    }
+    .splash h1 {
+      font-size: 28px;
+      color: #0f0;
+      margin-bottom: 10px;
+    }
+    .splash p {
+      font-size: 16px;
+      color: #bbb;
+      font-style: italic;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+  <script>
+    // Redireciona automaticamente após 3s
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3000);
+  </script>
+</head>
+<body>
+  <div class="splash">
+    <h1>🚀 GoathBet</h1>
+    <p>Análises inteligentes para o Aviator em tempo real</p>
+  </div>
+</body>
+</html>
