@@ -23,26 +23,30 @@
 
   <!-- Painel só aparece se logar -->
   <section id="painelAdmin" class="admin-container" style="display:none;">
-    <h2>Gerenciar Assinaturas</h2>
-    <table border="1" width="100%">
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Validade</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="assinaturasTable"></tbody>
-    </table>
+    <div class="admin-box">
+      <h2>Gerenciar Assinaturas</h2>
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Validade</th>
+            <th>Alterar</th>
+          </tr>
+        </thead>
+        <tbody id="assinaturasTable"></tbody>
+      </table>
+    </div>
   </section>
 
   <script type="module">
     import { auth, db } from "./firebase.js";
-    import { signInWithEmailAndPassword } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { collection, getDocs, doc, updateDoc } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { 
+      signInWithEmailAndPassword 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { 
+      collection, getDocs, doc, updateDoc, Timestamp 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // Email do admin autorizado
     const adminEmail = "dionegalato1212@gmail.com";
@@ -68,6 +72,13 @@
       }
     };
 
+    // === FORMATAR DATA ===
+    function formatarData(timestamp) {
+      if (!timestamp) return "Não definido";
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      return date.toLocaleDateString("pt-BR");
+    }
+
     // === CARREGAR ASSINATURAS ===
     async function carregarAssinaturas() {
       const assinaturasRef = collection(db, "assinaturas");
@@ -77,13 +88,15 @@
 
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
+        const validade = formatarData(data.validade);
+
         const row = `
           <tr>
             <td>${data.email}</td>
             <td>${data.status}</td>
-            <td>${data.validade || "Não definido"}</td>
+            <td>${validade}</td>
             <td>
-              <button onclick="atualizarStatus('${docSnap.id}', 'ATIVO')">Ativar</button>
+              <button onclick="atualizarStatus('${docSnap.id}', 'ATIVO', 30)">Ativar +30d</button>
               <button onclick="atualizarStatus('${docSnap.id}', 'INATIVO')">Inativar</button>
             </td>
           </tr>
@@ -93,9 +106,17 @@
     }
 
     // === ATUALIZAR STATUS ===
-    window.atualizarStatus = async function (id, novoStatus) {
+    window.atualizarStatus = async function (id, novoStatus, dias = null) {
       const ref = doc(db, "assinaturas", id);
-      await updateDoc(ref, { status: novoStatus });
+      let updateData = { status: novoStatus };
+
+      if (novoStatus === "ATIVO" && dias) {
+        const novaData = new Date();
+        novaData.setDate(novaData.getDate() + dias);
+        updateData.validade = Timestamp.fromDate(novaData);
+      }
+
+      await updateDoc(ref, updateData);
       alert(`✅ Usuário atualizado para ${novoStatus}`);
       carregarAssinaturas();
     };
