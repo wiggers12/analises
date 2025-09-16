@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - GoathBet</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="logo.png" type="image/png">
+</head>
+<body>
+  <!-- TOPO -->
+  <header class="topbar">
+    <div class="logo">
+      <img src="logo.png" alt="GoathBet" width="45">
+      <h1>GOATH<span>BET</span></h1>
+    </div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="planos.html">Planos</a>
+      <a href="login.html" class="btn-login ativo">Entrar</a>
+    </nav>
+  </header>
+
+  <!-- LOGIN -->
+  <section class="login-container">
+    <div class="login-box">
+      <h2>🚀 Entrar no GoathBet</h2>
+      <p>Digite seu email e senha para acessar as calls do Aviator</p>
+
+      <input type="email" id="email" placeholder="Digite seu email">
+      <input type="password" id="senha" placeholder="Digite sua senha">
+
+      <button onclick="loginEmail()">Entrar com Email</button>
+      <button onclick="cadastroEmail()" class="btn-secundario">Cadastrar</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 GoathBet. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="login.js"></script>
+</body>
+</html>
