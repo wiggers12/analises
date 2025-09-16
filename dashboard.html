@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - GoathBet</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="dashboard.js"></script>
+</head>
+<body>
+  <!-- TOPO -->
+  <header class="topbar">
+    <div class="logo">
+      <img src="logo.png" alt="GoathBet" width="40">
+      <h1>GOATH<span>BET</span></h1>
+    </div>
+    <nav>
+      <a href="dashboard.html" class="ativo">Dashboard</a>
+      <a href="#" id="adminLink" style="display:none;">Painel Admin</a>
+      <a href="#" onclick="logout()">Sair</a>
+    </nav>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="dashboard-container">
+    <section class="plataforma">
+      <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
+    </section>
+    <section class="relatorio">
+      <h2>📊 Relatório de Rodadas</h2>
+      <div id="historico">
+        <!-- Aqui você pode popular via Firestore ou API -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 GoathBet. Todos os direitos reservados.</p>
+  </footer>
+
+  <script type="module">
+    import { auth } from "./firebase.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const adminEmail = "dionegalato1212@gmail.com";
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Se for admin, mostra o botão
+        if (user.email === adminEmail) {
+          document.getElementById("adminLink").style.display = "inline-block";
+          document.getElementById("adminLink").href = "admin.html";
+        }
+      } else {
+        // Se não estiver logado, manda pro login
+        window.location.href = "login.html";
+      }
+    });
+
+    // Função sair
+    window.logout = function() {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    };
+  </script>
+</body>
+</html>
