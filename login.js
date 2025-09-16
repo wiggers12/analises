@@ -7,7 +7,8 @@ import {
 import { 
   doc, 
   setDoc, 
-  getDoc 
+  getDoc,
+  Timestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // === Cadastro ===
@@ -20,11 +21,12 @@ window.cadastroEmail = async function () {
     await setDoc(doc(db, "assinaturas", userCredential.user.uid), {
       email: email,
       status: "INATIVO",
-      validade: new Date()
+      validade: Timestamp.fromDate(new Date()) // ✅ formato Firestore
     });
     alert("✅ Conta criada! Aguarde liberação do admin.");
   } catch (err) {
     alert("❌ Erro no cadastro: " + err.message);
+    console.error("Erro cadastro:", err);
   }
 };
 
@@ -47,7 +49,7 @@ window.loginEmail = async function () {
 
       if (dados.status === "ATIVO" && validade > hoje) {
         alert("✅ Login autorizado! Acesso liberado.");
-        window.location.href = "index.html"; // ou dashboard
+        window.location.href = "index.html"; // ou home/dashboard
       } else {
         alert("⚠️ Sua assinatura expirou ou está inativa.");
       }
@@ -56,5 +58,6 @@ window.loginEmail = async function () {
     }
   } catch (err) {
     alert("❌ Erro no login: " + err.message);
+    console.error("Erro login:", err);
   }
 };
