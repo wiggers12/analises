@@ -1,20 +1,20 @@
 import { auth, db } from "./firebase.js";
 import { 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword 
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import { 
   collection, 
   getDocs, 
   doc, 
-  updateDoc 
+  updateDoc, 
+  Timestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Apenas admin autorizado
 const adminEmail = "dionegalato1212@gmail.com";
 
-// Verifica login
+// Verifica login do admin
 onAuthStateChanged(auth, (user) => {
   if (user && user.email === adminEmail) {
     carregarAssinaturas();
@@ -24,7 +24,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// Carregar assinaturas
+// Carregar assinaturas na tabela
 async function carregarAssinaturas() {
   const assinaturasRef = collection(db, "assinaturas");
   const snapshot = await getDocs(assinaturasRef);
@@ -33,11 +33,13 @@ async function carregarAssinaturas() {
 
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
+    const validade = data.validade?.toDate ? data.validade.toDate().toLocaleDateString() : "Não definido";
+
     const row = `
       <tr>
         <td>${data.email}</td>
         <td>${data.status}</td>
-        <td>${data.validade || "Não definido"}</td>
+        <td>${validade}</td>
         <td>
           <button onclick="atualizarStatus('${docSnap.id}', 'ATIVO')">Ativar</button>
           <button onclick="atualizarStatus('${docSnap.id}', 'INATIVO')">Inativar</button>
@@ -48,10 +50,25 @@ async function carregarAssinaturas() {
   });
 }
 
-// Atualizar status
+// Atualizar status + validade
 window.atualizarStatus = async function (id, novoStatus) {
   const ref = doc(db, "assinaturas", id);
-  await updateDoc(ref, { status: novoStatus });
-  alert(`✅ Usuário atualizado para ${novoStatus}`);
+
+  if (novoStatus === "ATIVO") {
+    // Validade de +30 dias
+    const validade = new Date();
+    validade.setDate(validade.getDate() + 30);
+
+    await updateDoc(ref, { 
+      status: "ATIVO", 
+      validade: Timestamp.fromDate(validade) 
+    });
+
+    alert("✅ Usuário ativado por 30 dias!");
+  } else {
+    await updateDoc(ref, { status: "INATIVO" });
+    alert("⚠️ Usuário inativado!");
+  }
+
   carregarAssinaturas();
 };
