@@ -7,8 +7,8 @@ import {
 import { 
   doc, 
   setDoc, 
-  getDoc,
-  Timestamp
+  getDoc, 
+  Timestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // === Cadastro ===
@@ -20,8 +20,8 @@ window.cadastroEmail = async function () {
     const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
     await setDoc(doc(db, "assinaturas", userCredential.user.uid), {
       email: email,
-      status: "INATIVO",
-      validade: Timestamp.fromDate(new Date()) // ✅ formato Firestore
+      status: "INATIVO", // só admin ativa
+      validade: null // admin define a validade depois
     });
     alert("✅ Conta criada! Aguarde liberação do admin.");
   } catch (err) {
@@ -45,11 +45,16 @@ window.loginEmail = async function () {
     if (snap.exists()) {
       const dados = snap.data();
       const hoje = new Date();
-      const validade = dados.validade?.toDate ? dados.validade.toDate() : new Date(dados.validade);
+      let validade = null;
 
-      if (dados.status === "ATIVO" && validade > hoje) {
+      if (dados.validade) {
+        validade = dados.validade?.toDate ? dados.validade.toDate() : new Date(dados.validade);
+      }
+
+      // Agora basta estar ATIVO (e validade maior que hoje se existir)
+      if (dados.status === "ATIVO" && (!validade || validade > hoje)) {
         alert("✅ Login autorizado! Acesso liberado.");
-        window.location.href = "index.html"; // ou home/dashboard
+        window.location.href = "home.html"; // direciona pro home/dashboard
       } else {
         alert("⚠️ Sua assinatura expirou ou está inativa.");
       }
