@@ -6,9 +6,8 @@
   <title>Dashboard - GoathBet</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
-  <script type="module" src="dashboard.js"></script>
   <style>
-    /* Estilo adicional para o relatório */
+    /* ===== Relatório e Calls ===== */
     .relatorio {
       margin-top: 20px;
       background: #111;
@@ -29,13 +28,30 @@
     table th {
       background: #222;
     }
+    #listaCalls li {
+      padding: 8px 0;
+      border-bottom: 1px solid #333;
+    }
+    #btnCarregarMais {
+      margin-top: 10px;
+      padding: 8px 15px;
+      background: #27ae60;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #btnCarregarMais:hover {
+      background: #2ecc71;
+    }
   </style>
 </head>
 <body>
   <!-- TOPO -->
   <header class="topbar">
     <div class="logo">
-      <img src="logo.png" alt="GoathBet" width="40">
+      <img src="img/logo.png" alt="GoathBet" width="40">
       <h1>GOATH<span>BET</span></h1>
     </div>
     <nav>
@@ -65,25 +81,48 @@
         <tbody id="tabelaVelas"></tbody>
       </table>
     </section>
+
+    <!-- Últimos Calls -->
+    <section class="relatorio">
+      <h2>📢 Últimos Calls</h2>
+
+      <!-- Formulário só para Admin -->
+      <div id="formCalls" style="display:none; margin-bottom:20px;">
+        <input type="text" id="textoCall" placeholder="Descrição do call" style="padding:8px; border-radius:6px; width:60%;">
+        <select id="statusCall" style="padding:8px; border-radius:6px;">
+          <option value="GREEN">🟢 GREEN</option>
+          <option value="RED">🔴 RED</option>
+        </select>
+        <button onclick="adicionarCall()" style="padding:8px 15px; border-radius:6px; background:#27ae60; color:#fff; font-weight:bold; cursor:pointer;">
+          ➕ Adicionar Call
+        </button>
+      </div>
+
+      <!-- Histórico -->
+      <ul id="listaCalls" style="list-style:none; padding:0; margin:0;"></ul>
+      <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
+    </section>
   </main>
 
   <footer>
     <p>© 2025 GoathBet. Todos os direitos reservados.</p>
   </footer>
 
+  <!-- SCRIPT -->
   <script type="module">
-    import { auth } from "./firebase.js";
+    import { auth, db } from "./firebase.js";
+    import { collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const adminEmail = "dionegalato1212@gmail.com";
 
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        if (user.email === adminEmail) {
-          document.getElementById("adminLink").style.display = "inline-block";
-          document.getElementById("adminLink").href = "admin.html";
-        }
-      } else {
+      if (user && user.email === adminEmail) {
+        document.getElementById("formCalls").style.display = "block";
+        document.getElementById("adminLink").style.display = "inline-block";
+        document.getElementById("adminLink").href = "admin.html";
+      } else if (!user) {
         window.location.href = "login.html";
       }
     });
@@ -95,7 +134,7 @@
     };
 
     // ============================
-    // DADOS FAKE DAS VELAS
+    // RELATÓRIO DE RODADAS (fake)
     // ============================
     const velasFake = [
       { horario: "11:40:05", valor: 1.23 },
@@ -109,23 +148,81 @@
       { horario: "11:36:48", valor: 1.44 },
       { horario: "11:36:22", valor: 7.89 }
     ];
+    const tabela = document.getElementById("tabelaVelas");
+    velasFake.forEach(v => {
+      tabela.innerHTML += `
+        <tr>
+          <td>${v.horario}</td>
+          <td style="color:${v.valor >= 2 ? '#2ecc71':'#e74c3c'}">${v.valor}x</td>
+        </tr>
+      `;
+    });
 
-    function carregarVelasFake() {
-      const tabela = document.getElementById("tabelaVelas");
-      tabela.innerHTML = "";
+    // ============================
+    // CALLS FAKE (60 simulados)
+    // ============================
+    const callsFake = Array.from({ length: 60 }, (_, i) => {
+      const minutos = (60 - i).toString().padStart(2,'0');
+      const horarios = `11:${minutos}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}`;
+      const textos = [
+        "Entrada até 2x", "Entrada até 3x", "Entrada até 5x",
+        "Stop 10x", "Rodada segura", "Evitar rodada",
+        "Entrada curta", "Entrada longa"
+      ];
+      const status = Math.random() > 0.4 ? "GREEN" : "RED"; // 60% green
+      return { horario: horarios, texto: textos[Math.floor(Math.random()*textos.length)], status };
+    });
 
-      velasFake.forEach(v => {
-        const row = `
-          <tr>
-            <td>${v.horario}</td>
-            <td style="color:${v.valor >= 2 ? '#2ecc71':'#e74c3c'}">${v.valor}x</td>
-          </tr>
-        `;
-        tabela.innerHTML += row;
+    let callsExibidos = 10;
+
+    function renderCalls(lista) {
+      const ul = document.getElementById("listaCalls");
+      ul.innerHTML = "";
+      lista.slice(0, callsExibidos).forEach(c => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${c.horario}</strong> → ${c.texto} 
+          <span style="font-weight:bold; color:${c.status === 'GREEN' ? '#2ecc71':'#e74c3c'}">${c.status}</span>`;
+        ul.appendChild(li);
       });
+
+      document.getElementById("btnCarregarMais").style.display = lista.length > callsExibidos ? "block" : "none";
     }
 
-    carregarVelasFake();
+    document.getElementById("btnCarregarMais").addEventListener("click", () => {
+      callsExibidos += 10;
+      renderCalls(callsFake);
+    });
+
+    // Inicialmente mostra os fakes
+    renderCalls(callsFake);
+
+    // ============================
+    // Firebase: ouvir calls reais
+    // ============================
+    const q = query(collection(db, "calls"), orderBy("criadoEm", "desc"), limit(10));
+    onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        const callsReais = [];
+        snapshot.forEach(doc => callsReais.push(doc.data()));
+        renderCalls(callsReais);
+      }
+    });
+
+    // Adicionar call (Admin)
+    window.adicionarCall = async function() {
+      const texto = document.getElementById("textoCall").value;
+      const status = document.getElementById("statusCall").value;
+      if (!texto) return alert("Digite a descrição do call");
+
+      await addDoc(collection(db, "calls"), {
+        texto,
+        status,
+        horario: new Date().toLocaleTimeString("pt-BR"),
+        criadoEm: serverTimestamp()
+      });
+
+      document.getElementById("textoCall").value = "";
+    };
   </script>
 </body>
 </html>
