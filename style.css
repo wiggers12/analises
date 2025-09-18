@@ -85,13 +85,13 @@ nav a:hover {
   text-align: center;
   border-radius: 12px;
   overflow: hidden;
-  background: none;   /* 🔥 remove fundo/borda */
-  box-shadow: none;   /* 🔥 sem sombra */
+  background: none;
 }
 
 .card-img {
   width: 100%;
-  height: auto;
+  height: 200px;      /* 🔥 altura fixa */
+  object-fit: cover;  /* 🔥 corta e centraliza sem distorcer */
   border-radius: 12px;
   display: block;
 }
@@ -110,6 +110,7 @@ nav a:hover {
 .btn-card:hover {
   background: #2ecc71;
 }
+
 
 /* ===== FOOTER ===== */
 footer {
