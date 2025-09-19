@@ -246,14 +246,91 @@ nav a:hover {
   opacity: 0.9;
 }
 
-
-.cards {
+/* ===== ULTIMAS VELAS ===== */
+.ultimas-velas {
+  margin: 40px auto;
+  max-width: 1000px;
+  padding: 20px;
+  background: #1c1c2b;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.ultimas-velas h2 {
+  margin-bottom: 15px;
+  color: #2ecc71;
+}
+.periodos {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  gap: 10px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
-
+.periodos button {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px;
+  background: #222;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.periodos button.ativo {
+  background: #2ecc71;
+  color: #000;
+}
+.periodos button:hover {
+  background: #27ae60;
+}
+.estatisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.estat-card {
+  background: #111827;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+}
+.estat-card h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #aaa;
+}
+.estat-card p {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+.estat-card.green p { color: #2ecc71; }
+.estat-card.red p { color: #e74c3c; }
+.estat-card.blue p { color: #3498db; }
+.estat-card.yellow p { color: #f1c40f; }
+.grid-velas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+}
+.vela {
+  background: #222;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+.vela small {
+  display: block;
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-top: 4px;
+}
+.vela.green { background: #2ecc71; color: #000; }
+.vela.red { background: #e74c3c; }
+.vela.blue { background: #3498db; }
+.vela.purple { background: #9b59b6; }
 
 /* ===== FOOTER ===== */
 footer {
@@ -282,6 +359,7 @@ footer {
 .btn-card:hover {
   background: #00e676;
 }
+
 /* ===== RESPONSIVO ===== */
 @media (max-width: 768px) {
   .topbar {
@@ -357,5 +435,3 @@ footer {
     font-size: 0.95rem;
   }
 }
-
-
