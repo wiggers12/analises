@@ -1,314 +1,63 @@
-/* ===== RESET ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body {
-  font-family: 'Poppins', Arial, sans-serif;
-  background: linear-gradient(135deg, #0a0a0f, #141422, #0a0a0f);
-  color: #fff;
-  line-height: 1.6;
-}
-
-/* ===== TOPO ===== */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 50px;
-  background: rgba(0,0,0,0.3);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.logo h1 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #00ff7f;
-}
-.logo h1 span {
-  color: #27ae60;
-}
-nav a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: #fff;
-  font-weight: 500;
-  transition: 0.3s;
-}
-nav a:hover {
-  color: #27ae60;
-}
-.btn-login {
-  padding: 8px 16px;
-  background: #27ae60;
-  border-radius: 6px;
-  font-weight: 600;
-}
-.btn-login:hover {
-  background: #2ecc71;
-}
-
-/* ===== HERO ===== */
-.hero {
-  text-align: center;
-  padding: 80px 20px 40px;
-  background: linear-gradient(135deg, #101020, #0d0d15);
-}
-.hero h2 {
-  font-size: 2.5rem;
-  margin-bottom: 15px;
-}
-.hero span {
-  color: #2ecc71;
-}
-.hero p {
-  font-size: 1.2rem;
-  color: #ccc;
-}
-
-/* ===== GRID DE CARDS ===== */
-.cards {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding: 40px 20px;
-}
-
-.card {
-  width: 300px;
-  text-align: center;
-  border-radius: 12px;
-  overflow: hidden;
-  background: none;
-}
-
-.card-img {
-  width: 100%;
-  height: 200px;        /* altura padronizada */
-  object-fit: contain;  /* 🔥 mostra a imagem inteira */
-  background: #000;     /* fundo preto atrás se sobrar espaço */
-  border-radius: 12px;
-  display: block;
-}
-
-.btn-card {
-  display: inline-block;
-  margin-top: 15px;
-  background: #27ae60;
-  padding: 10px 20px;
-  border-radius: 6px;
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  transition: 0.3s;
-}
-.btn-card:hover {
-  background: #2ecc71;
-}
-
-/* ===== PLANOS ===== */
-.planos {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 60px 20px;
-  gap: 30px;
-  flex-wrap: wrap;
-}
-.plano-card {
-  background: #1c1c2b;
-  border-radius: 12px;
-  padding: 30px;
-  width: 300px;
-  text-align: center;
-  transition: 0.3s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-.plano-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-.plano-card .preco {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #2ecc71;
-}
-.plano-card ul {
-  text-align: left;
-  list-style: none;
-  margin-bottom: 20px;
-}
-.plano-card ul li {
-  margin: 8px 0;
-}
-.plano-card .btn-card {
-  background: #2ecc71;
-  padding: 12px 25px;
-  border-radius: 8px;
-  color: #fff;
-  font-weight: bold;
-  text-decoration: none;
-  display: inline-block;
-}
-.plano-card .btn-card:hover {
-  background: #27ae60;
-}
-.plano-card.destaque {
-  border: 2px solid #2ecc71;
-  transform: scale(1.05);
-}
-
-/* ===== LOGIN ===== */
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-}
-.login-box {
-  background: #1c1c2b;
-  padding: 40px;
-  border-radius: 12px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-.login-box h2 {
-  margin-bottom: 15px;
-}
-.login-box input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-}
-.login-box button {
-  width: 100%;
-  margin: 10px 0;
-}
-.btn-secundario {
-  background: #444;
-}
-.btn-secundario:hover {
-  background: #666;
-}
-
-/* ===== ADMIN ===== */
-.admin-container {
-  display: flex;
-  justify-content: center;
-  padding: 40px 20px;
-}
-.admin-box {
-  background: #1c1c2b;
-  padding: 30px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 900px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-.admin-box h2 {
-  margin-bottom: 10px;
-  color: #2ecc71;
-}
-.tabela {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-.tabela th, .tabela td {
-  padding: 12px;
-  border-bottom: 1px solid #333;
-  text-align: center;
-}
-.tabela th {
-  background: #2ecc71;
-  color: #000;
-}
-.tabela button {
-  padding: 6px 12px;
-  margin: 2px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
-.tabela button:hover {
-  opacity: 0.9;
-}
-
-/* ===== ULTIMAS VELAS ===== */
+/* ===== PAINEL ÚLTIMAS VELAS ===== */
 .ultimas-velas {
-  margin: 40px auto;
-  max-width: 1000px;
+  margin: 30px auto;
   padding: 20px;
   background: #1c1c2b;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
+
 .ultimas-velas h2 {
   margin-bottom: 15px;
-  color: #2ecc71;
+  font-size: 1.5rem;
+  color: #fff;
 }
+
+/* Botões de período */
 .periodos {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
-  flex-wrap: wrap;
 }
 .periodos button {
   flex: 1;
-  min-width: 100px;
   padding: 10px;
-  background: #222;
-  border: none;
   border-radius: 8px;
-  color: #fff;
+  border: none;
   font-weight: bold;
   cursor: pointer;
+  background: #222;
+  color: #fff;
   transition: 0.3s;
 }
 .periodos button.ativo {
-  background: #2ecc71;
-  color: #000;
+  background: #00c8ff;
+  color: #111;
 }
 .periodos button:hover {
   background: #27ae60;
 }
+
+/* Estatísticas */
 .estatisticas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 15px;
   margin-bottom: 20px;
 }
 .estat-card {
-  background: #111827;
-  border-radius: 10px;
   padding: 15px;
+  border-radius: 12px;
   text-align: center;
-}
-.estat-card h3 {
-  font-size: 1rem;
-  margin-bottom: 8px;
-  color: #aaa;
-}
-.estat-card p {
-  font-size: 1.3rem;
   font-weight: bold;
+  color: #fff;
 }
-.estat-card.green p { color: #2ecc71; }
-.estat-card.red p { color: #e74c3c; }
-.estat-card.blue p { color: #3498db; }
-.estat-card.yellow p { color: #f1c40f; }
+.estat-card.green { background: #063; }
+.estat-card.blue { background: #004c80; }
+.estat-card.red { background: #7a0000; }
+.estat-card.yellow { background: #8a6d00; }
+
+/* Grid de velas */
 .grid-velas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -316,122 +65,19 @@ nav a:hover {
 }
 .vela {
   background: #222;
-  padding: 12px;
+  padding: 15px 10px;
   border-radius: 10px;
   text-align: center;
   font-weight: bold;
+  font-size: 0.9rem;
 }
-.vela small {
-  display: block;
-  font-size: 0.8rem;
-  color: #aaa;
-  margin-top: 4px;
-}
-.vela.green { background: #2ecc71; color: #000; }
-.vela.red { background: #e74c3c; }
+.vela.green { background: #2ecc71; }
 .vela.blue { background: #3498db; }
 .vela.purple { background: #9b59b6; }
-
-/* ===== FOOTER ===== */
-footer {
-  text-align: center;
-  padding: 20px;
-  background: #111;
-  font-size: 0.9rem;
-  color: #aaa;
-  margin-top: 40px;
-}
-
-/* ===== RESPONSIVO ===== */
-@media (max-width: 900px) {
-  .hero h2 {
-    font-size: 2rem;
-  }
-  .hero p {
-    font-size: 1rem;
-  }
-  .card {
-    width: 100%;
-    max-width: 350px;
-  }
-}
-
-.btn-card:hover {
-  background: #00e676;
-}
-
-/* ===== RESPONSIVO ===== */
-@media (max-width: 768px) {
-  .topbar {
-    flex-direction: column;
-    padding: 15px 20px;
-    text-align: center;
-  }
-  nav {
-    margin-top: 10px;
-  }
-  nav a {
-    margin: 0 10px;
-    display: inline-block;
-  }
-
-  .hero {
-    padding: 50px 15px 30px;
-  }
-  .hero h2 {
-    font-size: 1.8rem;
-  }
-  .hero p {
-    font-size: 1rem;
-  }
-
-  .planos {
-    padding: 40px 15px;
-  }
-
-  .plano-card {
-    width: 100%;
-    max-width: 340px;
-    padding: 30px 20px;
-  }
-  .plano-card h3 {
-    font-size: 1.5rem;
-  }
-  .plano-card .preco {
-    font-size: 1.3rem;
-  }
-  .plano-card ul li {
-    font-size: 0.95rem;
-  }
-  .plano-card .btn-card {
-    width: 100%;
-    font-size: 1rem;
-    padding: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero h2 {
-    font-size: 1.6rem;
-  }
-  .hero p {
-    font-size: 0.9rem;
-  }
-
-  .plano-card {
-    max-width: 300px;
-    padding: 25px 15px;
-  }
-  .plano-card h3 {
-    font-size: 1.3rem;
-  }
-  .plano-card .preco {
-    font-size: 1.1rem;
-  }
-  .plano-card ul li {
-    font-size: 0.9rem;
-  }
-  .plano-card .btn-card {
-    font-size: 0.95rem;
-  }
+.vela.red { background: #e74c3c; }
+.vela small {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: #ddd;
 }
