@@ -6,46 +6,6 @@
   <title>Dashboard - GoathBet</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
-  <style>
-    /* ===== Relatório e Calls ===== */
-    .relatorio {
-      margin-top: 20px;
-      background: #111;
-      padding: 15px;
-      border-radius: 10px;
-      color: #fff;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    table th, table td {
-      border: 1px solid #333;
-      padding: 8px;
-      text-align: center;
-    }
-    table th {
-      background: #222;
-    }
-    #listaCalls li {
-      padding: 8px 0;
-      border-bottom: 1px solid #333;
-    }
-    #btnCarregarMais {
-      margin-top: 10px;
-      padding: 8px 15px;
-      background: #27ae60;
-      color: #fff;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #btnCarregarMais:hover {
-      background: #2ecc71;
-    }
-  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -66,6 +26,42 @@
     <!-- Plataforma -->
     <section class="plataforma">
       <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
+    </section>
+
+    <!-- Painel Últimas Velas -->
+    <section class="ultimas-velas">
+      <h2>📈 Últimas Velas</h2>
+
+      <!-- Botões de período -->
+      <div class="periodos">
+        <button class="ativo">30 Min</button>
+        <button>1 Hora</button>
+        <button>4 Horas</button>
+        <button>24 Horas</button>
+      </div>
+
+      <!-- Estatísticas -->
+      <div class="estatisticas">
+        <div class="estat-card green">
+          <h3>Velas Altas (10x)</h3>
+          <p id="estatAltas">4 <span>5.1%</span></p>
+        </div>
+        <div class="estat-card blue">
+          <h3>Velas Médias (2x-9.99x)</h3>
+          <p id="estatMedias">33 <span>42.3%</span></p>
+        </div>
+        <div class="estat-card red">
+          <h3>Velas Baixas (&lt;2x)</h3>
+          <p id="estatBaixas">41 <span>52.6%</span></p>
+        </div>
+        <div class="estat-card yellow">
+          <h3>Maior Mult.</h3>
+          <p id="estatMaior">59.71x <span>78 velas</span></p>
+        </div>
+      </div>
+
+      <!-- Grid de velas -->
+      <div class="grid-velas" id="gridVelas"></div>
     </section>
 
     <!-- Relatório de rodadas -->
@@ -155,6 +151,33 @@
           <td>${v.horario}</td>
           <td style="color:${v.valor >= 2 ? '#2ecc71':'#e74c3c'}">${v.valor}x</td>
         </tr>
+      `;
+    });
+
+    // ============================
+    // GRID DE ÚLTIMAS VELAS (fake)
+    // ============================
+    const gridVelas = document.getElementById("gridVelas");
+    const ultimasVelasFake = [
+      { valor: 6.16, hora:"19:33", cor:"green" },
+      { valor: 1.11, hora:"19:32", cor:"blue" },
+      { valor: 2.62, hora:"19:32", cor:"purple" },
+      { valor: 1.81, hora:"19:32", cor:"purple" },
+      { valor: 2.55, hora:"19:31", cor:"purple" },
+      { valor: 4.55, hora:"19:31", cor:"purple" },
+      { valor: 1.11, hora:"19:30", cor:"blue" },
+      { valor: 3.58, hora:"19:30", cor:"purple" },
+      { valor: 3.75, hora:"19:30", cor:"purple" },
+      { valor: 1.63, hora:"19:29", cor:"purple" },
+      { valor: 1.50, hora:"19:29", cor:"blue" },
+      { valor: 59.71, hora:"19:28", cor:"red" },
+      { valor: 1.06, hora:"19:27", cor:"blue" },
+      { valor: 1.16, hora:"19:27", cor:"blue" },
+      { valor: 3.98, hora:"19:27", cor:"purple" }
+    ];
+    ultimasVelasFake.forEach(v => {
+      gridVelas.innerHTML += `
+        <div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>
       `;
     });
 
