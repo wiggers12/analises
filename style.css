@@ -1,12 +1,100 @@
-/* ===== PAINEL ÚLTIMAS VELAS ===== */
-.ultimas-velas {
-  margin: 30px auto;
-  padding: 20px;
-  background: #1c1c2b;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Poppins', Arial, sans-serif;
+  background: linear-gradient(135deg, #0a0a0f, #141422, #0a0a0f);
+  color: #fff;
+  line-height: 1.6;
 }
 
+/* ===== TOPO ===== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #00ff7f;
+}
+.logo h1 span {
+  color: #27ae60;
+}
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: 0.3s;
+}
+nav a:hover {
+  color: #27ae60;
+}
+.btn-login {
+  padding: 8px 16px;
+  background: #27ae60;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.btn-login:hover {
+  background: #2ecc71;
+}
+
+/* ===== CARDS EXPANSÍVEIS ===== */
+.card-box {
+  background: #1c1c2b;
+  border-radius: 12px;
+  margin: 20px auto;
+  padding: 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  max-width: 1000px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  cursor: pointer;
+  background: #222;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.card-header h2 {
+  font-size: 1.2rem;
+  color: #fff;
+}
+.card-header .seta {
+  transition: transform 0.3s;
+}
+.card-box .card-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 20px;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+.card-box.ativo .card-content {
+  max-height: 1000px; /* suficiente para expandir */
+  padding: 20px;
+}
+.card-box.ativo .card-header .seta {
+  transform: rotate(180deg);
+}
+
+/* ===== PAINEL ÚLTIMAS VELAS ===== */
 .ultimas-velas h2 {
   margin-bottom: 15px;
   font-size: 1.5rem;
@@ -80,4 +168,60 @@
   margin-top: 5px;
   font-size: 0.75rem;
   color: #ddd;
+}
+
+/* ===== RELATÓRIO ===== */
+.relatorio table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.relatorio th, .relatorio td {
+  border: 1px solid #333;
+  padding: 8px;
+  text-align: center;
+}
+.relatorio th {
+  background: #222;
+  color: #fff;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #111;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 40px;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    padding: 15px 20px;
+    text-align: center;
+  }
+  nav {
+    margin-top: 10px;
+  }
+  nav a {
+    margin: 0 10px;
+    display: inline-block;
+  }
+  .estatisticas {
+    grid-template-columns: 1fr 1fr;
+  }
+  .grid-velas {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .estatisticas {
+    grid-template-columns: 1fr;
+  }
+  .grid-velas {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
 }
