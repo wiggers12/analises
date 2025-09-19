@@ -279,10 +279,83 @@ footer {
   }
 }
 
-
 .btn-card:hover {
   background: #00e676;
 }
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    padding: 15px 20px;
+    text-align: center;
+  }
+  nav {
+    margin-top: 10px;
+  }
+  nav a {
+    margin: 0 10px;
+    display: inline-block;
+  }
 
+  .hero {
+    padding: 50px 15px 30px;
+  }
+  .hero h2 {
+    font-size: 1.8rem;
+  }
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .planos {
+    padding: 40px 15px;
+  }
+
+  .plano-card {
+    width: 100%;
+    max-width: 340px;
+    padding: 30px 20px;
+  }
+  .plano-card h3 {
+    font-size: 1.5rem;
+  }
+  .plano-card .preco {
+    font-size: 1.3rem;
+  }
+  .plano-card ul li {
+    font-size: 0.95rem;
+  }
+  .plano-card .btn-card {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h2 {
+    font-size: 1.6rem;
+  }
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  .plano-card {
+    max-width: 300px;
+    padding: 25px 15px;
+  }
+  .plano-card h3 {
+    font-size: 1.3rem;
+  }
+  .plano-card .preco {
+    font-size: 1.1rem;
+  }
+  .plano-card ul li {
+    font-size: 0.9rem;
+  }
+  .plano-card .btn-card {
+    font-size: 0.95rem;
+  }
+}
 
 
