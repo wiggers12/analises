@@ -21,7 +21,7 @@
     </div>
   </section>
 
-  <!-- Painel só aparece se logar -->
+  <!-- Painel Admin -->
   <section id="painelAdmin" class="admin-container" style="display:none;">
     <div class="admin-box">
       <h2>Gerenciar Assinaturas</h2>
@@ -37,16 +37,30 @@
         <tbody id="assinaturasTable"></tbody>
       </table>
     </div>
+
+    <div class="admin-box" style="margin-top:30px;">
+      <h2>💰 Controle Financeiro</h2>
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Depósitos</th>
+            <th>Ganhos</th>
+            <th>Perdas</th>
+            <th>Saldo Atual</th>
+          </tr>
+        </thead>
+        <tbody id="financeiroTable"></tbody>
+      </table>
+    </div>
   </section>
 
   <script type="module">
     import { auth, db } from "./firebase.js";
-    import { 
-      signInWithEmailAndPassword 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { 
-      collection, getDocs, doc, updateDoc, Timestamp 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { signInWithEmailAndPassword } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, getDocs, doc, updateDoc, Timestamp } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // Email do admin autorizado
     const adminEmail = "dionegalato1212@gmail.com";
@@ -60,10 +74,10 @@
         const userCredential = await signInWithEmailAndPassword(auth, email, senha);
 
         if (userCredential.user.email === adminEmail) {
-          // Mostra painel e esconde login
           document.getElementById("loginAdmin").style.display = "none";
           document.getElementById("painelAdmin").style.display = "block";
           carregarAssinaturas();
+          carregarFinanceiro();
         } else {
           alert("⚠️ Apenas o admin pode acessar este painel.");
         }
@@ -120,6 +134,28 @@
       alert(`✅ Usuário atualizado para ${novoStatus}`);
       carregarAssinaturas();
     };
+
+    // === CARREGAR FINANCEIRO ===
+    async function carregarFinanceiro() {
+      const usuariosRef = collection(db, "usuarios");
+      const snapshot = await getDocs(usuariosRef);
+      const table = document.getElementById("financeiroTable");
+      table.innerHTML = "";
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const row = `
+          <tr>
+            <td>${data.email}</td>
+            <td>R$ ${data.depositos || 0}</td>
+            <td style="color:#2ecc71;">+R$ ${data.ganhos || 0}</td>
+            <td style="color:#e74c3c;">-R$ ${data.perdas || 0}</td>
+            <td><strong>R$ ${(data.saldo || 0)}</strong></td>
+          </tr>
+        `;
+        table.innerHTML += row;
+      });
+    }
   </script>
 </body>
 </html>
