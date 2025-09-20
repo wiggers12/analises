@@ -6,87 +6,6 @@
   <title>Dashboard - GoathBet</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
-  <style>
-    /* ===== TIMER FIXO ===== */
-    #timer-floating {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #27ae60, #2ecc71);
-      color: #fff;
-      font-weight: bold;
-      padding: 18px;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      transition: 0.3s;
-      z-index: 999;
-      animation: pulse 2s infinite;
-    }
-    #timer-floating:hover {
-      transform: scale(1.15);
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(39,174,96,0.7); }
-      70% { box-shadow: 0 0 0 20px rgba(39,174,96,0); }
-      100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
-    }
-
-    /* ===== PAINEL TIMER ===== */
-    #painel-timer {
-      position: fixed;
-      bottom: 0;
-      right: -100%;
-      width: 320px;
-      background: #1c1c2b;
-      color: #fff;
-      padding: 25px;
-      border-top-left-radius: 12px;
-      box-shadow: -6px -6px 18px rgba(0,0,0,0.6);
-      transition: right 0.4s ease-in-out;
-      z-index: 1000;
-      animation: fadeIn 0.5s ease;
-    }
-    #painel-timer.ativo {
-      right: 0;
-    }
-    #painel-timer h2 {
-      margin-bottom: 15px;
-      color: #00c8ff;
-      font-size: 1.4rem;
-      text-align: center;
-    }
-    #painel-timer p {
-      margin: 8px 0;
-      font-size: 1rem;
-    }
-    #painel-timer .alerta {
-      font-size: 1.1rem;
-      font-weight: bold;
-      text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 15px;
-    }
-    #painel-timer button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #ff4d4d, #c0392b);
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #painel-timer button:hover {
-      background: linear-gradient(135deg, #e74c3c, #a93226);
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(50px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -109,37 +28,54 @@
       <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
 
-    <!-- Últimas Velas -->
-    <section class="ultimas-velas">
-      <h2>📈 Últimas Velas</h2>
-      <div class="grid-velas" id="gridVelas"></div>
-    </section>
-
-    <!-- Relatório -->
-    <section class="relatorio">
-      <h2>📊 Relatório de Rodadas</h2>
-      <table>
-        <thead>
-          <tr><th>Horário</th><th>Multiplicador</th></tr>
-        </thead>
-        <tbody id="tabelaVelas"></tbody>
-      </table>
-    </section>
-
-    <!-- Calls -->
-    <section class="relatorio">
-      <h2>📢 Últimos Calls</h2>
-      <div id="formCalls" style="display:none; margin-bottom:20px;">
-        <input type="text" id="textoCall" placeholder="Descrição do call" style="padding:8px; border-radius:6px; width:60%;">
-        <select id="statusCall" style="padding:8px; border-radius:6px;">
-          <option value="GREEN">🟢 GREEN</option>
-          <option value="RED">🔴 RED</option>
-        </select>
-        <button onclick="adicionarCall()" style="padding:8px 15px; border-radius:6px; background:#27ae60; color:#fff; font-weight:bold; cursor:pointer;">➕ Adicionar Call</button>
+    <!-- CARD: Últimas Velas -->
+    <div class="card-box">
+      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
+        <h2>📈 Últimas Velas</h2>
+        <span class="seta">▼</span>
       </div>
-      <ul id="listaCalls" style="list-style:none; padding:0; margin:0;"></ul>
-      <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
-    </section>
+      <div class="card-content">
+        <div class="grid-velas" id="gridVelas"></div>
+      </div>
+    </div>
+
+    <!-- CARD: Relatório -->
+    <div class="card-box">
+      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
+        <h2>📊 Relatório de Rodadas</h2>
+        <span class="seta">▼</span>
+      </div>
+      <div class="card-content relatorio">
+        <table>
+          <thead>
+            <tr><th>Horário</th><th>Multiplicador</th></tr>
+          </thead>
+          <tbody id="tabelaVelas"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CARD: Últimos Calls -->
+    <div class="card-box">
+      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
+        <h2>📢 Últimos Calls</h2>
+        <span class="seta">▼</span>
+      </div>
+      <div class="card-content relatorio">
+        <!-- Formulário só para Admin -->
+        <div id="formCalls" style="display:none; margin-bottom:20px;">
+          <input type="text" id="textoCall" placeholder="Descrição do call">
+          <select id="statusCall">
+            <option value="GREEN">🟢 GREEN</option>
+            <option value="RED">🔴 RED</option>
+          </select>
+          <button onclick="adicionarCall()">➕ Adicionar Call</button>
+        </div>
+        <!-- Histórico -->
+        <ul id="listaCalls"></ul>
+        <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -183,7 +119,9 @@
       signOut(auth).then(() => window.location.href = "login.html");
     };
 
-    // FAKE RELATÓRIO
+    // ============================
+    // RELATÓRIO FAKE
+    // ============================
     const velasFake = [
       { horario: "11:40:05", valor: 1.23 }, { horario: "11:39:42", valor: 8.54 },
       { horario: "11:39:18", valor: 2.10 }, { horario: "11:38:55", valor: 12.34 },
@@ -191,27 +129,34 @@
       { horario: "11:37:41", valor: 3.25 }, { horario: "11:37:10", valor: 20.12 },
       { horario: "11:36:48", valor: 1.44 }, { horario: "11:36:22", valor: 7.89 }
     ];
+    const tabela = document.getElementById("tabelaVelas");
     velasFake.forEach(v => {
-      document.getElementById("tabelaVelas").innerHTML += `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
+      tabela.innerHTML += `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
     });
 
-    // FAKE GRID VELAS
+    // ============================
+    // GRID FAKE ÚLTIMAS VELAS
+    // ============================
     const ultimasVelasFake = [
       { valor: 6.16, hora:"19:33", cor:"green" }, { valor: 1.11, hora:"19:32", cor:"blue" },
       { valor: 2.62, hora:"19:32", cor:"purple" }, { valor: 1.81, hora:"19:32", cor:"purple" },
       { valor: 59.71, hora:"19:28", cor:"red" }
     ];
+    const grid = document.getElementById("gridVelas");
     ultimasVelasFake.forEach(v => {
-      document.getElementById("gridVelas").innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
+      grid.innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
     });
 
-    // FAKE CALLS
+    // ============================
+    // CALLS FAKE (30 simulados)
+    // ============================
     const callsFake = Array.from({ length: 30 }, (_, i) => {
       const horario = `11:${(30-i).toString().padStart(2,'0')}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}`;
       const textos = ["Entrada até 2x","Entrada até 5x","Stop 10x","Rodada segura"];
       const status = Math.random()>0.4?"GREEN":"RED";
       return { horario, texto:textos[Math.floor(Math.random()*textos.length)], status };
     });
+
     let callsExibidos=10;
     function renderCalls(lista){
       const ul=document.getElementById("listaCalls"); ul.innerHTML="";
@@ -223,7 +168,9 @@
     document.getElementById("btnCarregarMais").addEventListener("click",()=>{callsExibidos+=10;renderCalls(callsFake);});
     renderCalls(callsFake);
 
+    // ============================
     // TIMER
+    // ============================
     let tempoRestante=60;
     setInterval(()=>{
       tempoRestante--; if(tempoRestante<0) tempoRestante=60;
