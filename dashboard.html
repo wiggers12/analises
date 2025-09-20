@@ -7,55 +7,50 @@
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
   <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #0a0a0f;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    /* Plataforma ocupa a tela */
-    .plataforma {
-      width: 100%;
-      height: calc(100vh - 60px); /* desconta o rodapé */
-      overflow: hidden;
-    }
-    .plataforma iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* Rodapé minimalista */
-    footer {
-      background: #111;
-      color: #aaa;
-      font-size: 0.9rem;
-      padding: 10px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    footer .links {
-      display: flex;
+    /* ===== ICON CARDS ===== */
+    .icon-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
       gap: 15px;
+      margin: 20px auto;
+      max-width: 400px;
     }
-    footer a {
-      color: #27ae60;
-      font-weight: 600;
-      text-decoration: none;
+    .icon-card {
+      background: #1c1c2b;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      height: 70px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       transition: 0.3s;
+      color: #fff;
     }
-    footer a:hover {
-      color: #2ecc71;
+    .icon-card:hover {
+      background: #27ae60;
+      transform: scale(1.05);
+    }
+
+    /* Conteúdo dos cards */
+    .card-conteudo {
+      display: none;
+      background: #1c1c2b;
+      padding: 15px;
+      margin: 10px auto;
+      border-radius: 12px;
+      max-width: 1000px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .card-conteudo.ativo {
+      display: block;
     }
 
     /* Timer flutuante */
     #timer-floating {
       position: fixed;
-      bottom: 80px; /* acima do rodapé */
+      bottom: 20px;
       right: 20px;
       background: linear-gradient(135deg, #27ae60, #2ecc71);
       color: #fff;
@@ -100,18 +95,64 @@
   </style>
 </head>
 <body>
-  <!-- Plataforma -->
-  <section class="plataforma">
-    <iframe src="https://goathbet.com/?r=zktgmbwl"></iframe>
-  </section>
-
-  <!-- Rodapé -->
-  <footer>
-    <p>© 2025 GoathBet</p>
-    <div class="links">
-      <a href="admin.html" id="adminLink" style="display:none;">Painel Admin</a>
-      <a href="#" onclick="logout()">Sair</a>
+  <!-- TOPO -->
+  <header class="topbar">
+    <div class="logo">
+      <img src="img/logo.png" alt="GoathBet" width="40">
+      <h1>GOATH<span>BET</span></h1>
     </div>
+    <nav>
+      <a href="dashboard.html" class="ativo">Dashboard</a>
+      <a href="#" id="adminLink" style="display:none;">Painel Admin</a>
+      <a href="#" onclick="logout()">Sair</a>
+    </nav>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="dashboard-container">
+    <!-- Plataforma -->
+    <section class="plataforma">
+      <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
+    </section>
+
+    <!-- ÍCONES -->
+    <div class="icon-cards">
+      <div class="icon-card" onclick="toggleCard('velas')">📈</div>
+      <div class="icon-card" onclick="toggleCard('relatorio')">📊</div>
+      <div class="icon-card" onclick="toggleCard('calls')">📢</div>
+      <div class="icon-card" onclick="toggleCard('lucro')">💰</div>
+    </div>
+
+    <!-- CONTEÚDOS -->
+    <div id="card-velas" class="card-conteudo">
+      <h2>📈 Últimas Velas</h2>
+      <div class="grid-velas" id="gridVelas"></div>
+    </div>
+
+    <div id="card-relatorio" class="card-conteudo">
+      <h2>📊 Relatório de Rodadas</h2>
+      <table>
+        <thead><tr><th>Horário</th><th>Multiplicador</th></tr></thead>
+        <tbody id="tabelaVelas"></tbody>
+      </table>
+    </div>
+
+    <div id="card-calls" class="card-conteudo">
+      <h2>📢 Últimos Calls</h2>
+      <ul id="listaCalls"></ul>
+      <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
+    </div>
+
+    <div id="card-lucro" class="card-conteudo">
+      <h2>💰 Lucro Virtual (Simulação)</h2>
+      <p>Se tivesse apostado <strong>R$10</strong> em cada call de hoje:</p>
+      <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
+      <small style="color:#aaa;">*Simulação apenas para fins de demonstração</small>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 GoathBet. Todos os direitos reservados.</p>
   </footer>
 
   <!-- TIMER FLUTUANTE -->
@@ -130,7 +171,7 @@
 
   <!-- SCRIPT -->
   <script type="module">
-    import { auth } from "./firebase.js";
+    import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const adminEmail = "dionegalato1212@gmail.com";
@@ -138,6 +179,7 @@
     onAuthStateChanged(auth, (user) => {
       if (user && user.email === adminEmail) {
         document.getElementById("adminLink").style.display = "inline-block";
+        document.getElementById("adminLink").href = "admin.html";
       } else if (!user) {
         window.location.href = "login.html";
       }
@@ -146,6 +188,64 @@
     window.logout = function() {
       signOut(auth).then(() => window.location.href = "login.html");
     };
+
+    // FUNÇÃO TOGGLE
+    window.toggleCard = function(id) {
+      document.querySelectorAll('.card-conteudo').forEach(c => c.classList.remove('ativo'));
+      document.getElementById('card-' + id).classList.add('ativo');
+    };
+
+    // RELATÓRIO FAKE
+    const velasFake = [
+      { horario: "11:40:05", valor: 1.23 }, { horario: "11:39:42", valor: 8.54 },
+      { horario: "11:39:18", valor: 2.10 }, { horario: "11:38:55", valor: 12.34 },
+      { horario: "11:38:29", valor: 1.01 }, { horario: "11:38:02", valor: 5.67 },
+      { horario: "11:37:41", valor: 3.25 }, { horario: "11:37:10", valor: 20.12 },
+      { horario: "11:36:48", valor: 1.44 }, { horario: "11:36:22", valor: 7.89 }
+    ];
+    velasFake.forEach(v => {
+      document.getElementById("tabelaVelas").innerHTML += `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
+    });
+
+    // GRID VELAS FAKE
+    const ultimasVelasFake = [
+      { valor: 6.16, hora:"19:33", cor:"green" }, { valor: 1.11, hora:"19:32", cor:"blue" },
+      { valor: 2.62, hora:"19:32", cor:"purple" }, { valor: 1.81, hora:"19:32", cor:"purple" },
+      { valor: 59.71, hora:"19:28", cor:"red" }
+    ];
+    ultimasVelasFake.forEach(v => {
+      document.getElementById("gridVelas").innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
+    });
+
+    // CALLS FAKE
+    const callsFake = Array.from({ length: 30 }, (_, i) => {
+      const horario = `11:${(30-i).toString().padStart(2,'0')}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}`;
+      const textos = ["Entrada até 2x","Entrada até 5x","Stop 10x","Rodada segura"];
+      const status = Math.random()>0.4?"GREEN":"RED";
+      return { horario, texto:textos[Math.floor(Math.random()*textos.length)], status };
+    });
+    let callsExibidos=10;
+    function renderCalls(lista){
+      const ul=document.getElementById("listaCalls"); ul.innerHTML="";
+      lista.slice(0,callsExibidos).forEach(c=>{
+        ul.innerHTML+=`<li><strong>${c.horario}</strong> → ${c.texto} <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">${c.status}</span></li>`;
+      });
+      document.getElementById("btnCarregarMais").style.display=lista.length>callsExibidos?"block":"none";
+    }
+    document.getElementById("btnCarregarMais").addEventListener("click",()=>{callsExibidos+=10;renderCalls(callsFake);});
+    renderCalls(callsFake);
+
+    // LUCRO VIRTUAL
+    let apostaFixa = 10;
+    function atualizarLucro(calls){
+      let lucro=0;
+      calls.forEach(c=>{
+        if(c.status==="GREEN"){ lucro+=apostaFixa*(Math.random()*3+1); }
+        else{ lucro-=apostaFixa; }
+      });
+      document.getElementById("lucroVirtual").innerText=(lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
+    }
+    atualizarLucro(callsFake);
 
     // TIMER
     let tempoRestante=60;
