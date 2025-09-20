@@ -6,6 +6,71 @@
   <title>Dashboard - GoathBet</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
+  <style>
+    /* ===== TIMER FIXO ===== */
+    #timer-floating {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #27ae60;
+      color: #fff;
+      font-weight: bold;
+      padding: 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      transition: 0.3s;
+      z-index: 999;
+    }
+    #timer-floating:hover {
+      background: #2ecc71;
+      transform: scale(1.1);
+    }
+
+    /* ===== PAINEL TIMER ===== */
+    #painel-timer {
+      position: fixed;
+      bottom: 0;
+      right: -100%;
+      width: 300px;
+      background: #1c1c2b;
+      color: #fff;
+      padding: 20px;
+      border-top-left-radius: 12px;
+      box-shadow: -4px -4px 12px rgba(0,0,0,0.5);
+      transition: right 0.4s ease-in-out;
+      z-index: 1000;
+    }
+    #painel-timer.ativo {
+      right: 0;
+    }
+    #painel-timer h2 {
+      margin-bottom: 10px;
+      color: #00c8ff;
+    }
+    #painel-timer p {
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+    #painel-timer .alerta {
+      color: #f1c40f;
+      font-weight: bold;
+    }
+    #painel-timer button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background: #27ae60;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #painel-timer button:hover {
+      background: #2ecc71;
+    }
+  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -28,86 +93,87 @@
       <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
 
-    <!-- CARD: Últimas Velas -->
-    <div class="card-box ativo">
-      <div class="card-header" onclick="toggleCard(this)">
-        <h2>📈 Últimas Velas</h2>
-        <span class="seta">▼</span>
+    <!-- Painel Últimas Velas -->
+    <section class="ultimas-velas">
+      <h2>📈 Últimas Velas</h2>
+      <div class="periodos">
+        <button class="ativo">30 Min</button>
+        <button>1 Hora</button>
+        <button>4 Horas</button>
+        <button>24 Horas</button>
       </div>
-      <div class="card-content">
-        <div class="periodos">
-          <button class="ativo">30 Min</button>
-          <button>1 Hora</button>
-          <button>4 Horas</button>
-          <button>24 Horas</button>
+      <div class="estatisticas">
+        <div class="estat-card green">
+          <h3>Velas Altas (10x)</h3>
+          <p id="estatAltas">4 <span>5.1%</span></p>
         </div>
-        <div class="estatisticas">
-          <div class="estat-card green">
-            <h3>Velas Altas (10x)</h3>
-            <p id="estatAltas">4 <span>5.1%</span></p>
-          </div>
-          <div class="estat-card blue">
-            <h3>Velas Médias (2x-9.99x)</h3>
-            <p id="estatMedias">33 <span>42.3%</span></p>
-          </div>
-          <div class="estat-card red">
-            <h3>Velas Baixas (&lt;2x)</h3>
-            <p id="estatBaixas">41 <span>52.6%</span></p>
-          </div>
-          <div class="estat-card yellow">
-            <h3>Maior Mult.</h3>
-            <p id="estatMaior">59.71x <span>78 velas</span></p>
-          </div>
+        <div class="estat-card blue">
+          <h3>Velas Médias (2x-9.99x)</h3>
+          <p id="estatMedias">33 <span>42.3%</span></p>
         </div>
-        <div class="grid-velas" id="gridVelas"></div>
-      </div>
-    </div>
-
-    <!-- CARD: Relatório de Rodadas -->
-    <div class="card-box">
-      <div class="card-header" onclick="toggleCard(this)">
-        <h2>📊 Relatório de Rodadas</h2>
-        <span class="seta">▼</span>
-      </div>
-      <div class="card-content">
-        <table>
-          <thead>
-            <tr><th>Horário</th><th>Multiplicador</th></tr>
-          </thead>
-          <tbody id="tabelaVelas"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- CARD: Últimos Calls -->
-    <div class="card-box">
-      <div class="card-header" onclick="toggleCard(this)">
-        <h2>📢 Últimos Calls</h2>
-        <span class="seta">▼</span>
-      </div>
-      <div class="card-content">
-        <!-- Formulário só para Admin -->
-        <div id="formCalls" style="display:none; margin-bottom:20px;">
-          <input type="text" id="textoCall" placeholder="Descrição do call" style="padding:8px; border-radius:6px; width:60%;">
-          <select id="statusCall" style="padding:8px; border-radius:6px;">
-            <option value="GREEN">🟢 GREEN</option>
-            <option value="RED">🔴 RED</option>
-          </select>
-          <button onclick="adicionarCall()" style="padding:8px 15px; border-radius:6px; background:#27ae60; color:#fff; font-weight:bold; cursor:pointer;">
-            ➕ Adicionar Call
-          </button>
+        <div class="estat-card red">
+          <h3>Velas Baixas (&lt;2x)</h3>
+          <p id="estatBaixas">41 <span>52.6%</span></p>
         </div>
-
-        <!-- Histórico -->
-        <ul id="listaCalls" style="list-style:none; padding:0; margin:0;"></ul>
-        <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
+        <div class="estat-card yellow">
+          <h3>Maior Mult.</h3>
+          <p id="estatMaior">59.71x <span>78 velas</span></p>
+        </div>
       </div>
-    </div>
+      <div class="grid-velas" id="gridVelas"></div>
+    </section>
+
+    <!-- Relatório de rodadas -->
+    <section class="relatorio">
+      <h2>📊 Relatório de Rodadas</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Horário</th>
+            <th>Multiplicador</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaVelas"></tbody>
+      </table>
+    </section>
+
+    <!-- Últimos Calls -->
+    <section class="relatorio">
+      <h2>📢 Últimos Calls</h2>
+      <div id="formCalls" style="display:none; margin-bottom:20px;">
+        <input type="text" id="textoCall" placeholder="Descrição do call" style="padding:8px; border-radius:6px; width:60%;">
+        <select id="statusCall" style="padding:8px; border-radius:6px;">
+          <option value="GREEN">🟢 GREEN</option>
+          <option value="RED">🔴 RED</option>
+        </select>
+        <button onclick="adicionarCall()" style="padding:8px 15px; border-radius:6px; background:#27ae60; color:#fff; font-weight:bold; cursor:pointer;">
+          ➕ Adicionar Call
+        </button>
+      </div>
+      <ul id="listaCalls" style="list-style:none; padding:0; margin:0;"></ul>
+      <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
+    </section>
   </main>
 
   <footer>
     <p>© 2025 GoathBet. Todos os direitos reservados.</p>
   </footer>
+
+  <!-- TIMER FIXO -->
+  <div id="timer-floating" onclick="abrirPainelTimer()">
+    ⏱ <span id="timer">00:00</span>
+  </div>
+
+  <!-- PAINEL TIMER -->
+  <div id="painel-timer">
+    <div class="painel-content">
+      <h2>⏳ Próximo Multiplicador</h2>
+      <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
+      <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
+      <p class="alerta">⚠ Prepare-se, próxima entrada em breve!</p>
+      <button onclick="fecharPainelTimer()">Fechar</button>
+    </div>
+  </div>
 
   <!-- SCRIPT -->
   <script type="module">
@@ -134,9 +200,7 @@
       });
     };
 
-    // ============================
-    // RELATÓRIO DE RODADAS (fake)
-    // ============================
+    // FAKE dados Relatório
     const velasFake = [
       { horario: "11:40:05", valor: 1.23 },
       { horario: "11:39:42", valor: 8.54 },
@@ -151,58 +215,34 @@
     ];
     const tabela = document.getElementById("tabelaVelas");
     velasFake.forEach(v => {
-      tabela.innerHTML += `
-        <tr>
+      tabela.innerHTML += `<tr>
           <td>${v.horario}</td>
           <td style="color:${v.valor >= 2 ? '#2ecc71':'#e74c3c'}">${v.valor}x</td>
-        </tr>
-      `;
+        </tr>`;
     });
 
-    // ============================
-    // GRID DE ÚLTIMAS VELAS (fake)
-    // ============================
+    // FAKE últimas velas grid
     const gridVelas = document.getElementById("gridVelas");
     const ultimasVelasFake = [
       { valor: 6.16, hora:"19:33", cor:"green" },
       { valor: 1.11, hora:"19:32", cor:"blue" },
       { valor: 2.62, hora:"19:32", cor:"purple" },
-      { valor: 1.81, hora:"19:32", cor:"purple" },
-      { valor: 2.55, hora:"19:31", cor:"purple" },
-      { valor: 4.55, hora:"19:31", cor:"purple" },
-      { valor: 1.11, hora:"19:30", cor:"blue" },
-      { valor: 3.58, hora:"19:30", cor:"purple" },
-      { valor: 3.75, hora:"19:30", cor:"purple" },
-      { valor: 1.63, hora:"19:29", cor:"purple" },
-      { valor: 1.50, hora:"19:29", cor:"blue" },
-      { valor: 59.71, hora:"19:28", cor:"red" },
-      { valor: 1.06, hora:"19:27", cor:"blue" },
-      { valor: 1.16, hora:"19:27", cor:"blue" },
-      { valor: 3.98, hora:"19:27", cor:"purple" }
+      { valor: 59.71, hora:"19:28", cor:"red" }
     ];
     ultimasVelasFake.forEach(v => {
-      gridVelas.innerHTML += `
-        <div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>
-      `;
+      gridVelas.innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
     });
 
-    // ============================
-    // CALLS FAKE (60 simulados)
-    // ============================
-    const callsFake = Array.from({ length: 60 }, (_, i) => {
+    // CALLS fake
+    const callsFake = Array.from({ length: 20 }, (_, i) => {
       const minutos = (60 - i).toString().padStart(2,'0');
       const horarios = `11:${minutos}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}`;
-      const textos = [
-        "Entrada até 2x", "Entrada até 3x", "Entrada até 5x",
-        "Stop 10x", "Rodada segura", "Evitar rodada",
-        "Entrada curta", "Entrada longa"
-      ];
-      const status = Math.random() > 0.4 ? "GREEN" : "RED"; // 60% green
+      const textos = ["Entrada até 2x", "Stop 10x", "Rodada segura", "Evitar rodada"];
+      const status = Math.random() > 0.4 ? "GREEN" : "RED";
       return { horario: horarios, texto: textos[Math.floor(Math.random()*textos.length)], status };
     });
 
     let callsExibidos = 10;
-
     function renderCalls(lista) {
       const ul = document.getElementById("listaCalls");
       ul.innerHTML = "";
@@ -212,21 +252,15 @@
           <span style="font-weight:bold; color:${c.status === 'GREEN' ? '#2ecc71':'#e74c3c'}">${c.status}</span>`;
         ul.appendChild(li);
       });
-
       document.getElementById("btnCarregarMais").style.display = lista.length > callsExibidos ? "block" : "none";
     }
-
     document.getElementById("btnCarregarMais").addEventListener("click", () => {
       callsExibidos += 10;
       renderCalls(callsFake);
     });
-
-    // Inicialmente mostra os fakes
     renderCalls(callsFake);
 
-    // ============================
-    // Firebase: ouvir calls reais
-    // ============================
+    // Firebase calls
     const q = query(collection(db, "calls"), orderBy("criadoEm", "desc"), limit(10));
     onSnapshot(q, (snapshot) => {
       if (!snapshot.empty) {
@@ -235,30 +269,35 @@
         renderCalls(callsReais);
       }
     });
-
-    // Adicionar call (Admin)
     window.adicionarCall = async function() {
       const texto = document.getElementById("textoCall").value;
       const status = document.getElementById("statusCall").value;
       if (!texto) return alert("Digite a descrição do call");
-
       await addDoc(collection(db, "calls"), {
         texto,
         status,
         horario: new Date().toLocaleTimeString("pt-BR"),
         criadoEm: serverTimestamp()
       });
-
       document.getElementById("textoCall").value = "";
     };
-  </script>
 
-  <!-- SCRIPT toggle cards -->
-  <script>
-    function toggleCard(header) {
-      const card = header.parentElement;
-      card.classList.toggle("ativo");
-    }
+    // TIMER
+    let tempoRestante = 60;
+    setInterval(() => {
+      tempoRestante--;
+      if (tempoRestante < 0) tempoRestante = 60;
+      document.getElementById("timer").innerText = "00:" + String(tempoRestante).padStart(2,"0");
+    }, 1000);
+
+    window.abrirPainelTimer = function() {
+      document.getElementById("painel-timer").classList.add("ativo");
+      document.getElementById("horaProx").innerText = new Date(Date.now() + tempoRestante*1000).toLocaleTimeString("pt-BR");
+      document.getElementById("minProx").innerText = (Math.random()*3+2).toFixed(2) + "x";
+    };
+    window.fecharPainelTimer = function() {
+      document.getElementById("painel-timer").classList.remove("ativo");
+    };
   </script>
 </body>
 </html>
