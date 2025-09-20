@@ -5,6 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plano - GoathBet</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== HERO ===== */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 30px;
+      background: linear-gradient(135deg, #0a0a0f, #141422);
+    }
+    .hero-text h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    .hero-text span {
+      color: #27ae60;
+    }
+    .hero-text p {
+      color: #ccc;
+      font-size: 1.1rem;
+    }
+
+    /* ===== PLANOS ===== */
+    .planos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 20px;
+    }
+    .plano-card {
+      background: #1c1c2b;
+      padding: 35px 25px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(39, 174, 96, 0.4);
+      text-align: center;
+      max-width: 350px;
+      width: 100%;
+      transition: 0.3s;
+      border: 2px solid rgba(39,174,96,0.6);
+    }
+    .plano-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 35px rgba(39, 174, 96, 0.8);
+    }
+    .plano-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      color: #27ae60;
+    }
+    .plano-card .preco {
+      font-size: 1.8rem;
+      margin: 15px 0;
+      color: #00ff88;
+      font-weight: bold;
+    }
+    .plano-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      text-align: left;
+    }
+    .plano-card ul li {
+      margin: 12px 0;
+      font-size: 1rem;
+      color: #ddd;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .plano-card ul li::before {
+      content: "✔";
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    /* Botão */
+    .btn-card {
+      display: inline-block;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: 0.3s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+    .btn-card:hover {
+      background: linear-gradient(135deg, #2ecc71, #00ff88);
+      transform: scale(1.08);
+    }
+  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -28,16 +118,16 @@
     </div>
   </section>
 
-  <!-- ===== PLANO ÚNICO ===== -->
+  <!-- PLANO ÚNICO -->
   <section class="planos">
     <div class="plano-card destaque">
       <h3>Plano Exclusivo</h3>
       <p class="preco">R$ 29,90 / mês</p>
       <ul>
-        <li>✔ Acesso a todas as calls do Aviator</li>
-        <li>✔ Estratégias inteligentes e atualizadas</li>
-        <li>✔ Suporte premium</li>
-        <li>✔ Sem anúncios</li>
+        <li>Acesso a todas as calls do Aviator</li>
+        <li>Estratégias inteligentes e atualizadas</li>
+        <li>Suporte premium</li>
+        <li>Sem anúncios</li>
       </ul>
       <a href="https://mpago.la/1ka3h83" 
          target="_blank" 
