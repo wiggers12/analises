@@ -93,15 +93,16 @@
     #painel-timer button { margin-top: 20px; width: 100%; padding: 12px; background: linear-gradient(135deg, #ff4d4d, #c0392b); border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; }
     #painel-timer button:hover { background: linear-gradient(135deg, #e74c3c, #a93226); }
 
-    /* ===== BOTÃO LIVE ===== */
+    /* ===== BOTÃO LIVE (YouTube) ===== */
     #live-floating {
       position: fixed;
-      bottom: 90px;
-      left: 20px; /* 🔥 Agora no canto esquerdo */
+      bottom: 20px;  /* alinhado com o timer */
+      left: 20px;    /* canto esquerdo */
       background: linear-gradient(135deg, #ff0000, #c0392b);
-      color: #fff;
-      font-weight: bold;
-      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
       border-radius: 50%;
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(0,0,0,0.6);
@@ -194,8 +195,12 @@
   <!-- TIMER FLUTUANTE -->
   <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
 
-  <!-- BOTÃO LIVE FLUTUANTE -->
-  <div id="live-floating" onclick="abrirLive()">📺</div>
+  <!-- BOTÃO LIVE FLUTUANTE (YouTube) -->
+  <div id="live-floating" onclick="abrirLive()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
+      <path d="M23.498 6.186a2.975 2.975 0 0 0-2.096-2.103C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.402.583A2.975 2.975 0 0 0 .502 6.186C0 8.09 0 12 0 12s0 3.91.502 5.814a2.975 2.975 0 0 0 2.096 2.103C4.495 20.5 12 20.5 12 20.5s7.505 0 9.402-.583a2.975 2.975 0 0 0 2.096-2.103C24 15.91 24 12 24 12s0-3.91-.502-5.814zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/>
+    </svg>
+  </div>
 
   <!-- MODAL LIVE -->
   <div id="modal-live">
