@@ -97,7 +97,7 @@
     #live-floating {
       position: fixed;
       bottom: 90px;
-      right: 20px;
+      left: 20px; /* 🔥 Agora no canto esquerdo */
       background: linear-gradient(135deg, #ff0000, #c0392b);
       color: #fff;
       font-weight: bold;
@@ -247,7 +247,7 @@
       document.getElementById("modal-live").style.display="none";
     }
 
-    // (resto do JS: relatório, calls, lucro, timer continua igual)
+    // RELATÓRIO FAKE
     const velasFake = [
       { horario: "11:40:05", valor: 1.23 }, { horario: "11:39:42", valor: 8.54 },
       { horario: "11:39:18", valor: 2.10 }, { horario: "11:38:55", valor: 12.34 },
@@ -259,6 +259,7 @@
       document.getElementById("tabelaVelas").innerHTML += `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
     });
 
+    // GRID VELAS FAKE
     const ultimasVelasFake = [
       { valor: 6.16, hora:"19:33", cor:"green" }, { valor: 1.11, hora:"19:32", cor:"blue" },
       { valor: 2.62, hora:"19:32", cor:"purple" }, { valor: 1.81, hora:"19:32", cor:"purple" },
@@ -268,6 +269,7 @@
       document.getElementById("gridVelas").innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
     });
 
+    // CALLS FAKE
     const callsFake = Array.from({ length: 30 }, (_, i) => {
       const horario = `11:${(30-i).toString().padStart(2,'0')}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}`;
       const textos = ["Entrada até 2x","Entrada até 5x","Stop 10x","Rodada segura"];
@@ -285,6 +287,7 @@
     document.getElementById("btnCarregarMais").addEventListener("click",()=>{callsExibidos+=10;renderCalls(callsFake);});
     renderCalls(callsFake);
 
+    // LUCRO VIRTUAL
     let apostaFixa = 10;
     function atualizarLucro(calls){
       let lucro=0;
@@ -296,6 +299,7 @@
     }
     atualizarLucro(callsFake);
 
+    // TIMER
     let tempoRestante=60;
     setInterval(()=>{
       tempoRestante--; if(tempoRestante<0) tempoRestante=60;
