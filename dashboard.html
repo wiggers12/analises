@@ -16,23 +16,27 @@
     }
 
     /* ===== Plataforma ===== */
-    .plataforma {
-      width: 100%;
-      height: 400px;
-      overflow: hidden;
+    .plataforma { width: 100%; height: 400px; overflow: hidden; }
+    .plataforma iframe { width: 100%; height: 100%; border: none; }
+
+    /* ===== Cards container ===== */
+    .cards-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 10px;
     }
-    .plataforma iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    @media (min-width: 768px) {
+      .cards-container { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1200px) {
+      .cards-container { grid-template-columns: repeat(4, 1fr); }
     }
 
     /* ===== Cards ===== */
     .card-box {
       background: #1c1c2b;
       border-radius: 12px;
-      margin: 10px 15px;
-      padding: 0;
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       overflow: hidden;
       transition: all 0.3s ease;
@@ -45,44 +49,21 @@
       cursor: pointer;
       background: #222;
     }
-    .card-header h2 {
-      font-size: 1.2rem;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .card-header .seta {
-      transition: transform 0.3s;
-    }
+    .card-header h2 { font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 10px; }
+    .card-header .seta { transition: transform 0.3s; }
     .card-content {
       max-height: 0;
       overflow: hidden;
       padding: 0 20px;
       transition: max-height 0.4s ease, padding 0.3s ease;
     }
-    .card-box.ativo .card-content {
-      max-height: 600px;
-      padding: 20px;
-    }
-    .card-box.ativo .seta {
-      transform: rotate(180deg);
-    }
+    .card-box.ativo .card-content { max-height: 600px; padding: 20px; }
+    .card-box.ativo .seta { transform: rotate(180deg); }
 
     /* ===== Relatório ===== */
-    .relatorio table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    .relatorio th, .relatorio td {
-      border: 1px solid #333;
-      padding: 8px;
-      text-align: center;
-    }
-    .relatorio th {
-      background: #222;
-    }
+    .relatorio table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .relatorio th, .relatorio td { border: 1px solid #333; padding: 8px; text-align: center; }
+    .relatorio th { background: #222; }
 
     /* ===== Rodapé ===== */
     footer {
@@ -94,15 +75,8 @@
       justify-content: space-between;
       align-items: center;
     }
-    footer .links {
-      display: flex;
-      gap: 15px;
-    }
-    footer a {
-      color: #27ae60;
-      font-weight: 600;
-      text-decoration: none;
-    }
+    footer .links { display: flex; gap: 15px; }
+    footer a { color: #27ae60; font-weight: 600; text-decoration: none; }
 
     /* ===== Timer flutuante ===== */
     #timer-floating {
@@ -147,38 +121,36 @@
     <iframe src="https://goathbet.com/?r=zktgmbwl"></iframe>
   </section>
 
-  <!-- Cards -->
-  <div class="card-box">
-    <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-      <h2>📈 Últimas Velas</h2><span class="seta">▼</span>
+  <!-- Cards lado a lado -->
+  <div class="cards-container">
+    <div class="card-box">
+      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
+        <h2>📈 Velas</h2><span class="seta">▼</span>
+      </div>
+      <div class="card-content"><div id="gridVelas"></div></div>
     </div>
-    <div class="card-content"><div id="gridVelas"></div></div>
-  </div>
 
-  <div class="card-box">
-    <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-      <h2>📊 Relatório</h2><span class="seta">▼</span>
+    <div class="card-box">
+      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
+        <h2>📊 Relatório</h2><span class="seta">▼</span>
+      </div>
+      <div class="card-content relatorio">
+        <table><thead><tr><th>Horário</th><th>Multiplicador</th></tr></thead><tbody id="tabelaVelas"></tbody></table>
+      </div>
     </div>
-    <div class="card-content relatorio">
-      <table><thead><tr><th>Horário</th><th>Multiplicador</th></tr></thead><tbody id="tabelaVelas"></tbody></table>
-    </div>
-  </div>
 
-  <div class="card-box">
-    <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-      <h2>📢 Calls</h2><span class="seta">▼</span>
+    <div class="card-box">
+      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
+        <h2>📢 Calls</h2><span class="seta">▼</span>
+      </div>
+      <div class="card-content relatorio"><ul id="listaCalls"></ul></div>
     </div>
-    <div class="card-content relatorio">
-      <ul id="listaCalls"></ul>
-    </div>
-  </div>
 
-  <div class="card-box">
-    <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-      <h2>💰 Lucro Virtual</h2><span class="seta">▼</span>
-    </div>
-    <div class="card-content">
-      <h3 id="lucroVirtual" style="color:#2ecc71;">+R$ 0,00</h3>
+    <div class="card-box">
+      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
+        <h2>💰 Lucro</h2><span class="seta">▼</span>
+      </div>
+      <div class="card-content"><h3 id="lucroVirtual" style="color:#2ecc71;">+R$ 0,00</h3></div>
     </div>
   </div>
 
@@ -191,12 +163,12 @@
     </div>
   </footer>
 
-  <!-- Timer flutuante -->
+  <!-- Timer -->
   <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
   <div id="painel-timer">
     <h2>⏳ Próximo Multiplicador</h2>
     <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
-    <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
+    <p><strong>Mínimo:</strong> <span id="minProx">--</span></p>
     <p id="msgPsico">⚠ Prepare-se!</p>
     <button onclick="fecharPainelTimer()">Fechar</button>
   </div>
@@ -206,7 +178,6 @@
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const adminEmail = "dionegalato1212@gmail.com";
-
     onAuthStateChanged(auth, (user) => {
       if (user && user.email === adminEmail) {
         document.getElementById("adminLink").style.display = "inline-block";
@@ -214,21 +185,15 @@
         window.location.href = "login.html";
       }
     });
+    window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
 
-    window.logout = function() {
-      signOut(auth).then(() => window.location.href = "login.html");
-    };
-
-    // Relatório fake
+    // Dados fake
     const velasFake = [
-      { horario: "11:40:05", valor: 1.23 }, { horario: "11:39:42", valor: 8.54 },
-      { horario: "11:39:18", valor: 2.10 }, { horario: "11:38:55", valor: 12.34 }
+      { horario: "11:40:05", valor: 1.23 }, { horario: "11:39:42", valor: 8.54 }
     ];
     velasFake.forEach(v=>{
       document.getElementById("tabelaVelas").innerHTML += `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
     });
-
-    // Calls fake
     const callsFake = [
       { horario: "11:35:01", texto: "Entrada até 5x", status: "GREEN" },
       { horario: "11:34:12", texto: "Rodada segura", status: "RED" }
@@ -236,8 +201,6 @@
     callsFake.forEach(c=>{
       document.getElementById("listaCalls").innerHTML += `<li><strong>${c.horario}</strong> → ${c.texto} <span style="color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">${c.status}</span></li>`;
     });
-
-    // Lucro fake
     document.getElementById("lucroVirtual").innerText = "+R$ 124,50";
 
     // Timer
@@ -246,14 +209,8 @@
       tempoRestante--; if(tempoRestante<0) tempoRestante=60;
       document.getElementById("timer").innerText="00:"+String(tempoRestante).padStart(2,"0");
     },1000);
-
-    window.abrirPainelTimer=function(){
-      document.getElementById("painel-timer").classList.add("ativo");
-      document.getElementById("horaProx").innerText=new Date(Date.now()+tempoRestante*1000).toLocaleTimeString("pt-BR");
-      const mult=(Math.random()*3+2).toFixed(2);
-      document.getElementById("minProx").innerText=mult+"x";
-    };
-    window.fecharPainelTimer=function(){document.getElementById("painel-timer").classList.remove("ativo");};
+    window.abrirPainelTimer=()=>{document.getElementById("painel-timer").classList.add("ativo");};
+    window.fecharPainelTimer=()=>{document.getElementById("painel-timer").classList.remove("ativo");};
   </script>
 </body>
 </html>
