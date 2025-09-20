@@ -6,87 +6,6 @@
   <title>Dashboard - GoathBet</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
-  <style>
-    /* ===== BOTÕES FLUTUANTES ===== */
-    .floating-btn {
-      position: fixed;
-      bottom: 20px;
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      background: linear-gradient(135deg,#27ae60,#2ecc71);
-      color: #fff;
-      font-size: 1.2rem;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      cursor: pointer;
-      transition: 0.3s;
-      z-index: 999;
-      animation: pulse 2s infinite;
-    }
-    .floating-btn:hover { transform: scale(1.1); }
-    #timer-floating { right: 20px; }
-    #calls-floating { right: 100px; background: linear-gradient(135deg,#3498db,#2980b9); }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(39,174,96,0.7); }
-      70% { box-shadow: 0 0 0 20px rgba(39,174,96,0); }
-      100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
-    }
-
-    /* ===== PAINÉIS LATERAIS ===== */
-    .side-panel {
-      position: fixed;
-      bottom: 0;
-      right: -100%;
-      width: 320px;
-      max-height: 100vh;
-      overflow-y: auto;
-      background: #1c1c2b;
-      color: #fff;
-      padding: 25px;
-      border-top-left-radius: 12px;
-      box-shadow: -6px -6px 18px rgba(0,0,0,0.6);
-      transition: right 0.4s ease-in-out;
-      z-index: 1000;
-    }
-    .side-panel.ativo { right: 0; }
-    .side-panel h2 {
-      margin-bottom: 15px;
-      color: #00c8ff;
-      font-size: 1.3rem;
-      text-align: center;
-    }
-    .side-panel p { margin: 8px 0; font-size: 1rem; }
-    .side-panel ul li {
-      margin: 8px 0;
-      border-bottom: 1px solid #333;
-      padding-bottom: 6px;
-    }
-    .side-panel button {
-      margin-top: 15px;
-      width: 100%;
-      padding: 10px;
-      background: linear-gradient(135deg,#ff4d4d,#c0392b);
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .side-panel button:hover { background: linear-gradient(135deg,#e74c3c,#a93226); }
-    .alerta {
-      font-size: 1.05rem;
-      font-weight: bold;
-      text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -157,6 +76,19 @@
         <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
       </div>
     </div>
+
+    <!-- CARD: Lucro Virtual -->
+    <div class="card-box ativo">
+      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
+        <h2>💰 Lucro Virtual (Simulação)</h2>
+        <span class="seta">▼</span>
+      </div>
+      <div class="card-content">
+        <p>Se tivesse apostado <strong>R$10</strong> em cada call de hoje:</p>
+        <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
+        <small style="color:#aaa;">*Simulação apenas para fins de demonstração</small>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -164,24 +96,27 @@
   </footer>
 
   <!-- BOTÕES FLUTUANTES -->
-  <div id="timer-floating" class="floating-btn" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
-  <div id="calls-floating" class="floating-btn" onclick="abrirPainelCalls()">📢</div>
+  <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
+  <div id="calls-floating" onclick="abrirPainelCalls()">📢</div>
 
   <!-- PAINEL TIMER -->
-  <div id="painel-timer" class="side-panel">
-    <h2>⏳ Próximo Multiplicador</h2>
-    <p><strong>Contagem:</strong> <span id="timerPainel">00:00</span></p>
-    <p><strong>Horário Previsto:</strong> <span id="horaProx">--:--</span></p>
-    <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
-    <p id="msgPsico" class="alerta">⚠ Prepare-se!</p>
-    <button onclick="fecharPainelTimer()">Fechar</button>
+  <div id="painel-timer">
+    <div class="painel-content">
+      <h2>⏳ Próximo Multiplicador</h2>
+      <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
+      <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
+      <p id="msgPsico" class="alerta">⚠ Prepare-se!</p>
+      <button onclick="fecharPainelTimer()">Fechar</button>
+    </div>
   </div>
 
   <!-- PAINEL CALLS -->
-  <div id="painel-calls" class="side-panel">
-    <h2>📢 Últimos Calls</h2>
-    <ul id="listaCallsPainel"></ul>
-    <button onclick="fecharPainelCalls()">Fechar</button>
+  <div id="painel-calls">
+    <div class="painel-content">
+      <h2>📢 Últimos Calls</h2>
+      <ul id="callsFlutuantes"></ul>
+      <button onclick="fecharPainelCalls()">Fechar</button>
+    </div>
   </div>
 
   <!-- SCRIPT -->
@@ -207,7 +142,9 @@
       signOut(auth).then(() => window.location.href = "login.html");
     };
 
+    // ============================
     // RELATÓRIO FAKE
+    // ============================
     const velasFake = [
       { horario: "11:40:05", valor: 1.23 }, { horario: "11:39:42", valor: 8.54 },
       { horario: "11:39:18", valor: 2.10 }, { horario: "11:38:55", valor: 12.34 },
@@ -216,89 +153,67 @@
       { horario: "11:36:48", valor: 1.44 }, { horario: "11:36:22", valor: 7.89 }
     ];
     velasFake.forEach(v => {
-      document.getElementById("tabelaVelas").innerHTML += 
-      `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
+      document.getElementById("tabelaVelas").innerHTML += `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
     });
 
+    // ============================
     // GRID FAKE ÚLTIMAS VELAS
+    // ============================
     const ultimasVelasFake = [
-      { valor: 6.16, hora:"19:33", cor:"green" },
-      { valor: 1.11, hora:"19:32", cor:"blue" },
-      { valor: 2.62, hora:"19:32", cor:"purple" },
-      { valor: 1.81, hora:"19:32", cor:"purple" },
+      { valor: 6.16, hora:"19:33", cor:"green" }, { valor: 1.11, hora:"19:32", cor:"blue" },
+      { valor: 2.62, hora:"19:32", cor:"purple" }, { valor: 1.81, hora:"19:32", cor:"purple" },
       { valor: 59.71, hora:"19:28", cor:"red" }
     ];
+    const grid = document.getElementById("gridVelas");
     ultimasVelasFake.forEach(v => {
-      document.getElementById("gridVelas").innerHTML += 
-      `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
+      grid.innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
     });
 
-    // CALLS FAKE + FIREBASE
-    let callsFake = Array.from({ length: 10 }, (_, i) => {
-      const horario = `11:${(10-i).toString().padStart(2,'0')}:${String(Math.floor(Math.random()*60)).padStart(2,'0')}`;
+    // ============================
+    // CALLS FAKE (30 simulados)
+    // ============================
+    const callsFake = Array.from({ length: 30 }, (_, i) => {
+      const horario = `11:${(30-i).toString().padStart(2,'0')}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}`;
       const textos = ["Entrada até 2x","Entrada até 5x","Stop 10x","Rodada segura"];
       const status = Math.random()>0.4?"GREEN":"RED";
       return { horario, texto:textos[Math.floor(Math.random()*textos.length)], status };
     });
 
-    let callsExibidos = 10;
-
+    let callsExibidos=10;
     function renderCalls(lista){
       const ul=document.getElementById("listaCalls"); ul.innerHTML="";
+      const ulFloat=document.getElementById("callsFlutuantes"); ulFloat.innerHTML="";
       lista.slice(0,callsExibidos).forEach(c=>{
-        ul.innerHTML+=`<li><strong>${c.horario}</strong> → ${c.texto} 
-        <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">${c.status}</span></li>`;
+        const li=`<li><strong>${c.horario}</strong> → ${c.texto} <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">${c.status}</span></li>`;
+        ul.innerHTML+=li;
+        ulFloat.innerHTML+=li;
       });
       document.getElementById("btnCarregarMais").style.display=lista.length>callsExibidos?"block":"none";
     }
-
-    function renderCallsPainel(lista){
-      const ul=document.getElementById("listaCallsPainel"); ul.innerHTML="";
-      lista.forEach(c=>{
-        ul.innerHTML+=`<li><strong>${c.horario}</strong> → ${c.texto} 
-        <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">${c.status}</span></li>`;
-      });
-    }
-
-    document.getElementById("btnCarregarMais").addEventListener("click",()=>{
-      callsExibidos+=10; renderCalls(callsFake);
-    });
-
+    document.getElementById("btnCarregarMais").addEventListener("click",()=>{callsExibidos+=10;renderCalls(callsFake);});
     renderCalls(callsFake);
-    renderCallsPainel(callsFake);
 
-    // Firebase snapshot dos calls
-    const q = query(collection(db,"calls"), orderBy("criadoEm","desc"), limit(10));
-    onSnapshot(q,(snapshot)=>{
-      if(!snapshot.empty){
-        const callsReais=[];
-        snapshot.forEach(doc=>callsReais.push(doc.data()));
-        renderCalls(callsReais);
-        renderCallsPainel(callsReais);
-      }
-    });
-
-    // Adicionar call (Admin)
-    window.adicionarCall=async function(){
-      const texto=document.getElementById("textoCall").value;
-      const status=document.getElementById("statusCall").value;
-      if(!texto) return alert("Digite a descrição do call");
-      await addDoc(collection(db,"calls"),{
-        texto,
-        status,
-        horario:new Date().toLocaleTimeString("pt-BR"),
-        criadoEm:serverTimestamp()
+    // ============================
+    // LUCRO VIRTUAL
+    // ============================
+    let apostaFixa = 10;
+    function atualizarLucro(calls){
+      let lucro=0;
+      calls.forEach(c=>{
+        if(c.status==="GREEN"){ lucro+=apostaFixa*(Math.random()*3+1); }
+        else{ lucro-=apostaFixa; }
       });
-      document.getElementById("textoCall").value="";
-    };
+      document.getElementById("lucroVirtual").innerText=(lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
+    }
+    atualizarLucro(callsFake);
 
+    // ============================
     // TIMER
+    // ============================
     let tempoRestante=60;
     setInterval(()=>{
       tempoRestante--; if(tempoRestante<0) tempoRestante=60;
-      const tempoStr="00:"+String(tempoRestante).padStart(2,"0");
-      document.getElementById("timer").innerText=tempoStr;
-      document.getElementById("timerPainel").innerText=tempoStr;
+      document.getElementById("timer").innerText="00:"+String(tempoRestante).padStart(2,"0");
     },1000);
 
     window.abrirPainelTimer=function(){
@@ -312,6 +227,9 @@
     };
     window.fecharPainelTimer=function(){document.getElementById("painel-timer").classList.remove("ativo");};
 
+    // ============================
+    // CALLS FLUTUANTES
+    // ============================
     window.abrirPainelCalls=function(){document.getElementById("painel-calls").classList.add("ativo");};
     window.fecharPainelCalls=function(){document.getElementById("painel-calls").classList.remove("ativo");};
   </script>
