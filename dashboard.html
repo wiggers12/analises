@@ -95,19 +95,6 @@
   </style>
 </head>
 <body>
-  <!-- TOPO -->
-  <header class="topbar">
-    <div class="logo">
-      <img src="img/logo.png" alt="GoathBet" width="40">
-      <h1>GOATH<span>BET</span></h1>
-    </div>
-    <nav>
-      <a href="dashboard.html" class="ativo">Dashboard</a>
-      <a href="#" id="adminLink" style="display:none;">Painel Admin</a>
-      <a href="#" onclick="logout()">Sair</a>
-    </nav>
-  </header>
-
   <!-- CONTEÚDO -->
   <main class="dashboard-container">
     <!-- Plataforma -->
@@ -153,6 +140,8 @@
 
   <footer>
     <p>© 2025 GoathBet. Todos os direitos reservados.</p>
+    <a href="admin.html">Painel Admin</a> | 
+    <a href="#" onclick="logout()">Sair</a>
   </footer>
 
   <!-- TIMER FLUTUANTE -->
@@ -177,12 +166,7 @@
     const adminEmail = "dionegalato1212@gmail.com";
 
     onAuthStateChanged(auth, (user) => {
-      if (user && user.email === adminEmail) {
-        document.getElementById("adminLink").style.display = "inline-block";
-        document.getElementById("adminLink").href = "admin.html";
-      } else if (!user) {
-        window.location.href = "login.html";
-      }
+      if (!user) window.location.href = "login.html";
     });
 
     window.logout = function() {
