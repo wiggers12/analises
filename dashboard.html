@@ -6,6 +6,87 @@
   <title>Dashboard - GoathBet</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
+  <style>
+    /* ===== TIMER FIXO ===== */
+    #timer-floating {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #fff;
+      font-weight: bold;
+      padding: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      transition: 0.3s;
+      z-index: 999;
+      animation: pulse 2s infinite;
+    }
+    #timer-floating:hover {
+      transform: scale(1.15);
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(39,174,96,0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(39,174,96,0); }
+      100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
+    }
+
+    /* ===== PAINEL TIMER ===== */
+    #painel-timer {
+      position: fixed;
+      bottom: 0;
+      right: -100%;
+      width: 320px;
+      background: #1c1c2b;
+      color: #fff;
+      padding: 25px;
+      border-top-left-radius: 12px;
+      box-shadow: -6px -6px 18px rgba(0,0,0,0.6);
+      transition: right 0.4s ease-in-out;
+      z-index: 1000;
+      animation: fadeIn 0.5s ease;
+    }
+    #painel-timer.ativo {
+      right: 0;
+    }
+    #painel-timer h2 {
+      margin-bottom: 15px;
+      color: #00c8ff;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    #painel-timer p {
+      margin: 8px 0;
+      font-size: 1rem;
+    }
+    #painel-timer .alerta {
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    #painel-timer button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #ff4d4d, #c0392b);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #painel-timer button:hover {
+      background: linear-gradient(135deg, #e74c3c, #a93226);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -95,9 +176,8 @@
     <p>© 2025 GoathBet. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- BOTÕES FLUTUANTES -->
+  <!-- BOTÃO FLUTUANTE TIMER -->
   <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
-  <div id="calls-floating" onclick="abrirPainelCalls()">📢</div>
 
   <!-- PAINEL TIMER -->
   <div id="painel-timer">
@@ -107,15 +187,6 @@
       <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
       <p id="msgPsico" class="alerta">⚠ Prepare-se!</p>
       <button onclick="fecharPainelTimer()">Fechar</button>
-    </div>
-  </div>
-
-  <!-- PAINEL CALLS -->
-  <div id="painel-calls">
-    <div class="painel-content">
-      <h2>📢 Últimos Calls</h2>
-      <ul id="callsFlutuantes"></ul>
-      <button onclick="fecharPainelCalls()">Fechar</button>
     </div>
   </div>
 
@@ -182,11 +253,8 @@
     let callsExibidos=10;
     function renderCalls(lista){
       const ul=document.getElementById("listaCalls"); ul.innerHTML="";
-      const ulFloat=document.getElementById("callsFlutuantes"); ulFloat.innerHTML="";
       lista.slice(0,callsExibidos).forEach(c=>{
-        const li=`<li><strong>${c.horario}</strong> → ${c.texto} <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">${c.status}</span></li>`;
-        ul.innerHTML+=li;
-        ulFloat.innerHTML+=li;
+        ul.innerHTML+=`<li><strong>${c.horario}</strong> → ${c.texto} <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">${c.status}</span></li>`;
       });
       document.getElementById("btnCarregarMais").style.display=lista.length>callsExibidos?"block":"none";
     }
@@ -226,12 +294,6 @@
       else {msg.innerText="⚠ Pode ser perigoso, cuidado!"; msg.style.background="linear-gradient(135deg,#e74c3c,#c0392b)";}
     };
     window.fecharPainelTimer=function(){document.getElementById("painel-timer").classList.remove("ativo");};
-
-    // ============================
-    // CALLS FLUTUANTES
-    // ============================
-    window.abrirPainelCalls=function(){document.getElementById("painel-calls").classList.add("ativo");};
-    window.fecharPainelCalls=function(){document.getElementById("painel-calls").classList.remove("ativo");};
   </script>
 </body>
 </html>
