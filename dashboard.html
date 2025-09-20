@@ -16,20 +16,16 @@
   <!-- CARDS -->
   <div class="cards-container">
     <!-- Velas -->
-    <div class="card-box">
-      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-        <h2>📈 Velas</h2><span>▼</span>
-      </div>
+    <div class="card-box" onclick="this.classList.toggle('ativo')">
+      <span>📈</span>
       <div class="card-content">
         <div id="gridVelas"></div>
       </div>
     </div>
 
     <!-- Relatório -->
-    <div class="card-box">
-      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-        <h2>📊 Relatório</h2><span>▼</span>
-      </div>
+    <div class="card-box" onclick="this.classList.toggle('ativo')">
+      <span>📊</span>
       <div class="card-content">
         <table>
           <thead>
@@ -41,20 +37,16 @@
     </div>
 
     <!-- Calls -->
-    <div class="card-box">
-      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-        <h2>📢 Calls</h2><span>▼</span>
-      </div>
+    <div class="card-box" onclick="this.classList.toggle('ativo')">
+      <span>📢</span>
       <div class="card-content">
         <ul id="listaCalls"></ul>
       </div>
     </div>
 
     <!-- Lucro -->
-    <div class="card-box">
-      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-        <h2>💰 Lucro</h2><span>▼</span>
-      </div>
+    <div class="card-box" onclick="this.classList.toggle('ativo')">
+      <span>💰</span>
       <div class="card-content">
         <h3 id="lucroVirtual">+R$ 0,00</h3>
       </div>
@@ -71,7 +63,22 @@
     <a href="#" onclick="logout()">Sair</a>
   </footer>
 
-  <script>
+  <!-- SCRIPT -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const adminEmail = "dionegalato1212@gmail.com";
+
+    // Protege o acesso
+    onAuthStateChanged(auth, (user) => {
+      if (!user) window.location.href = "login.html";
+    });
+
+    window.logout = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    };
+
     // TIMER
     let tempo = 60;
     setInterval(()=>{
