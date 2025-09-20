@@ -7,7 +7,47 @@
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
   <style>
-    /* ===== TIMER FIXO ===== */
+    /* ===== ICON CARDS ===== */
+    .icon-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 15px;
+      margin: 20px auto;
+      max-width: 400px;
+    }
+    .icon-card {
+      background: #1c1c2b;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      height: 70px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: 0.3s;
+      color: #fff;
+    }
+    .icon-card:hover {
+      background: #27ae60;
+      transform: scale(1.05);
+    }
+
+    /* Conteúdo dos cards */
+    .card-conteudo {
+      display: none;
+      background: #1c1c2b;
+      padding: 15px;
+      margin: 10px auto;
+      border-radius: 12px;
+      max-width: 1000px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .card-conteudo.ativo {
+      display: block;
+    }
+
+    /* Timer flutuante */
     #timer-floating {
       position: fixed;
       bottom: 20px;
@@ -32,7 +72,7 @@
       100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
     }
 
-    /* ===== PAINEL TIMER ===== */
+    /* Painel Timer */
     #painel-timer {
       position: fixed;
       bottom: 0;
@@ -45,47 +85,13 @@
       box-shadow: -6px -6px 18px rgba(0,0,0,0.6);
       transition: right 0.4s ease-in-out;
       z-index: 1000;
-      animation: fadeIn 0.5s ease;
     }
-    #painel-timer.ativo {
-      right: 0;
-    }
-    #painel-timer h2 {
-      margin-bottom: 15px;
-      color: #00c8ff;
-      font-size: 1.4rem;
-      text-align: center;
-    }
-    #painel-timer p {
-      margin: 8px 0;
-      font-size: 1rem;
-    }
-    #painel-timer .alerta {
-      font-size: 1.1rem;
-      font-weight: bold;
-      text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 15px;
-    }
-    #painel-timer button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #ff4d4d, #c0392b);
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #painel-timer button:hover {
-      background: linear-gradient(135deg, #e74c3c, #a93226);
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(50px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    #painel-timer.ativo { right: 0; }
+    #painel-timer h2 { margin-bottom: 15px; color: #00c8ff; font-size: 1.4rem; text-align: center; }
+    #painel-timer p { margin: 8px 0; font-size: 1rem; }
+    #painel-timer .alerta { font-size: 1.1rem; font-weight: bold; text-align: center; padding: 10px; border-radius: 8px; margin-top: 15px; }
+    #painel-timer button { margin-top: 20px; width: 100%; padding: 12px; background: linear-gradient(135deg, #ff4d4d, #c0392b); border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; }
+    #painel-timer button:hover { background: linear-gradient(135deg, #e74c3c, #a93226); }
   </style>
 </head>
 <body>
@@ -109,66 +115,39 @@
       <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
 
-    <!-- CARD: Últimas Velas -->
-    <div class="card-box">
-      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-        <h2>📈 Últimas Velas</h2>
-        <span class="seta">▼</span>
-      </div>
-      <div class="card-content">
-        <div class="grid-velas" id="gridVelas"></div>
-      </div>
+    <!-- ÍCONES -->
+    <div class="icon-cards">
+      <div class="icon-card" onclick="toggleCard('velas')">📈</div>
+      <div class="icon-card" onclick="toggleCard('relatorio')">📊</div>
+      <div class="icon-card" onclick="toggleCard('calls')">📢</div>
+      <div class="icon-card" onclick="toggleCard('lucro')">💰</div>
     </div>
 
-    <!-- CARD: Relatório -->
-    <div class="card-box">
-      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-        <h2>📊 Relatório de Rodadas</h2>
-        <span class="seta">▼</span>
-      </div>
-      <div class="card-content relatorio">
-        <table>
-          <thead>
-            <tr><th>Horário</th><th>Multiplicador</th></tr>
-          </thead>
-          <tbody id="tabelaVelas"></tbody>
-        </table>
-      </div>
+    <!-- CONTEÚDOS -->
+    <div id="card-velas" class="card-conteudo">
+      <h2>📈 Últimas Velas</h2>
+      <div class="grid-velas" id="gridVelas"></div>
     </div>
 
-    <!-- CARD: Últimos Calls -->
-    <div class="card-box">
-      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-        <h2>📢 Últimos Calls</h2>
-        <span class="seta">▼</span>
-      </div>
-      <div class="card-content relatorio">
-        <!-- Formulário só para Admin -->
-        <div id="formCalls" style="display:none; margin-bottom:20px;">
-          <input type="text" id="textoCall" placeholder="Descrição do call">
-          <select id="statusCall">
-            <option value="GREEN">🟢 GREEN</option>
-            <option value="RED">🔴 RED</option>
-          </select>
-          <button onclick="adicionarCall()">➕ Adicionar Call</button>
-        </div>
-        <!-- Histórico -->
-        <ul id="listaCalls"></ul>
-        <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
-      </div>
+    <div id="card-relatorio" class="card-conteudo">
+      <h2>📊 Relatório de Rodadas</h2>
+      <table>
+        <thead><tr><th>Horário</th><th>Multiplicador</th></tr></thead>
+        <tbody id="tabelaVelas"></tbody>
+      </table>
     </div>
 
-    <!-- CARD: Lucro Virtual -->
-    <div class="card-box ativo">
-      <div class="card-header" onclick="this.parentElement.classList.toggle('ativo')">
-        <h2>💰 Lucro Virtual (Simulação)</h2>
-        <span class="seta">▼</span>
-      </div>
-      <div class="card-content">
-        <p>Se tivesse apostado <strong>R$10</strong> em cada call de hoje:</p>
-        <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
-        <small style="color:#aaa;">*Simulação apenas para fins de demonstração</small>
-      </div>
+    <div id="card-calls" class="card-conteudo">
+      <h2>📢 Últimos Calls</h2>
+      <ul id="listaCalls"></ul>
+      <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
+    </div>
+
+    <div id="card-lucro" class="card-conteudo">
+      <h2>💰 Lucro Virtual (Simulação)</h2>
+      <p>Se tivesse apostado <strong>R$10</strong> em cada call de hoje:</p>
+      <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
+      <small style="color:#aaa;">*Simulação apenas para fins de demonstração</small>
     </div>
   </main>
 
@@ -176,7 +155,7 @@
     <p>© 2025 GoathBet. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- BOTÃO FLUTUANTE TIMER -->
+  <!-- TIMER FLUTUANTE -->
   <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
 
   <!-- PAINEL TIMER -->
@@ -193,15 +172,12 @@
   <!-- SCRIPT -->
   <script type="module">
     import { auth, db } from "./firebase.js";
-    import { collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const adminEmail = "dionegalato1212@gmail.com";
 
     onAuthStateChanged(auth, (user) => {
       if (user && user.email === adminEmail) {
-        document.getElementById("formCalls").style.display = "block";
         document.getElementById("adminLink").style.display = "inline-block";
         document.getElementById("adminLink").href = "admin.html";
       } else if (!user) {
@@ -213,9 +189,13 @@
       signOut(auth).then(() => window.location.href = "login.html");
     };
 
-    // ============================
+    // FUNÇÃO TOGGLE
+    window.toggleCard = function(id) {
+      document.querySelectorAll('.card-conteudo').forEach(c => c.classList.remove('ativo'));
+      document.getElementById('card-' + id).classList.add('ativo');
+    };
+
     // RELATÓRIO FAKE
-    // ============================
     const velasFake = [
       { horario: "11:40:05", valor: 1.23 }, { horario: "11:39:42", valor: 8.54 },
       { horario: "11:39:18", valor: 2.10 }, { horario: "11:38:55", valor: 12.34 },
@@ -227,29 +207,23 @@
       document.getElementById("tabelaVelas").innerHTML += `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
     });
 
-    // ============================
-    // GRID FAKE ÚLTIMAS VELAS
-    // ============================
+    // GRID VELAS FAKE
     const ultimasVelasFake = [
       { valor: 6.16, hora:"19:33", cor:"green" }, { valor: 1.11, hora:"19:32", cor:"blue" },
       { valor: 2.62, hora:"19:32", cor:"purple" }, { valor: 1.81, hora:"19:32", cor:"purple" },
       { valor: 59.71, hora:"19:28", cor:"red" }
     ];
-    const grid = document.getElementById("gridVelas");
     ultimasVelasFake.forEach(v => {
-      grid.innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
+      document.getElementById("gridVelas").innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
     });
 
-    // ============================
-    // CALLS FAKE (30 simulados)
-    // ============================
+    // CALLS FAKE
     const callsFake = Array.from({ length: 30 }, (_, i) => {
       const horario = `11:${(30-i).toString().padStart(2,'0')}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}`;
       const textos = ["Entrada até 2x","Entrada até 5x","Stop 10x","Rodada segura"];
       const status = Math.random()>0.4?"GREEN":"RED";
       return { horario, texto:textos[Math.floor(Math.random()*textos.length)], status };
     });
-
     let callsExibidos=10;
     function renderCalls(lista){
       const ul=document.getElementById("listaCalls"); ul.innerHTML="";
@@ -261,9 +235,7 @@
     document.getElementById("btnCarregarMais").addEventListener("click",()=>{callsExibidos+=10;renderCalls(callsFake);});
     renderCalls(callsFake);
 
-    // ============================
     // LUCRO VIRTUAL
-    // ============================
     let apostaFixa = 10;
     function atualizarLucro(calls){
       let lucro=0;
@@ -275,9 +247,7 @@
     }
     atualizarLucro(callsFake);
 
-    // ============================
     // TIMER
-    // ============================
     let tempoRestante=60;
     setInterval(()=>{
       tempoRestante--; if(tempoRestante<0) tempoRestante=60;
