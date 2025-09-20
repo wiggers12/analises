@@ -5,40 +5,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - GoathBet</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0a0a0f, #141422, #0a0a0f);
+      color: #fff;
+      margin: 0;
+    }
+
+    /* Topo */
+    .topbar {
+      background: #111;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #27ae60;
+    }
+    .topbar h1 {
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .topbar h1 span {
+      color: #27ae60;
+    }
+
+    /* Containers */
+    .admin-container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    .card-admin {
+      background: #1c1c2b;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .card-admin h2 {
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      color: #00c8ff;
+    }
+
+    /* Tabelas */
+    .tabela {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .tabela th, .tabela td {
+      padding: 12px;
+      text-align: center;
+    }
+    .tabela th {
+      background: #222;
+      color: #fff;
+    }
+    .tabela tr:nth-child(even) {
+      background: #2a2a3d;
+    }
+    .tabela tr:nth-child(odd) {
+      background: #1e1e2f;
+    }
+    .ativo { color: #2ecc71; font-weight: bold; }
+    .inativo { color: #e74c3c; font-weight: bold; }
+
+    .tabela button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .tabela button:first-child {
+      background: #27ae60; color: #fff;
+    }
+    .tabela button:first-child:hover {
+      background: #2ecc71;
+    }
+    .tabela button:last-child {
+      background: #c0392b; color: #fff;
+    }
+    .tabela button:last-child:hover {
+      background: #e74c3c;
+    }
+  </style>
 </head>
 <body>
+  <!-- TOPO -->
   <header class="topbar">
-    <h1>👑 Painel de Administração</h1>
+    <h1>👑 Painel de <span>Administração</span></h1>
   </header>
 
-  <!-- Login do Admin -->
-  <section id="loginAdmin" class="login-container">
-    <div class="login-box">
-      <h2>Login do Admin</h2>
-      <input type="email" id="adminEmail" placeholder="Email">
-      <input type="password" id="adminSenha" placeholder="Senha">
-      <button onclick="loginAdmin()">Entrar</button>
-    </div>
-  </section>
-
-  <!-- Painel Admin -->
-  <section id="painelAdmin" class="admin-container" style="display:none;">
-    <div class="admin-box">
-      <h2>Gerenciar Assinaturas</h2>
+  <!-- CONTEÚDO -->
+  <section class="admin-container">
+    <!-- Card: Assinaturas -->
+    <div class="card-admin">
+      <h2>📋 Gerenciar Assinaturas</h2>
       <table class="tabela">
         <thead>
           <tr>
             <th>Email</th>
             <th>Status</th>
             <th>Validade</th>
-            <th>Alterar</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody id="assinaturasTable"></tbody>
       </table>
     </div>
 
-    <div class="admin-box" style="margin-top:30px;">
+    <!-- Card: Controle Financeiro -->
+    <div class="card-admin">
       <h2>💰 Controle Financeiro</h2>
       <table class="tabela">
         <thead>
@@ -57,34 +138,23 @@
 
   <script type="module">
     import { auth, db } from "./firebase.js";
-    import { signInWithEmailAndPassword } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { collection, getDocs, doc, updateDoc, Timestamp } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { 
+      collection, getDocs, doc, updateDoc, Timestamp 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // Email do admin autorizado
     const adminEmail = "dionegalato1212@gmail.com";
 
-    // === LOGIN ADMIN ===
-    window.loginAdmin = async function () {
-      const email = document.getElementById("adminEmail").value;
-      const senha = document.getElementById("adminSenha").value;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
-
-        if (userCredential.user.email === adminEmail) {
-          document.getElementById("loginAdmin").style.display = "none";
-          document.getElementById("painelAdmin").style.display = "block";
-          carregarAssinaturas();
-          carregarFinanceiro();
-        } else {
-          alert("⚠️ Apenas o admin pode acessar este painel.");
-        }
-      } catch (err) {
-        alert("❌ Erro no login: " + err.message);
+    // Só mostra painel se admin estiver logado
+    onAuthStateChanged(auth, async (user) => {
+      if (!user || user.email !== adminEmail) {
+        alert("⚠️ Acesso negado");
+        window.location.href = "login.html";
+      } else {
+        carregarAssinaturas();
+        carregarFinanceiro();
       }
-    };
+    });
 
     // === FORMATAR DATA ===
     function formatarData(timestamp) {
@@ -103,16 +173,41 @@
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
         const validade = formatarData(data.validade);
+        const statusClass = data.status === "ATIVO" ? "ativo" : "inativo";
 
         const row = `
           <tr>
             <td>${data.email}</td>
-            <td>${data.status}</td>
+            <td class="${statusClass}">${data.status}</td>
             <td>${validade}</td>
             <td>
-              <button onclick="atualizarStatus('${docSnap.id}', 'ATIVO', 30)">Ativar +30d</button>
+              <button onclick="atualizarStatus('${docSnap.id}', 'ATIVO', 30)">+30d</button>
               <button onclick="atualizarStatus('${docSnap.id}', 'INATIVO')">Inativar</button>
             </td>
+          </tr>
+        `;
+        table.innerHTML += row;
+      });
+    }
+
+    // === CARREGAR FINANCEIRO (Simulação por enquanto) ===
+    async function carregarFinanceiro() {
+      const financeiroRef = collection(db, "financeiro");
+      const snapshot = await getDocs(financeiroRef);
+      const table = document.getElementById("financeiroTable");
+      table.innerHTML = "";
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const saldo = (data.depositos + data.ganhos - data.perdas).toFixed(2);
+
+        const row = `
+          <tr>
+            <td>${data.email}</td>
+            <td>R$ ${data.depositos.toFixed(2)}</td>
+            <td style="color:#2ecc71;">R$ ${data.ganhos.toFixed(2)}</td>
+            <td style="color:#e74c3c;">R$ ${data.perdas.toFixed(2)}</td>
+            <td style="font-weight:bold; color:${saldo>=0?'#2ecc71':'#e74c3c'};">R$ ${saldo}</td>
           </tr>
         `;
         table.innerHTML += row;
@@ -131,31 +226,8 @@
       }
 
       await updateDoc(ref, updateData);
-      alert(`✅ Usuário atualizado para ${novoStatus}`);
       carregarAssinaturas();
     };
-
-    // === CARREGAR FINANCEIRO ===
-    async function carregarFinanceiro() {
-      const usuariosRef = collection(db, "usuarios");
-      const snapshot = await getDocs(usuariosRef);
-      const table = document.getElementById("financeiroTable");
-      table.innerHTML = "";
-
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const row = `
-          <tr>
-            <td>${data.email}</td>
-            <td>R$ ${data.depositos || 0}</td>
-            <td style="color:#2ecc71;">+R$ ${data.ganhos || 0}</td>
-            <td style="color:#e74c3c;">-R$ ${data.perdas || 0}</td>
-            <td><strong>R$ ${(data.saldo || 0)}</strong></td>
-          </tr>
-        `;
-        table.innerHTML += row;
-      });
-    }
   </script>
 </body>
 </html>
