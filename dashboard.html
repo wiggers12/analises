@@ -96,8 +96,8 @@
     /* ===== BOTÃO LIVE (YouTube) ===== */
     #live-floating {
       position: fixed;
-      bottom: 20px;  /* alinhado com o timer */
-      left: 20px;    /* canto esquerdo */
+      bottom: 20px;
+      left: 20px;
       background: linear-gradient(135deg, #ff0000, #c0392b);
       display: flex;
       align-items: center;
@@ -109,9 +109,7 @@
       transition: 0.3s;
       z-index: 999;
     }
-    #live-floating:hover {
-      transform: scale(1.15);
-    }
+    #live-floating:hover { transform: scale(1.15); }
 
     /* Modal da Live */
     #modal-live {
@@ -147,7 +145,7 @@
   <main class="dashboard-container">
     <!-- Plataforma -->
     <section class="plataforma">
-      <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
+      <iframe src="www.goathbet.com/game/spribe-aviator?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
 
     <!-- ÍCONES -->
@@ -175,14 +173,12 @@
     <div id="card-calls" class="card-conteudo">
       <h2>📢 Últimos Calls</h2>
       <ul id="listaCalls"></ul>
-      <button id="btnCarregarMais" style="display:none;">Carregar Mais</button>
     </div>
 
     <div id="card-lucro" class="card-conteudo">
-      <h2>💰 Lucro Virtual (Simulação)</h2>
+      <h2>💰 Lucro Virtual</h2>
       <p>Se tivesse apostado <strong>R$10</strong> em cada call de hoje:</p>
       <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
-      <small style="color:#aaa;">*Simulação apenas para fins de demonstração</small>
     </div>
   </main>
 
@@ -193,13 +189,11 @@
   </footer>
 
   <!-- TIMER FLUTUANTE -->
-  <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
+  <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">--:--</span></div>
 
   <!-- BOTÃO LIVE FLUTUANTE (YouTube) -->
   <div id="live-floating" onclick="abrirLive()">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
-      <path d="M23.498 6.186a2.975 2.975 0 0 0-2.096-2.103C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.402.583A2.975 2.975 0 0 0 .502 6.186C0 8.09 0 12 0 12s0 3.91.502 5.814a2.975 2.975 0 0 0 2.096 2.103C4.495 20.5 12 20.5 12 20.5s7.505 0 9.402-.583a2.975 2.975 0 0 0 2.096-2.103C24 15.91 24 12 24 12s0-3.91-.502-5.814zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/>
-    </svg>
+    ▶
   </div>
 
   <!-- MODAL LIVE -->
@@ -220,7 +214,7 @@
       <h2>⏳ Próximo Multiplicador</h2>
       <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
       <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
-      <p id="msgPsico" class="alerta">⚠ Prepare-se!</p>
+      <p id="msgPsico" class="alerta">⚠ Aguardando admin lançar oportunidade...</p>
       <button onclick="fecharPainelTimer()">Fechar</button>
     </div>
   </div>
@@ -229,6 +223,7 @@
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, onSnapshot, collection, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     onAuthStateChanged(auth, (user) => {
       if (!user) window.location.href = "login.html";
@@ -252,75 +247,91 @@
       document.getElementById("modal-live").style.display="none";
     }
 
-    // RELATÓRIO FAKE
-    const velasFake = [
-      { horario: "11:40:05", valor: 1.23 }, { horario: "11:39:42", valor: 8.54 },
-      { horario: "11:39:18", valor: 2.10 }, { horario: "11:38:55", valor: 12.34 },
-      { horario: "11:38:29", valor: 1.01 }, { horario: "11:38:02", valor: 5.67 },
-      { horario: "11:37:41", valor: 3.25 }, { horario: "11:37:10", valor: 20.12 },
-      { horario: "11:36:48", valor: 1.44 }, { horario: "11:36:22", valor: 7.89 }
-    ];
-    velasFake.forEach(v => {
-      document.getElementById("tabelaVelas").innerHTML += `<tr><td>${v.horario}</td><td style="color:${v.valor>=2?'#2ecc71':'#e74c3c'}">${v.valor}x</td></tr>`;
+    // TIMER CONTROLADO PELO ADMIN
+    let contador = null;
+
+    const callRef = doc(db, "calls", "ativo");
+    onSnapshot(callRef, (snap) => {
+      if(snap.exists()){
+        const call = snap.data();
+        iniciarTimer(call.tempo, call.multEsperado, call.horarioLancado);
+      }
     });
 
-    // GRID VELAS FAKE
-    const ultimasVelasFake = [
-      { valor: 6.16, hora:"19:33", cor:"green" }, { valor: 1.11, hora:"19:32", cor:"blue" },
-      { valor: 2.62, hora:"19:32", cor:"purple" }, { valor: 1.81, hora:"19:32", cor:"purple" },
-      { valor: 59.71, hora:"19:28", cor:"red" }
-    ];
-    ultimasVelasFake.forEach(v => {
-      document.getElementById("gridVelas").innerHTML += `<div class="vela ${v.cor}">${v.valor}x <small>${v.hora}</small></div>`;
-    });
+    function iniciarTimer(segundos, multEsperado, horarioLancado){
+      clearInterval(contador);
+      document.getElementById("horaProx").innerText = new Date(horarioLancado).toLocaleTimeString("pt-BR");
+      document.getElementById("minProx").innerText = multEsperado + "x";
+      document.getElementById("msgPsico").innerText = "🚀 Oportunidade lançada!";
+      document.getElementById("painel-timer").classList.add("ativo");
 
-    // CALLS FAKE
-    const callsFake = Array.from({ length: 30 }, (_, i) => {
-      const horario = `11:${(30-i).toString().padStart(2,'0')}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}`;
-      const textos = ["Entrada até 2x","Entrada até 5x","Stop 10x","Rodada segura"];
-      const status = Math.random()>0.4?"GREEN":"RED";
-      return { horario, texto:textos[Math.floor(Math.random()*textos.length)], status };
-    });
-    let callsExibidos=10;
-    function renderCalls(lista){
-      const ul=document.getElementById("listaCalls"); ul.innerHTML="";
-      lista.slice(0,callsExibidos).forEach(c=>{
-        ul.innerHTML+=`<li><strong>${c.horario}</strong> → ${c.texto} <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">${c.status}</span></li>`;
-      });
-      document.getElementById("btnCarregarMais").style.display=lista.length>callsExibidos?"block":"none";
+      contador = setInterval(()=>{
+        document.getElementById("timer").innerText = "00:"+String(segundos).padStart(2,"0");
+        segundos--;
+        if(segundos < 0){
+          clearInterval(contador);
+          document.getElementById("msgPsico").innerText = "✅ Rodada finalizada!";
+        }
+      },1000);
     }
-    document.getElementById("btnCarregarMais").addEventListener("click",()=>{callsExibidos+=10;renderCalls(callsFake);});
-    renderCalls(callsFake);
+
+    // RELATÓRIO DE RODADAS (últimas 10)
+    const velasRef = query(collection(db, "callsHistorico"), orderBy("horario", "desc"), limit(10));
+    onSnapshot(velasRef, (snapshot) => {
+      document.getElementById("tabelaVelas").innerHTML = "";
+      document.getElementById("gridVelas").innerHTML = "";
+      snapshot.forEach(docSnap => {
+        const v = docSnap.data();
+        document.getElementById("tabelaVelas").innerHTML += `
+          <tr>
+            <td>${new Date(v.horario).toLocaleTimeString("pt-BR")}</td>
+            <td style="color:${v.resultado>=2?'#2ecc71':'#e74c3c'}">${v.resultado}x</td>
+          </tr>`;
+        document.getElementById("gridVelas").innerHTML += `
+          <div class="vela ${v.resultado>=2?'green':'red'}">
+            ${v.resultado}x <small>${new Date(v.horario).toLocaleTimeString("pt-BR")}</small>
+          </div>`;
+      });
+    });
+
+    // CALLS HISTÓRICOS
+    const callsRef = query(collection(db, "callsHistorico"), orderBy("horario", "desc"), limit(30));
+    onSnapshot(callsRef, (snapshot) => {
+      const ul=document.getElementById("listaCalls");
+      ul.innerHTML="";
+      snapshot.forEach(docSnap=>{
+        const c=docSnap.data();
+        ul.innerHTML+=`
+          <li>
+            <strong>${new Date(c.horario).toLocaleTimeString("pt-BR")}</strong>
+            → Entrada até ${c.multEsperado}x 
+            <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">
+              ${c.status}
+            </span>
+            <small style="color:#aaa;">(${c.resultado}x)</small>
+          </li>`;
+      });
+      atualizarLucro(snapshot.docs.map(d=>d.data()));
+    });
 
     // LUCRO VIRTUAL
-    let apostaFixa = 10;
     function atualizarLucro(calls){
-      let lucro=0;
+      let aposta = 10;
+      let lucro = 0;
       calls.forEach(c=>{
-        if(c.status==="GREEN"){ lucro+=apostaFixa*(Math.random()*3+1); }
-        else{ lucro-=apostaFixa; }
+        if(c.status==="GREEN") lucro += aposta * c.resultado;
+        else lucro -= aposta;
       });
-      document.getElementById("lucroVirtual").innerText=(lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
+      document.getElementById("lucroVirtual").innerText = 
+        (lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
     }
-    atualizarLucro(callsFake);
-
-    // TIMER
-    let tempoRestante=60;
-    setInterval(()=>{
-      tempoRestante--; if(tempoRestante<0) tempoRestante=60;
-      document.getElementById("timer").innerText="00:"+String(tempoRestante).padStart(2,"0");
-    },1000);
 
     window.abrirPainelTimer=function(){
       document.getElementById("painel-timer").classList.add("ativo");
-      document.getElementById("horaProx").innerText=new Date(Date.now()+tempoRestante*1000).toLocaleTimeString("pt-BR");
-      const mult=(Math.random()*3+2).toFixed(2);
-      document.getElementById("minProx").innerText=mult+"x";
-      const msg=document.getElementById("msgPsico");
-      if(mult>3){msg.innerText="✅ Grande chance, aproveite!"; msg.style.background="linear-gradient(135deg,#27ae60,#2ecc71)";}
-      else {msg.innerText="⚠ Pode ser perigoso, cuidado!"; msg.style.background="linear-gradient(135deg,#e74c3c,#c0392b)";}
     };
-    window.fecharPainelTimer=function(){document.getElementById("painel-timer").classList.remove("ativo");};
+    window.fecharPainelTimer=function(){
+      document.getElementById("painel-timer").classList.remove("ativo");
+    };
   </script>
 </body>
 </html>
