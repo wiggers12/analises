@@ -38,12 +38,25 @@
       z-index: 1;
     }
 
+    /* Versão 1: FOTO COMO FUNDO (ocupa a tela toda) */
+    .splash.full-bg {
+      width: 100%; height: 100%;
+      background: url('foto.png') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Versão 2: FOTO CENTRAL (no lugar do logo) */
     .splash img {
-      width: 140px;
-      height: auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 20px;
       animation: zoomEffect 2s ease-in-out forwards;
       filter: drop-shadow(0 0 20px #00ff88);
     }
+
     @keyframes zoomEffect {
       0%   { transform: scale(0) rotate(-180deg); opacity: 0; }
       40%  { transform: scale(1.2) rotate(0deg); opacity: 1; }
@@ -84,11 +97,14 @@
   </style>
 </head>
 <body>
+  <!-- 🔹 Troque a classe "splash" por "splash full-bg" para ver a foto em tela cheia -->
   <div class="splash">
-    <img id="logo" src="img/logo.png" alt="GoathBet Logo">
+    <!-- Versão 2: Foto centralizada -->
+    <img id="logo" src="foto.png" alt="Splash Foto">
     <h1>🚀 GoathBet</h1>
     <p>Análises inteligentes para o Aviator em tempo real</p>
   </div>
+  
   <canvas id="explosion"></canvas>
 
   <script>
@@ -135,16 +151,16 @@
       animate();
     }
 
-    // Após 2.5s → explode a logo
     setTimeout(() => {
-      const rect = logo.getBoundingClientRect();
-      const x = rect.left + rect.width/2;
-      const y = rect.top + rect.height/2;
-      explode(x, y);
-      logo.style.opacity = "0";
+      if (logo) {
+        const rect = logo.getBoundingClientRect();
+        const x = rect.left + rect.width/2;
+        const y = rect.top + rect.height/2;
+        explode(x, y);
+        logo.style.opacity = "0";
+      }
     }, 2500);
 
-    // Após 4.5s → redireciona
     setTimeout(() => {
       window.location.href = "home.html";
     }, 4500);
