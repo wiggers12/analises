@@ -96,8 +96,8 @@
     /* ===== BOTÃO LIVE (YouTube) ===== */
     #live-floating {
       position: fixed;
-      bottom: 20px;
-      left: 20px;
+      bottom: 20px;  
+      left: 20px;    
       background: linear-gradient(135deg, #ff0000, #c0392b);
       display: flex;
       align-items: center;
@@ -109,7 +109,9 @@
       transition: 0.3s;
       z-index: 999;
     }
-    #live-floating:hover { transform: scale(1.15); }
+    #live-floating:hover {
+      transform: scale(1.15);
+    }
 
     /* Modal da Live */
     #modal-live {
@@ -145,7 +147,7 @@
   <main class="dashboard-container">
     <!-- Plataforma -->
     <section class="plataforma">
-      <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
+      <iframe src="https://goathbet.com/?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
 
     <!-- ÍCONES -->
@@ -165,7 +167,7 @@
     <div id="card-relatorio" class="card-conteudo">
       <h2>📊 Relatório de Rodadas</h2>
       <table>
-        <thead><tr><th>Horário</th><th>Multiplicador</th></tr></thead>
+        <thead><tr><th>Horário</th><th>Multiplicador</th><th>Status</th></tr></thead>
         <tbody id="tabelaVelas"></tbody>
       </table>
     </div>
@@ -176,9 +178,10 @@
     </div>
 
     <div id="card-lucro" class="card-conteudo">
-      <h2>💰 Lucro Virtual</h2>
+      <h2>💰 Lucro Virtual (Simulação)</h2>
       <p>Se tivesse apostado <strong>R$10</strong> em cada call de hoje:</p>
       <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
+      <small style="color:#aaa;">*Simulação apenas para fins de demonstração</small>
     </div>
   </main>
 
@@ -189,11 +192,11 @@
   </footer>
 
   <!-- TIMER FLUTUANTE -->
-  <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">--:--</span></div>
+  <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
 
   <!-- BOTÃO LIVE FLUTUANTE (YouTube) -->
   <div id="live-floating" onclick="abrirLive()">
-    ▶
+    ▶️
   </div>
 
   <!-- MODAL LIVE -->
@@ -214,7 +217,7 @@
       <h2>⏳ Próximo Multiplicador</h2>
       <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
       <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
-      <p id="msgPsico" class="alerta">⚠ Aguardando admin lançar oportunidade...</p>
+      <p id="msgPsico" class="alerta">⚠ Aguardando lançamento...</p>
       <button onclick="fecharPainelTimer()">Fechar</button>
     </div>
   </div>
@@ -223,8 +226,9 @@
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, onSnapshot, collection, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { doc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    // Autenticação
     onAuthStateChanged(auth, (user) => {
       if (!user) window.location.href = "login.html";
     });
@@ -233,13 +237,13 @@
       signOut(auth).then(() => window.location.href = "login.html");
     };
 
-    // FUNÇÃO TOGGLE
+    // Toggle Cards
     window.toggleCard = function(id) {
       document.querySelectorAll('.card-conteudo').forEach(c => c.classList.remove('ativo'));
       document.getElementById('card-' + id).classList.add('ativo');
     };
 
-    // LIVE FUNCTIONS
+    // Live
     window.abrirLive = function(){
       document.getElementById("modal-live").style.display="flex";
     }
@@ -247,85 +251,89 @@
       document.getElementById("modal-live").style.display="none";
     }
 
-    // TIMER CONTROLADO PELO ADMIN
-    let contador = null;
+    // Timer sincronizado com Admin
+    let intervaloTimer;
+    function iniciarTimer(segundos, horarioLancado, multEsperado){
+      pararTimer();
+      let fim = new Date(horarioLancado.getTime() + segundos*1000);
 
-    const callRef = doc(db, "calls", "ativo");
-    onSnapshot(callRef, (snap) => {
-      if(snap.exists()){
-        const call = snap.data();
-        iniciarTimer(call.tempo, call.multEsperado, call.horarioLancado);
-      }
-    });
+      intervaloTimer = setInterval(()=>{
+        const agora = new Date();
+        const restante = Math.floor((fim - agora)/1000);
 
-    function iniciarTimer(segundos, multEsperado, horarioLancado){
-      clearInterval(contador);
-      document.getElementById("horaProx").innerText = new Date(horarioLancado).toLocaleTimeString("pt-BR");
-      document.getElementById("minProx").innerText = multEsperado + "x";
-      document.getElementById("msgPsico").innerText = "🚀 Oportunidade lançada!";
-      document.getElementById("painel-timer").classList.add("ativo");
-
-      contador = setInterval(()=>{
-        document.getElementById("timer").innerText = "00:"+String(segundos).padStart(2,"0");
-        segundos--;
-        if(segundos < 0){
-          clearInterval(contador);
-          document.getElementById("msgPsico").innerText = "✅ Rodada finalizada!";
+        if(restante <= 0){
+          document.getElementById("timer").innerText = "00:00";
+          document.getElementById("msgPsico").innerText = "⏳ Call encerrado, aguardando resultado...";
+          pararTimer();
+        } else {
+          document.getElementById("timer").innerText = "00:" + String(restante).padStart(2,"0");
+          document.getElementById("horaProx").innerText = fim.toLocaleTimeString("pt-BR");
+          document.getElementById("minProx").innerText = multEsperado+"x";
+          document.getElementById("msgPsico").innerText = "⚡ Oportunidade em andamento!";
         }
       },1000);
     }
-
-    // RELATÓRIO DE RODADAS (últimas 10)
-    const velasRef = query(collection(db, "callsHistorico"), orderBy("horario", "desc"), limit(10));
-    onSnapshot(velasRef, (snapshot) => {
-      document.getElementById("tabelaVelas").innerHTML = "";
-      document.getElementById("gridVelas").innerHTML = "";
-      snapshot.forEach(docSnap => {
-        const v = docSnap.data();
-        document.getElementById("tabelaVelas").innerHTML += `
-          <tr>
-            <td>${new Date(v.horario).toLocaleTimeString("pt-BR")}</td>
-            <td style="color:${v.resultado>=2?'#2ecc71':'#e74c3c'}">${v.resultado}x</td>
-          </tr>`;
-        document.getElementById("gridVelas").innerHTML += `
-          <div class="vela ${v.resultado>=2?'green':'red'}">
-            ${v.resultado}x <small>${new Date(v.horario).toLocaleTimeString("pt-BR")}</small>
-          </div>`;
-      });
-    });
-
-    // CALLS HISTÓRICOS
-    const callsRef = query(collection(db, "callsHistorico"), orderBy("horario", "desc"), limit(30));
-    onSnapshot(callsRef, (snapshot) => {
-      const ul=document.getElementById("listaCalls");
-      ul.innerHTML="";
-      snapshot.forEach(docSnap=>{
-        const c=docSnap.data();
-        ul.innerHTML+=`
-          <li>
-            <strong>${new Date(c.horario).toLocaleTimeString("pt-BR")}</strong>
-            → Entrada até ${c.multEsperado}x 
-            <span style="font-weight:bold;color:${c.status==='GREEN'?'#2ecc71':'#e74c3c'}">
-              ${c.status}
-            </span>
-            <small style="color:#aaa;">(${c.resultado}x)</small>
-          </li>`;
-      });
-      atualizarLucro(snapshot.docs.map(d=>d.data()));
-    });
-
-    // LUCRO VIRTUAL
-    function atualizarLucro(calls){
-      let aposta = 10;
-      let lucro = 0;
-      calls.forEach(c=>{
-        if(c.status==="GREEN") lucro += aposta * c.resultado;
-        else lucro -= aposta;
-      });
-      document.getElementById("lucroVirtual").innerText = 
-        (lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
+    function pararTimer(){
+      clearInterval(intervaloTimer);
+      document.getElementById("timer").innerText = "00:00";
     }
 
+    // Escutar call ativo
+    const callRef = doc(db,"calls","ativo");
+    onSnapshot(callRef,(snap)=>{
+      if(snap.exists()){
+        const call = snap.data();
+        if(call.status === "PENDENTE"){
+          iniciarTimer(call.tempo, call.horarioLancado.toDate(), call.multEsperado);
+        } else {
+          pararTimer();
+          document.getElementById("msgPsico").innerText = "📊 Último call: "+call.status;
+        }
+      } else {
+        pararTimer();
+      }
+    });
+
+    // Preencher cards com histórico
+    async function carregarHistorico(){
+      const histRef = collection(db,"callsHistorico");
+      const snap = await getDocs(histRef);
+      const tabela = document.getElementById("tabelaVelas");
+      const grid = document.getElementById("gridVelas");
+      const ul = document.getElementById("listaCalls");
+      let lucro = 0;
+      const aposta = 10;
+
+      tabela.innerHTML="";
+      grid.innerHTML="";
+      ul.innerHTML="";
+
+      snap.forEach(docSnap=>{
+        const d = docSnap.data();
+        const hora = d.horarioLancado?.toDate ? d.horarioLancado.toDate().toLocaleTimeString("pt-BR") : "--:--";
+        const mult = d.multEsperado || "--";
+        const status = d.status || "PENDENTE";
+
+        tabela.innerHTML += `<tr>
+          <td>${hora}</td>
+          <td>${mult}x</td>
+          <td style="color:${status==='GREEN'?'#2ecc71':'#e74c3c'}">${status}</td>
+        </tr>`;
+
+        grid.innerHTML += `<div class="vela ${status==='GREEN'?'green':'red'}">${mult}x <small>${hora}</small></div>`;
+
+        ul.innerHTML += `<li><strong>${hora}</strong> → ${mult}x 
+          <span style="font-weight:bold;color:${status==='GREEN'?'#2ecc71':'#e74c3c'}">${status}</span></li>`;
+
+        if(status==="GREEN"){ lucro += aposta*mult; }
+        else if(status==="RED"){ lucro -= aposta; }
+      });
+
+      document.getElementById("lucroVirtual").innerText = (lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
+    }
+    carregarHistorico();
+
+    // Painel Timer
     window.abrirPainelTimer=function(){
       document.getElementById("painel-timer").classList.add("ativo");
     };
