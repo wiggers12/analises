@@ -202,11 +202,31 @@
       const mult = parseFloat(document.getElementById("multProx").value);
       await setDoc(doc(db,"calls","ativo"),{horarioLancado:new Date(),tempo,multEsperado:mult,status:"PENDENTE"});
     };
-    window.finalizarCall = async (res) => {
-      const ref = doc(db,"calls","ativo");
-      await updateDoc(ref,{status:res,horarioFinal:new Date()});
-      await addDoc(collection(db,"callsHistorico"),{horario:new Date(),mult:parseFloat(document.getElementById("multProx").value),status:res});
-    };
+   window.finalizarCall = async (res) => {
+  const mult = parseFloat(document.getElementById("multProx").value);
+
+  // Atualiza call ativo
+  const ref = doc(db,"calls","ativo");
+  await updateDoc(ref, {
+    status: res,
+    horarioFinal: new Date()
+  });
+
+  // Salva em histórico
+  await addDoc(collection(db,"callsHistorico"), {
+    horario: new Date(),
+    mult,
+    status: res
+  });
+
+  // Salva também em rodadas ✅
+  await addDoc(collection(db,"rodadas"), {
+    horario: new Date(),
+    mult,
+    status: res
+  });
+};
+
 
     // === Velas ===
     function carregarVelas(){
