@@ -138,36 +138,60 @@
     </div>
 
     <!-- Card: Controle Financeiro -->
-    <div class="card-admin">
-      <h2>💰 Controle Financeiro</h2>
-      <table class="tabela">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Depósitos</th>
-            <th>Ganhos</th>
-            <th>Perdas</th>
-            <th>Saldo Atual</th>
-          </tr>
-        </thead>
-        <tbody id="financeiroTable"></tbody>
-      </table>
-    </div>
+  <div class="card-admin">
+    <h2>💰 Controle Financeiro</h2>
+    <table class="tabela">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Depósitos</th>
+          <th>Ganhos</th>
+          <th>Perdas</th>
+          <th>Saldo Atual</th>
+        </tr>
+      </thead>
+      <tbody id="financeiroTable"></tbody>
+    </table>
+  </div>
 
-    <!-- Card: Controle do Timer -->
-    <div class="card-admin">
-      <h2>⏱ Controle de Oportunidades</h2>
-      <label for="tempoProx">Tempo até o próximo call (segundos):</label>
-      <input type="number" id="tempoProx" min="5" value="60">
+  <!-- Card: Controle do Timer -->
+  <div class="card-admin">
+    <h2>⏱ Controle de Oportunidades</h2>
+    <label for="tempoProx">Tempo até o próximo call (segundos):</label>
+    <input type="number" id="tempoProx" min="5" value="60">
 
-      <label for="multProx">Multiplicador esperado:</label>
-      <input type="number" id="multProx" step="0.01" value="2.00">
+    <label for="multProx">Multiplicador esperado:</label>
+    <input type="number" id="multProx" step="0.01" value="2.00">
 
-      <button onclick="definirCall()">🚀 Lançar Próxima Oportunidade</button>
-      <button class="btn-green" onclick="finalizarCall('GREEN')">✅ Finalizar como GREEN</button>
-      <button class="btn-red" onclick="finalizarCall('RED')">❌ Finalizar como RED</button>
-    </div>
-  </section>
+    <button onclick="definirCall()">🚀 Lançar Próxima Oportunidade</button>
+    <button class="btn-green" onclick="finalizarCall('GREEN')">✅ Finalizar como GREEN</button>
+    <button class="btn-red" onclick="finalizarCall('RED')">❌ Finalizar como RED</button>
+  </div>
+
+  <!-- Card: Gerenciar Ícones -->
+  <div class="card-admin">
+    <h2>🎨 Gerenciar Ícones do Dashboard</h2>
+    
+    <!-- Formulário -->
+    <input type="text" id="iconeEmoji" placeholder="Emoji (ex: 📈)">
+    <input type="text" id="iconeTitulo" placeholder="Título do Card">
+    <button onclick="adicionarIcone()">➕ Adicionar Ícone</button>
+
+    <!-- Tabela -->
+    <table class="tabela">
+      <thead>
+        <tr>
+          <th>Emoji</th>
+          <th>Título</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaIcones"></tbody>
+    </table>
+  </div>
+</section>
+
 
   <!-- SCRIPT -->
   <script type="module">
