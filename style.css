@@ -65,11 +65,28 @@ nav a:hover { color: #ff4da6; }
   cursor: pointer;
   transition: 0.3s;
 }
-.btn-green { background: #2ecc71; color: #fff; }
-.btn-green:hover { background: #27ae60; }
-.btn-red { background: #e74c3c; color: #fff; }
-.btn-red:hover { background: #c0392b; }
-.btn-blue { background: linear-gradient(135deg, #ff4da6, #8e44ad); color: #fff; }
+
+/* Botão principal (rosa/roxo) */
+.btn-green { 
+  background: linear-gradient(135deg, #ff4da6, #8e44ad); 
+  color: #fff; 
+}
+.btn-green:hover { opacity: 0.9; }
+
+/* Botão de erro (vermelho) */
+.btn-red { 
+  background: linear-gradient(135deg, #ff4d4d, #c0392b); 
+  color: #fff; 
+}
+.btn-red:hover { 
+  background: linear-gradient(135deg, #e74c3c, #a93226); 
+}
+
+/* Botão alternativo (rosa claro/roxo suave) */
+.btn-blue { 
+  background: linear-gradient(135deg, #ffb6e6, #d291ff); 
+  color: #fff; 
+}
 .btn-blue:hover { opacity: 0.9; }
 
 /* ================================
@@ -235,8 +252,8 @@ nav a:hover { color: #ff4da6; }
 /* ================================
    STATUS COLORS
 ================================= */
-.status-green { color: #2ecc71; font-weight: bold; }
-.status-red { color: #e74c3c; font-weight: bold; }
+.status-green { color: #ff85c1; font-weight: bold; }
+.status-red { color: #ff4d4d; font-weight: bold; }
 .status-yellow { color: #f1c40f; font-weight: bold; }
 
 /* ================================
