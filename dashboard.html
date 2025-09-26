@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
   <style>
-    body { background:#0a0a0f; color:#fff; font-family:'Poppins',sans-serif; margin:0; }
-
     /* ===== ICON CARDS ===== */
     .icon-cards {
       display: grid;
@@ -20,59 +18,139 @@
     .icon-card {
       background: #1c1c2b;
       font-size: 1.8rem;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 12px; height: 70px; cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      height: 70px;
+      cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      transition: 0.3s; color: #fff;
+      transition: 0.3s;
+      color: #fff;
     }
-    .icon-card:hover { background:#27ae60; transform:scale(1.05); }
+    .icon-card:hover {
+      background: #27ae60;
+      transform: scale(1.05);
+    }
 
-    /* Conteúdo */
-    .card-conteudo { display:none; background:#1c1c2b; padding:15px; margin:10px auto;
-      border-radius:12px; max-width:1000px; box-shadow:0 4px 15px rgba(0,0,0,0.4); }
-    .card-conteudo.ativo { display:block; }
-
-    /* Velas */
-    .grid-velas { display:flex; flex-wrap:wrap; gap:8px; }
-    .vela { padding:10px; border-radius:6px; min-width:60px; text-align:center; font-weight:bold; }
-    .vela.green{background:#145a32;} .vela.red{background:#641e16;}
+    /* Conteúdo dos cards */
+    .card-conteudo {
+      display: none;
+      background: #1c1c2b;
+      padding: 15px;
+      margin: 10px auto;
+      border-radius: 12px;
+      max-width: 1000px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .card-conteudo.ativo {
+      display: block;
+    }
 
     /* Timer flutuante */
-    #timer-floating { position:fixed; bottom:20px; right:20px; background:linear-gradient(135deg,#27ae60,#2ecc71);
-      color:#fff; font-weight:bold; padding:18px; border-radius:50%; cursor:pointer;
-      box-shadow:0 4px 15px rgba(0,0,0,0.6); z-index:999; animation:pulse 2s infinite; }
+    #timer-floating {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #fff;
+      font-weight: bold;
+      padding: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      transition: 0.3s;
+      z-index: 999;
+      animation: pulse 2s infinite;
+    }
+    #timer-floating:hover {
+      transform: scale(1.15);
+    }
     @keyframes pulse {
-      0% { box-shadow:0 0 0 0 rgba(39,174,96,0.7); }
-      70% { box-shadow:0 0 0 20px rgba(39,174,96,0); }
-      100% { box-shadow:0 0 0 0 rgba(39,174,96,0); }
+      0% { box-shadow: 0 0 0 0 rgba(39,174,96,0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(39,174,96,0); }
+      100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
     }
 
     /* Painel Timer */
-    #painel-timer { position:fixed; bottom:0; right:-100%; width:320px; background:#1c1c2b; color:#fff; padding:25px;
-      border-top-left-radius:12px; box-shadow:-6px -6px 18px rgba(0,0,0,0.6); transition:right .4s ease-in-out; z-index:1000; }
-    #painel-timer.ativo { right:0; }
+    #painel-timer {
+      position: fixed;
+      bottom: 0;
+      right: -100%;
+      width: 320px;
+      background: #1c1c2b;
+      color: #fff;
+      padding: 25px;
+      border-top-left-radius: 12px;
+      box-shadow: -6px -6px 18px rgba(0,0,0,0.6);
+      transition: right 0.4s ease-in-out;
+      z-index: 1000;
+    }
+    #painel-timer.ativo { right: 0; }
+    #painel-timer h2 { margin-bottom: 15px; color: #00c8ff; font-size: 1.4rem; text-align: center; }
+    #painel-timer p { margin: 8px 0; font-size: 1rem; }
+    #painel-timer .alerta { font-size: 1.1rem; font-weight: bold; text-align: center; padding: 10px; border-radius: 8px; margin-top: 15px; }
+    #painel-timer button { margin-top: 20px; width: 100%; padding: 12px; background: linear-gradient(135deg, #ff4d4d, #c0392b); border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; }
+    #painel-timer button:hover { background: linear-gradient(135deg, #e74c3c, #a93226); }
 
-    /* Live botão */
-    #live-floating { position:fixed; bottom:20px; left:20px; background:linear-gradient(135deg,#ff0000,#c0392b);
-      padding:16px; border-radius:50%; cursor:pointer; box-shadow:0 4px 15px rgba(0,0,0,0.6); z-index:999; }
-    #live-floating:hover { transform:scale(1.15); }
+    /* ===== BOTÃO LIVE (YouTube) ===== */
+    #live-floating {
+      position: fixed;
+      bottom: 20px;  
+      left: 20px;    
+      background: linear-gradient(135deg, #ff0000, #c0392b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      transition: 0.3s;
+      z-index: 999;
+    }
+    #live-floating:hover {
+      transform: scale(1.15);
+    }
 
-    /* Modal Live */
-    #modal-live { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.85);
-      z-index:2000; justify-content:center; align-items:center; }
-    #modal-live .conteudo-live { width:90%; max-width:900px; background:#111; border-radius:12px; padding:10px; }
-    #modal-live iframe { border-radius:8px; width:100%; height:500px; }
-    #modal-live .fechar { float:right; font-size:28px; cursor:pointer; color:#fff; }
+    /* Modal da Live */
+    #modal-live {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    #modal-live .conteudo-live {
+      width: 90%;
+      max-width: 900px;
+      background: #111;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 0 20px rgba(255,0,0,0.6);
+    }
+    #modal-live iframe { border-radius: 8px; width: 100%; height: 500px; }
+    #modal-live .fechar {
+      float: right;
+      font-size: 28px;
+      cursor: pointer;
+      color: #fff;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
+  <!-- CONTEÚDO -->
   <main class="dashboard-container">
     <!-- Plataforma -->
     <section class="plataforma">
       <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
 
-    <!-- Ícones -->
+    <!-- ÍCONES -->
     <div class="icon-cards">
       <div class="icon-card" onclick="toggleCard('velas')">📈</div>
       <div class="icon-card" onclick="toggleCard('relatorio')">📊</div>
@@ -80,71 +158,196 @@
       <div class="icon-card" onclick="toggleCard('lucro')">💰</div>
     </div>
 
-    <!-- Conteúdos -->
-    <div id="card-velas" class="card-conteudo"><h2>📈 Últimas Velas</h2><div id="gridVelas" class="grid-velas"></div></div>
-    <div id="card-relatorio" class="card-conteudo"><h2>📊 Rodadas</h2><table><thead><tr><th>Horário</th><th>Mult</th><th>Status</th></tr></thead><tbody id="tabelaRodadas"></tbody></table></div>
-    <div id="card-calls" class="card-conteudo"><h2>📢 Últimos Calls</h2><ul id="listaCalls"></ul></div>
-    <div id="card-lucro" class="card-conteudo"><h2>💰 Lucro Virtual</h2><h3 id="lucroVirtual">R$ 0,00</h3></div>
+    <!-- CONTEÚDOS -->
+    <div id="card-velas" class="card-conteudo">
+      <h2>📈 Últimas Velas</h2>
+      <div class="grid-velas" id="gridVelas"></div>
+    </div>
+
+    <div id="card-relatorio" class="card-conteudo">
+      <h2>📊 Relatório de Rodadas</h2>
+      <table>
+        <thead><tr><th>Horário</th><th>Multiplicador</th><th>Status</th></tr></thead>
+        <tbody id="tabelaVelas"></tbody>
+      </table>
+    </div>
+
+    <div id="card-calls" class="card-conteudo">
+      <h2>📢 Últimos Calls</h2>
+      <ul id="listaCalls"></ul>
+    </div>
+
+    <div id="card-lucro" class="card-conteudo">
+      <h2>💰 Lucro Virtual (Simulação)</h2>
+      <p>Se tivesse apostado 
+        <input type="number" id="valorAposta" value="10" min="1" style="width:80px; text-align:center;"> 
+        em cada call de hoje:
+      </p>
+      <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
+      <small style="color:#aaa;">*Simulação apenas para fins de demonstração</small>
+    </div>
   </main>
 
   <footer>
-    <p>© 2025 GoathBet</p><a href="admin.html">Painel Admin</a> | <a href="#" onclick="logout()">Sair</a>
+    <p>© 2025 GoathBet. Todos os direitos reservados.</p>
+    <a href="admin.html">Painel Admin</a> | 
+    <a href="#" onclick="logout()">Sair</a>
   </footer>
 
-  <!-- Timer -->
+  <!-- TIMER FLUTUANTE -->
   <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
-  <div id="painel-timer"><h2>⏳ Próximo Multiplicador</h2><p><b>Horário:</b> <span id="horaProx">--:--</span></p><p><b>Esperado:</b> <span id="minProx">--</span></p><p id="msgPsico">Aguardando...</p><button onclick="fecharPainelTimer()">Fechar</button></div>
 
-  <!-- Live -->
-  <div id="live-floating" onclick="abrirLive()">▶️</div>
-  <div id="modal-live"><div class="conteudo-live"><span class="fechar" onclick="fecharLive()">×</span>
-    <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1"></iframe></div></div>
+  <!-- BOTÃO LIVE FLUTUANTE (YouTube) -->
+  <div id="live-floating" onclick="abrirLive()">
+    ▶️
+  </div>
+
+  <!-- MODAL LIVE -->
+  <div id="modal-live">
+    <div class="conteudo-live">
+      <span class="fechar" onclick="fecharLive()">×</span>
+      <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1"
+              title="Live GoathBet"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- PAINEL TIMER -->
+  <div id="painel-timer">
+    <div class="painel-content">
+      <h2>⏳ Próximo Multiplicador</h2>
+      <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
+      <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
+      <p id="msgPsico" class="alerta">⚠ Aguardando lançamento...</p>
+      <button onclick="fecharPainelTimer()">Fechar</button>
+    </div>
+  </div>
 
   <!-- SCRIPT -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { doc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Auth
-    onAuthStateChanged(auth,(user)=>{ if(!user) window.location.href="login.html"; });
-    window.logout=()=>signOut(auth).then(()=>window.location.href="login.html");
+    // Autenticação
+    onAuthStateChanged(auth, (user) => {
+      if (!user) window.location.href = "login.html";
+    });
 
-    // Toggle
-    window.toggleCard=(id)=>{document.querySelectorAll('.card-conteudo').forEach(c=>c.classList.remove('ativo'));document.getElementById('card-'+id).classList.add('ativo');};
-    window.abrirLive=()=>document.getElementById("modal-live").style.display="flex";
-    window.fecharLive=()=>document.getElementById("modal-live").style.display="none";
-    window.abrirPainelTimer=()=>document.getElementById("painel-timer").classList.add("ativo");
-    window.fecharPainelTimer=()=>document.getElementById("painel-timer").classList.remove("ativo");
+    window.logout = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    };
 
-    // Timer
+    // Toggle Cards
+    window.toggleCard = function(id) {
+      document.querySelectorAll('.card-conteudo').forEach(c => c.classList.remove('ativo'));
+      document.getElementById('card-' + id).classList.add('ativo');
+    };
+
+    // Live
+    window.abrirLive = function(){
+      document.getElementById("modal-live").style.display="flex";
+    }
+    window.fecharLive = function(){
+      document.getElementById("modal-live").style.display="none";
+    }
+
+    // Timer sincronizado com Admin
     let intervaloTimer;
     function iniciarTimer(segundos, horarioLancado, multEsperado){
       pararTimer();
-      const fim=new Date(horarioLancado.getTime()+segundos*1000);
-      intervaloTimer=setInterval(()=>{
-        const agora=new Date(); const restante=Math.floor((fim-agora)/1000);
-        if(restante<=0){ document.getElementById("timer").innerText="00:00"; pararTimer(); document.getElementById("msgPsico").innerText="⏳ Call encerrado"; }
-        else {
-          document.getElementById("timer").innerText="00:"+String(restante).padStart(2,"0");
-          document.getElementById("horaProx").innerText=fim.toLocaleTimeString("pt-BR");
-          document.getElementById("minProx").innerText=multEsperado+"x";
-          document.getElementById("msgPsico").innerText="⚡ Em andamento!";
+      let fim = new Date(horarioLancado.getTime() + segundos*1000);
+
+      intervaloTimer = setInterval(()=>{
+        const agora = new Date();
+        const restante = Math.floor((fim - agora)/1000);
+
+        if(restante <= 0){
+          document.getElementById("timer").innerText = "00:00";
+          document.getElementById("msgPsico").innerText = "⏳ Call encerrado, aguardando resultado...";
+          pararTimer();
+        } else {
+          document.getElementById("timer").innerText = "00:" + String(restante).padStart(2,"0");
+          document.getElementById("horaProx").innerText = fim.toLocaleTimeString("pt-BR");
+          document.getElementById("minProx").innerText = multEsperado+"x";
+          document.getElementById("msgPsico").innerText = "⚡ Oportunidade em andamento!";
         }
       },1000);
     }
-    function pararTimer(){ clearInterval(intervaloTimer); }
+    function pararTimer(){
+      clearInterval(intervaloTimer);
+      document.getElementById("timer").innerText = "00:00";
+    }
 
-    // === Escutar Coleções ===
-    onSnapshot(doc(db,"calls","ativo"),(snap)=>{ if(snap.exists()){const d=snap.data(); if(d.status==="PENDENTE") iniciarTimer(d.tempo,d.horarioLancado.toDate(),d.multEsperado); else pararTimer(); }});
+    // Escutar call ativo
+    const callRef = doc(db,"calls","ativo");
+    onSnapshot(callRef,(snap)=>{
+      if(snap.exists()){
+        const call = snap.data();
+        if(call.status === "PENDENTE"){
+          iniciarTimer(call.tempo, call.horarioLancado.toDate(), call.multEsperado);
+        } else {
+          pararTimer();
+          document.getElementById("msgPsico").innerText = "📊 Último call: "+call.status;
+        }
+      } else {
+        pararTimer();
+      }
+    });
 
-    onSnapshot(collection(db,"velas"),(snap)=>{ let html=""; snap.forEach(docSnap=>{const d=docSnap.data(); const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"--"; html+=`<div class="vela ${d.multiplicador>=2?'green':'red'}">${d.multiplicador}x <small>${hora}</small></div>`;}); document.getElementById("gridVelas").innerHTML=html; });
+    // Preencher cards com histórico
+    async function carregarHistorico(){
+      const histRef = collection(db,"callsHistorico");
+      const snap = await getDocs(histRef);
+      const tabela = document.getElementById("tabelaVelas");
+      const grid = document.getElementById("gridVelas");
+      const ul = document.getElementById("listaCalls");
+      let lucro = 0;
+      const aposta = parseFloat(document.getElementById("valorAposta").value) || 10;
 
-    onSnapshot(collection(db,"rodadas"),(snap)=>{ let html=""; snap.forEach(docSnap=>{const d=docSnap.data(); const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"--"; html+=`<tr><td>${hora}</td><td>${d.mult}</td><td style="color:${d.status==='GREEN'?'#2ecc71':'#e74c3c'}">${d.status}</td></tr>`;}); document.getElementById("tabelaRodadas").innerHTML=html; });
+      tabela.innerHTML="";
+      grid.innerHTML="";
+      ul.innerHTML="";
 
-    onSnapshot(collection(db,"callsHistorico"),(snap)=>{ let html=""; snap.forEach(docSnap=>{const d=docSnap.data(); const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"--"; html+=`<li><b>${hora}</b> → ${d.mult}x <span style="color:${d.status==='GREEN'?'#2ecc71':'#e74c3c'}">${d.status}</span></li>`;}); document.getElementById("listaCalls").innerHTML=html; });
+      snap.forEach(docSnap=>{
+        const d = docSnap.data();
+        const hora = d.horarioLancado?.toDate ? d.horarioLancado.toDate().toLocaleTimeString("pt-BR") : "--:--";
+        const mult = d.multEsperado || "--";
+        const status = d.status || "PENDENTE";
 
-    onSnapshot(doc(db,"lucro","atual"),(snap)=>{ if(snap.exists()){document.getElementById("lucroVirtual").innerText="R$ "+snap.data().valor.toFixed(2);} });
+        tabela.innerHTML += `<tr>
+          <td>${hora}</td>
+          <td>${mult}x</td>
+          <td style="color:${status==='GREEN'?'#2ecc71':status==='RED'?'#e74c3c':'#f1c40f'}">${status}</td>
+        </tr>`;
+
+        grid.innerHTML += `<div class="vela ${status==='GREEN'?'green':'red'}">${mult}x <small>${hora}</small></div>`;
+
+        ul.innerHTML += `<li><strong>${hora}</strong> → ${mult}x 
+          <span style="font-weight:bold;color:${status==='GREEN'?'#2ecc71':status==='RED'?'#e74c3c':'#f1c40f'}">${status}</span></li>`;
+
+        // cálculo do lucro
+        if(status==="GREEN"){ lucro += aposta * mult; }
+        else if(status==="RED"){ lucro -= aposta; }
+      });
+
+      document.getElementById("lucroVirtual").innerText = 
+        (lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
+    }
+    carregarHistorico();
+
+    // Atualizar lucro ao mudar aposta
+    document.getElementById("valorAposta").addEventListener("input", carregarHistorico);
+
+    // Painel Timer
+    window.abrirPainelTimer=function(){
+      document.getElementById("painel-timer").classList.add("ativo");
+    };
+    window.fecharPainelTimer=function(){
+      document.getElementById("painel-timer").classList.remove("ativo");
+    };
   </script>
 </body>
 </html>
