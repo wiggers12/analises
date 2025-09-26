@@ -221,3 +221,57 @@ footer a:hover {
     font-size: 1.2rem;
   }
 }
+/* ===== AJUSTES EXTRAS PARA DASHBOARD E ADMIN ===== */
+@media (max-width: 768px) {
+  .tabela {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .tabela th, .tabela td {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  .card-admin, .planos, .plano-card {
+    margin: 15px 10px;
+    padding: 15px;
+  }
+
+  .card-admin input,
+  .card-admin button,
+  .plano-card a {
+    width: 100%;
+    display: block;
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar h1 {
+    font-size: 1.2rem;
+  }
+  .logo h1 {
+    font-size: 1.4rem;
+  }
+
+  nav a {
+    font-size: 0.9rem;
+    margin: 5px;
+  }
+
+  .tabela th, .tabela td {
+    font-size: 0.8rem;
+    padding: 5px;
+  }
+
+  .card-admin h2,
+  .plano-card h3 {
+    font-size: 1rem;
+  }
+
+  footer {
+    font-size: 0.75rem;
+    padding: 10px;
+  }
+}
