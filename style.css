@@ -1,4 +1,6 @@
-/* ===== RESET ===== */
+/* ================================
+   RESET E BASE
+================================= */
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +13,9 @@ body {
   line-height: 1.6;
 }
 
-/* ===== TOPO (HOME / PLANO) ===== */
+/* ================================
+   TOPO / HEADER
+================================= */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -40,20 +44,36 @@ nav a {
   font-weight: 500;
   transition: 0.3s;
 }
-nav a:hover {
-  color: #27ae60;
-}
+nav a:hover { color: #27ae60; }
 .btn-login {
   padding: 8px 16px;
   background: #27ae60;
   border-radius: 6px;
   font-weight: 600;
 }
-.btn-login:hover {
-  background: #2ecc71;
-}
+.btn-login:hover { background: #2ecc71; }
 
-/* ===== SEÇÃO DE PLANOS ===== */
+/* ================================
+   BOTÕES GERAIS
+================================= */
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.btn-green { background: #2ecc71; color: #fff; }
+.btn-green:hover { background: #27ae60; }
+.btn-red { background: #e74c3c; color: #fff; }
+.btn-red:hover { background: #c0392b; }
+.btn-blue { background: #2980b9; color: #fff; }
+.btn-blue:hover { background: #3498db; }
+
+/* ================================
+   SEÇÃO DE PLANOS
+================================= */
 .planos {
   max-width: 800px;
   margin: 60px auto;
@@ -85,18 +105,9 @@ nav a:hover {
   margin-bottom: 15px;
   color: #27ae60;
 }
-.plano-card ul {
-  list-style: none;
-}
-.plano-card li {
-  margin: 10px 0;
-  color: #ddd;
-}
-.plano-card li::before {
-  content: "✔";
-  margin-right: 8px;
-  color: #27ae60;
-}
+.plano-card ul { list-style: none; }
+.plano-card li { margin: 10px 0; color: #ddd; }
+.plano-card li::before { content: "✔"; margin-right: 8px; color: #27ae60; }
 .plano-card .preco {
   font-size: 1.6rem;
   margin: 20px 0;
@@ -112,170 +123,77 @@ nav a:hover {
   text-decoration: none;
   transition: 0.3s;
 }
-.plano-card a:hover {
-  background: #2ecc71;
-}
+.plano-card a:hover { background: #2ecc71; }
 
-/* ===== CARDS EXPANSÍVEIS (USADOS EM OUTRAS PÁGINAS, NÃO NO DASHBOARD) ===== */
-.card-box {
-  background: #1c1c2b;
-  border-radius: 12px;
-  margin: 20px auto;
-  padding: 0;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  overflow: hidden;
-  transition: all 0.3s ease;
-  max-width: 1000px;
-}
-.card-header {
+/* ================================
+   ADMIN / DASHBOARD
+================================= */
+.menu-admin {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  cursor: pointer;
-  background: #222;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  justify-content: center;
+  gap: 15px;
+  background: #1c1c2b;
+  padding: 12px;
+  border-bottom: 2px solid #27ae60;
+  flex-wrap: wrap;
 }
-.card-header h2 {
-  font-size: 1.2rem;
+.menu-admin button {
+  background: #2a2a3d;
+  border: none;
   color: #fff;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
 }
-.card-header .seta {
-  transition: transform 0.3s;
+.menu-admin button:hover,
+.menu-admin button.ativo { background: #27ae60; }
+
+.admin-container { 
+  max-width: 1100px; 
+  margin: 20px auto; 
+  padding: 20px; 
 }
-.card-box .card-content {
-  max-height: 0;
-  overflow: hidden;
-  padding: 0 20px;
-  transition: max-height 0.4s ease, padding 0.3s ease;
-}
-.card-box.ativo .card-content {
-  max-height: 1000px;
+.card-admin {
+  background: #1c1c2b;
   padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  display: none;
 }
-.card-box.ativo .card-header .seta {
-  transform: rotate(180deg);
+.card-admin.ativo { display: block; }
+.card-admin h2 { margin-bottom: 15px; font-size: 1.3rem; color: #00c8ff; }
+.card-admin input {
+  width: 100%; padding: 10px; margin: 8px 0;
+  border-radius: 6px; border: none; font-size: 1rem;
 }
 
-/* ===== RELATÓRIO (HOME/PLANO) ===== */
-.relatorio table {
+/* === TABELAS === */
+.tabela {
   width: 100%;
   border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
   margin-top: 10px;
 }
-.relatorio th, .relatorio td {
-  border: 1px solid #333;
-  padding: 8px;
+.tabela th, .tabela td {
+  padding: 10px;
   text-align: center;
 }
-.relatorio th {
-  background: #222;
-  color: #fff;
+.tabela th { background: #222; color: #fff; }
+.tabela tr:nth-child(even) { background: #2a2a3d; }
+.tabela tr:nth-child(odd) { background: #1e1e2f; }
+.acao-btn { 
+  margin: 2px; padding: 5px 8px; border-radius: 6px; border: none; 
+  cursor: pointer; font-weight: bold; 
 }
+.acao-editar { background: #2980b9; color: #fff; }
+.acao-remover { background: #c0392b; color: #fff; }
 
-/* ===== FOOTER ===== */
-footer {
-  text-align: center;
-  padding: 20px;
-  background: #111;
-  font-size: 0.9rem;
-  color: #aaa;
-  margin-top: 40px;
-}
-footer a {
-  color: #27ae60;
-  font-weight: bold;
-  text-decoration: none;
-}
-footer a:hover {
-  color: #2ecc71;
-}
-
-/* ===== RESPONSIVO ===== */
-@media (max-width: 768px) {
-  .topbar {
-    flex-direction: column;
-    padding: 15px 20px;
-    text-align: center;
-  }
-  nav {
-    margin-top: 10px;
-  }
-  nav a {
-    margin: 0 10px;
-    display: inline-block;
-  }
-  .planos {
-    padding: 20px;
-  }
-}
-@media (max-width: 480px) {
-  .planos {
-    margin: 30px 10px;
-    padding: 15px;
-  }
-  .plano-card h3 {
-    font-size: 1.2rem;
-  }
-  .plano-card .preco {
-    font-size: 1.2rem;
-  }
-}
-/* ===== AJUSTES EXTRAS PARA DASHBOARD E ADMIN ===== */
-@media (max-width: 768px) {
-  .tabela {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  .tabela th, .tabela td {
-    font-size: 0.9rem;
-    padding: 6px;
-  }
-
-  .card-admin, .planos, .plano-card {
-    margin: 15px 10px;
-    padding: 15px;
-  }
-
-  .card-admin input,
-  .card-admin button,
-  .plano-card a {
-    width: 100%;
-    display: block;
-    margin-top: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .topbar h1 {
-    font-size: 1.2rem;
-  }
-  .logo h1 {
-    font-size: 1.4rem;
-  }
-
-  nav a {
-    font-size: 0.9rem;
-    margin: 5px;
-  }
-
-  .tabela th, .tabela td {
-    font-size: 0.8rem;
-    padding: 5px;
-  }
-
-  .card-admin h2,
-  .plano-card h3 {
-    font-size: 1rem;
-  }
-
-  footer {
-    font-size: 0.75rem;
-    padding: 10px;
-  }
-}
-/* ===== TIMER / PAINEL ===== */
+/* ================================
+   TIMER (PAINEL FIXO)
+================================= */
 #painel-timer {
   position: fixed;
   bottom: 0;
@@ -286,50 +204,57 @@ footer a:hover {
   padding: 25px;
   border-top-left-radius: 12px;
   box-shadow: -6px -6px 18px rgba(0,0,0,0.6);
-  transition: right 0.4s ease-in-out;
+  transition: right 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  opacity: 0;
   z-index: 1000;
 }
-#painel-timer.ativo { right: 0; }
+#painel-timer.ativo { right: 0; opacity: 1; }
 #painel-timer h2 { 
-  margin-bottom: 15px; 
-  color: #00c8ff; 
-  font-size: 1.4rem; 
-  text-align: center; 
+  margin-bottom: 15px; color: #00c8ff; 
+  font-size: 1.4rem; text-align: center; 
 }
 #painel-timer p { margin: 8px 0; font-size: 1rem; }
 #painel-timer .alerta {
-  font-size: 1.1rem; 
-  font-weight: bold; 
-  text-align: center; 
-  padding: 10px; 
-  border-radius: 8px; 
-  margin-top: 15px;
+  font-size: 1.1rem; font-weight: bold; text-align: center;
+  padding: 10px; border-radius: 8px; margin-top: 15px;
 }
 #painel-timer button { 
-  margin-top: 20px; 
-  width: 100%; 
-  padding: 12px; 
-  background: linear-gradient(135deg, #ff4d4d, #c0392b); 
-  border: none; 
-  border-radius: 6px; 
-  color: #fff; 
-  font-weight: bold; 
+  margin-top: 20px; width: 100%; padding: 12px; 
+  background: linear-gradient(135deg, #ff4d4d, #c0392b);
+  border: none; border-radius: 6px; color: #fff; font-weight: bold;
   cursor: pointer; 
 }
 #painel-timer button:hover { 
   background: linear-gradient(135deg, #e74c3c, #a93226); 
 }
 
-/* ===== STATUS COLORS ===== */
-.status-green {
-  color: #2ecc71;
-  font-weight: bold;
+/* ================================
+   STATUS COLORS
+================================= */
+.status-green { color: #2ecc71; font-weight: bold; }
+.status-red { color: #e74c3c; font-weight: bold; }
+.status-yellow { color: #f1c40f; font-weight: bold; }
+
+/* ================================
+   RESPONSIVO
+================================= */
+@media (max-width: 768px) {
+  .topbar { flex-direction: column; padding: 15px 20px; text-align: center; }
+  nav { margin-top: 10px; }
+  nav a { margin: 0 10px; display: inline-block; }
+  .planos { padding: 20px; }
+  .tabela { display: block; overflow-x: auto; white-space: nowrap; }
+  .tabela th, .tabela td { font-size: 0.9rem; padding: 6px; }
+  .card-admin, .planos, .plano-card { margin: 15px 10px; padding: 15px; }
+  .card-admin input, .card-admin button, .plano-card a {
+    width: 100%; display: block; margin-top: 8px;
+  }
 }
-.status-red {
-  color: #e74c3c;
-  font-weight: bold;
-}
-.status-yellow {
-  color: #f1c40f;
-  font-weight: bold;
+@media (max-width: 480px) {
+  .topbar h1 { font-size: 1.2rem; }
+  .logo h1 { font-size: 1.4rem; }
+  nav a { font-size: 0.9rem; margin: 5px; }
+  .tabela th, .tabela td { font-size: 0.8rem; padding: 5px; }
+  .card-admin h2, .plano-card h3 { font-size: 1rem; }
+  footer { font-size: 0.75rem; padding: 10px; }
 }
