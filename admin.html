@@ -145,24 +145,32 @@
 
   <!-- SCRIPT -->
   <script type="module">
-    import { auth, db } from "./firebase.js";
-    import { collection, getDocs, getDoc, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { auth, db } from "./firebase.js";
+  import { collection, getDocs, getDoc, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const adminEmail = "dionegalato1212@gmail.com";
-    let editandoId = null;
+  // lista de e-mails autorizados
+  const adminEmails = [
+    "dionegalato1212@gmail.com",
+    "garotamenablog@outlook.com"
+  ];
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user || user.email !== adminEmail) {
-        alert("⚠️ Acesso negado"); window.location.href = "login.html";
-      } else {
-        carregarAssinaturas();
-        carregarVelas();
-        carregarRodadas();
-        carregarCalls();
-        carregarLucro();
-      }
-    });
+  let editandoId = null;
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user || !adminEmails.includes(user.email)) {
+      alert("⚠️ Acesso negado"); 
+      window.location.href = "login.html";
+    } else {
+      carregarAssinaturas();
+      carregarVelas();
+      carregarRodadas();
+      carregarCalls();
+      carregarLucro();
+    }
+  });
+</script>
+
 
     // === MENU ===
     window.mostrarCard = function(nome) {
