@@ -28,12 +28,8 @@
       transition: 0.3s;
       color: #fff;
     }
-    .icon-card:hover {
-      background: #27ae60;
-      transform: scale(1.05);
-    }
+    .icon-card:hover { background: #27ae60; transform: scale(1.05); }
 
-    /* Conteúdo dos cards */
     .card-conteudo {
       display: none;
       background: #1c1c2b;
@@ -48,18 +44,12 @@
     /* Timer flutuante */
     #timer-floating {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: 20px; right: 20px;
       background: linear-gradient(135deg, #27ae60, #2ecc71);
-      color: #fff;
-      font-weight: bold;
-      padding: 18px;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      transition: 0.3s;
-      z-index: 999;
-      animation: pulse 2s infinite;
+      color: #fff; font-weight: bold;
+      padding: 18px; border-radius: 50%;
+      cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      z-index: 999; animation: pulse 2s infinite;
     }
     #timer-floating:hover { transform: scale(1.15); }
     @keyframes pulse {
@@ -70,46 +60,32 @@
 
     /* Painel Timer */
     #painel-timer {
-      position: fixed;
-      bottom: 0;
-      right: -100%;
-      width: 320px;
-      background: #1c1c2b;
-      color: #fff;
-      padding: 25px;
-      border-top-left-radius: 12px;
+      position: fixed; bottom: 0; right: -100%;
+      width: 320px; background: #1c1c2b; color: #fff;
+      padding: 25px; border-top-left-radius: 12px;
       box-shadow: -6px -6px 18px rgba(0,0,0,0.6);
-      transition: right 0.4s ease-in-out;
-      z-index: 1000;
+      transition: right 0.4s ease-in-out; z-index: 1000;
     }
     #painel-timer.ativo { right: 0; }
-    #painel-timer h2 { margin-bottom: 15px; color: #00c8ff; font-size: 1.4rem; text-align: center; }
-    #painel-timer p { margin: 8px 0; font-size: 1rem; }
-    #painel-timer .alerta { font-size: 1.1rem; font-weight: bold; text-align: center; padding: 10px; border-radius: 8px; margin-top: 15px; }
-    #painel-timer button { margin-top: 20px; width: 100%; padding: 12px; background: linear-gradient(135deg, #ff4d4d, #c0392b); border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; }
-    #painel-timer button:hover { background: linear-gradient(135deg, #e74c3c, #a93226); }
 
     /* Botão Live */
     #live-floating {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
+      position: fixed; bottom: 20px; left: 20px;
       background: linear-gradient(135deg, #ff0000, #c0392b);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      transition: 0.3s;
-      z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px; border-radius: 50%; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6); z-index: 999;
     }
     #live-floating:hover { transform: scale(1.15); }
 
     /* Modal Live */
-    #modal-live { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
-    #modal-live .conteudo-live { width: 90%; max-width: 900px; background: #111; border-radius: 12px; padding: 10px; box-shadow: 0 0 20px rgba(255,0,0,0.6); }
+    #modal-live { display: none; position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%; background: rgba(0,0,0,0.85);
+      z-index: 2000; justify-content: center; align-items: center; }
+    #modal-live .conteudo-live {
+      width: 90%; max-width: 900px; background: #111;
+      border-radius: 12px; padding: 10px; box-shadow: 0 0 20px rgba(255,0,0,0.6);
+    }
     #modal-live iframe { border-radius: 8px; width: 100%; height: 500px; }
     #modal-live .fechar { float: right; font-size: 28px; cursor: pointer; color: #fff; margin-bottom: 8px; }
   </style>
@@ -139,7 +115,7 @@
       <h2>📊 Relatório de Rodadas</h2>
       <table>
         <thead><tr><th>Horário</th><th>Multiplicador</th><th>Status</th></tr></thead>
-        <tbody id="tabelaVelas"></tbody>
+        <tbody id="tabelaRodadas"></tbody>
       </table>
     </div>
 
@@ -189,72 +165,88 @@
     </div>
   </div>
 
+  <!-- SCRIPT -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { doc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    onAuthStateChanged(auth, (user) => { if (!user) window.location.href = "login.html"; });
-    window.logout = ()=>signOut(auth).then(()=>window.location.href="login.html");
+    onAuthStateChanged(auth,(user)=>{ if(!user) window.location.href="login.html"; });
+    window.logout=()=>signOut(auth).then(()=>window.location.href="login.html");
 
-    window.toggleCard = (id)=>{
+    window.toggleCard=(id)=>{
       document.querySelectorAll('.card-conteudo').forEach(c=>c.classList.remove('ativo'));
       document.getElementById('card-'+id).classList.add('ativo');
     };
 
-    window.abrirLive = ()=>{ document.getElementById("modal-live").style.display="flex"; };
-    window.fecharLive = ()=>{ document.getElementById("modal-live").style.display="none"; };
+    window.abrirLive=()=>{ document.getElementById("modal-live").style.display="flex"; };
+    window.fecharLive=()=>{ document.getElementById("modal-live").style.display="none"; };
 
     let intervaloTimer;
-    function iniciarTimer(segundos, horarioLancado, multEsperado){
+    function iniciarTimer(segundos,horarioLancado,multEsperado){
       pararTimer();
-      let fim = new Date(horarioLancado.getTime() + segundos*1000);
-      intervaloTimer = setInterval(()=>{
-        const agora = new Date();
-        const restante = Math.floor((fim - agora)/1000);
-        if(restante <= 0){
-          document.getElementById("timer").innerText = "00:00";
-          document.getElementById("msgPsico").innerText = "⏳ Call encerrado, aguardando resultado...";
+      let fim=new Date(horarioLancado.getTime()+segundos*1000);
+      intervaloTimer=setInterval(()=>{
+        const agora=new Date(); const restante=Math.floor((fim-agora)/1000);
+        if(restante<=0){
+          document.getElementById("timer").innerText="00:00";
+          document.getElementById("msgPsico").innerText="⏳ Call encerrado, aguardando resultado...";
           pararTimer();
         } else {
-          document.getElementById("timer").innerText = "00:" + String(restante).padStart(2,"0");
-          document.getElementById("horaProx").innerText = fim.toLocaleTimeString("pt-BR");
-          document.getElementById("minProx").innerText = multEsperado+"x";
-          document.getElementById("msgPsico").innerText = "⚡ Oportunidade em andamento!";
+          document.getElementById("timer").innerText="00:"+String(restante).padStart(2,"0");
+          document.getElementById("horaProx").innerText=fim.toLocaleTimeString("pt-BR");
+          document.getElementById("minProx").innerText=multEsperado+"x";
+          document.getElementById("msgPsico").innerText="⚡ Oportunidade em andamento!";
         }
       },1000);
     }
-    function pararTimer(){ clearInterval(intervaloTimer); document.getElementById("timer").innerText = "00:00"; }
+    function pararTimer(){ clearInterval(intervaloTimer); document.getElementById("timer").innerText="00:00"; }
 
-    // Escutar call ativo
+    // Call ativo
     onSnapshot(doc(db,"calls","ativo"),(snap)=>{
       if(snap.exists()){
-        const call = snap.data();
-        if(call.status === "PENDENTE"){ iniciarTimer(call.tempo, call.horarioLancado.toDate(), call.multEsperado); }
-        else { pararTimer(); document.getElementById("msgPsico").innerText = "📊 Último call: "+call.status; }
+        const call=snap.data();
+        if(call.status==="PENDENTE"){ iniciarTimer(call.tempo,call.horarioLancado.toDate(),call.multEsperado); }
+        else { pararTimer(); document.getElementById("msgPsico").innerText="📊 Último call: "+call.status; }
       } else { pararTimer(); }
     });
 
-    // Histórico em tempo real
-    onSnapshot(collection(db,"callsHistorico"),(snap)=>{
-      const tabela=document.getElementById("tabelaVelas");
+    // 📈 Últimas Velas
+    onSnapshot(collection(db,"velas"),(snap)=>{
       const grid=document.getElementById("gridVelas");
-      const ul=document.getElementById("listaCalls");
-      let lucro=0; const aposta=parseFloat(document.getElementById("valorAposta").value)||10;
-      tabela.innerHTML=""; grid.innerHTML=""; ul.innerHTML="";
+      grid.innerHTML="";
       snap.forEach(docSnap=>{
         const d=docSnap.data();
-        const hora=d.horarioLancado?.toDate?d.horarioLancado.toDate().toLocaleTimeString("pt-BR"):"--:--";
-        const mult=d.multEsperado||"--"; const status=d.status||"PENDENTE";
-        tabela.innerHTML+=`<tr><td>${hora}</td><td>${mult}x</td><td style="color:${status==='GREEN'?'#2ecc71':status==='RED'?'#e74c3c':'#f1c40f'}">${status}</td></tr>`;
-        grid.innerHTML+=`<div class="vela ${status==='GREEN'?'green':'red'}">${mult}x <small>${hora}</small></div>`;
-        ul.innerHTML+=`<li><strong>${hora}</strong> → ${mult}x <span style="font-weight:bold;color:${status==='GREEN'?'#2ecc71':status==='RED'?'#e74c3c':'#f1c40f'}">${status}</span></li>`;
-        if(status==="GREEN"){ lucro+=aposta*mult; } else if(status==="RED"){ lucro-=aposta; }
+        const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
+        grid.innerHTML+=`<div class="vela">${d.multiplicador}x <small>${hora}</small></div>`;
+      });
+    });
+
+    // 📊 Relatório de Rodadas
+    onSnapshot(collection(db,"rodadas"),(snap)=>{
+      const tabela=document.getElementById("tabelaRodadas");
+      tabela.innerHTML="";
+      snap.forEach(docSnap=>{
+        const d=docSnap.data();
+        const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
+        tabela.innerHTML+=`<tr><td>${hora}</td><td>${d.mult}x</td><td style="color:${d.status==='GREEN'?'#2ecc71':d.status==='RED'?'#e74c3c':'#f1c40f'}">${d.status}</td></tr>`;
+      });
+    });
+
+    // 📢 Últimos Calls
+    onSnapshot(collection(db,"callsHistorico"),(snap)=>{
+      const ul=document.getElementById("listaCalls");
+      ul.innerHTML="";
+      let lucro=0; const aposta=parseFloat(document.getElementById("valorAposta").value)||10;
+      snap.forEach(docSnap=>{
+        const d=docSnap.data();
+        const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
+        ul.innerHTML+=`<li><strong>${hora}</strong> → ${d.mult}x <span style="font-weight:bold;color:${d.status==='GREEN'?'#2ecc71':d.status==='RED'?'#e74c3c':'#f1c40f'}">${d.status}</span></li>`;
+        if(d.status==="GREEN"){ lucro+=aposta*d.mult; } else if(d.status==="RED"){ lucro-=aposta; }
       });
       document.getElementById("lucroVirtual").innerText=(lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
     });
 
-    document.getElementById("valorAposta").addEventListener("input",()=>{});
     window.abrirPainelTimer=()=>{ document.getElementById("painel-timer").classList.add("ativo"); };
     window.fecharPainelTimer=()=>{ document.getElementById("painel-timer").classList.remove("ativo"); };
   </script>
