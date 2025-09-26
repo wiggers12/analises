@@ -83,14 +83,165 @@
     </div>
   </section>
 
-  <!-- SCRIPT: Alternância dos cards -->
-  <script>
-    function mostrarCard(nome) {
+  <!-- SCRIPT -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { 
+      collection, getDoc, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // emails autorizados
+    const adminEmails = ["dionegalato1212@gmail.com", "garotamenablog@outlook.com"];
+
+    // autenticação
+    onAuthStateChanged(auth, (user) => {
+      if (!user || !adminEmails.includes(user.email)) {
+        alert("⚠️ Acesso negado");
+        window.location.href = "login.html";
+      } else {
+        carregarAssinaturas();
+        carregarVelas();
+        carregarRodadas();
+        carregarCalls();
+        carregarLucro();
+      }
+    });
+
+    // === Alternância dos Cards ===
+    window.mostrarCard = function(nome) {
       document.querySelectorAll('.menu-admin button').forEach(b => b.classList.remove('ativo'));
       document.querySelectorAll('.card-admin').forEach(c => c.classList.remove('ativo'));
       document.querySelector(`.menu-admin button[onclick*="${nome}"]`).classList.add('ativo');
       document.getElementById("card-" + nome).classList.add('ativo');
+    };
+
+    // === Assinaturas ===
+    function carregarAssinaturas() {
+      onSnapshot(collection(db, "assinaturas"), (snap) => {
+        let html = "";
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          const validade = d.validade?.toDate().toLocaleDateString("pt-BR") || "-";
+          html += `<tr>
+            <td>${d.email}</td>
+            <td>${d.status}</td>
+            <td>${validade}</td>
+            <td>
+              <button class="btn btn-green" onclick="atualizarStatus('${docSnap.id}','ATIVO',30)">+30d</button>
+              <button class="btn btn-red" onclick="atualizarStatus('${docSnap.id}','INATIVO')">Inativar</button>
+            </td>
+          </tr>`;
+        });
+        document.getElementById("assinaturasTable").innerHTML = html;
+      });
     }
+    window.atualizarStatus = async (id, status, dias) => {
+      const ref = doc(db, "assinaturas", id);
+      let data = { status };
+      if (status === "ATIVO" && dias) {
+        let nova = new Date();
+        nova.setDate(nova.getDate() + dias);
+        data.validade = Timestamp.fromDate(nova);
+      }
+      await updateDoc(ref, data);
+    };
+
+    // === Calls ===
+    window.definirCall = async () => {
+      const tempo = parseInt(document.getElementById("tempoProx").value);
+      const mult = parseFloat(document.getElementById("multProx").value);
+      await setDoc(doc(db,"calls","ativo"),{
+        horarioLancado:new Date(),
+        tempo,
+        multEsperado:mult,
+        status:"PENDENTE"
+      });
+    };
+    window.finalizarCall = async (res) => {
+      const mult = parseFloat(document.getElementById("multProx").value);
+      const ref = doc(db,"calls","ativo");
+      await updateDoc(ref, { status: res, horarioFinal: new Date() });
+      await addDoc(collection(db,"callsHistorico"), { horario:new Date(), mult, status:res });
+      await addDoc(collection(db,"rodadas"), { horario:new Date(), mult, status:res });
+    };
+
+    function carregarCalls(){
+      onSnapshot(collection(db,"callsHistorico"),(snap)=>{
+        let html="";
+        snap.forEach(docSnap=>{
+          const d=docSnap.data();
+          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
+          html+=`<tr>
+            <td>${hora}</td><td>${d.mult}</td>
+            <td class="${d.status==='GREEN'?'status-green':'status-red'}">${d.status}</td>
+            <td><button class="acao-btn acao-remover" onclick="removerCall('${docSnap.id}')">🗑</button></td>
+          </tr>`;
+        });
+        document.getElementById("tabelaCalls").innerHTML=html;
+      });
+    }
+    window.removerCall=async(id)=>{await deleteDoc(doc(db,"callsHistorico",id));};
+
+    // === Velas ===
+    function carregarVelas(){
+      onSnapshot(collection(db,"velas"),(snap)=>{
+        let html="";
+        snap.forEach(docSnap=>{
+          const d=docSnap.data();
+          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
+          html+=`<tr>
+            <td>${d.multiplicador}</td>
+            <td>${hora}</td>
+            <td><button class="acao-btn acao-remover" onclick="removerVela('${docSnap.id}')">🗑</button></td>
+          </tr>`;
+        });
+        document.getElementById("tabelaVelas").innerHTML=html;
+      });
+    }
+    window.adicionarVela=async()=>{
+      const mult=parseFloat(document.getElementById("velaMult").value);
+      await addDoc(collection(db,"velas"),{multiplicador:mult,horario:new Date()});
+    };
+    window.removerVela=async(id)=>{await deleteDoc(doc(db,"velas",id));};
+
+    // === Rodadas ===
+    function carregarRodadas(){
+      onSnapshot(collection(db,"rodadas"),(snap)=>{
+        let html="";
+        snap.forEach(docSnap=>{
+          const d=docSnap.data();
+          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
+          html+=`<tr>
+            <td>${hora}</td><td>${d.mult}</td>
+            <td class="${d.status==='GREEN'?'status-green':'status-red'}">${d.status}</td>
+            <td>
+              <button class="acao-btn acao-editar" onclick="editarRodada('${docSnap.id}','${d.status}')">✏️</button>
+              <button class="acao-btn acao-remover" onclick="removerRodada('${docSnap.id}')">🗑</button>
+            </td>
+          </tr>`;
+        });
+        document.getElementById("tabelaRodadas").innerHTML=html;
+      });
+    }
+    window.editarRodada=async(id,statusAtual)=>{
+      const novo=prompt("Novo status (GREEN/RED)",statusAtual);
+      if(novo){await updateDoc(doc(db,"rodadas",id),{status:novo});}
+    };
+    window.removerRodada=async(id)=>{await deleteDoc(doc(db,"rodadas",id));};
+
+    // === Lucro ===
+    function carregarLucro(){
+      onSnapshot(doc(db,"lucro","atual"),(docSnap)=>{
+        if(docSnap.exists()){
+          document.getElementById("lucroAtual").innerText=docSnap.data().valor.toFixed(2);
+        }
+      });
+    }
+    window.atualizarLucro=async()=>{
+      const val=parseFloat(document.getElementById("lucroInput").value);
+      await setDoc(doc(db,"lucro","atual"),{valor:val});
+    };
   </script>
 </body>
 </html>
