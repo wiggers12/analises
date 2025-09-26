@@ -43,9 +43,7 @@
       max-width: 1000px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
-    .card-conteudo.ativo {
-      display: block;
-    }
+    .card-conteudo.ativo { display: block; }
 
     /* Timer flutuante */
     #timer-floating {
@@ -63,9 +61,7 @@
       z-index: 999;
       animation: pulse 2s infinite;
     }
-    #timer-floating:hover {
-      transform: scale(1.15);
-    }
+    #timer-floating:hover { transform: scale(1.15); }
     @keyframes pulse {
       0% { box-shadow: 0 0 0 0 rgba(39,174,96,0.7); }
       70% { box-shadow: 0 0 0 20px rgba(39,174,96,0); }
@@ -93,11 +89,11 @@
     #painel-timer button { margin-top: 20px; width: 100%; padding: 12px; background: linear-gradient(135deg, #ff4d4d, #c0392b); border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; }
     #painel-timer button:hover { background: linear-gradient(135deg, #e74c3c, #a93226); }
 
-    /* ===== BOTÃO LIVE (YouTube) ===== */
+    /* Botão Live */
     #live-floating {
       position: fixed;
-      bottom: 20px;  
-      left: 20px;    
+      bottom: 20px;
+      left: 20px;
       background: linear-gradient(135deg, #ff0000, #c0392b);
       display: flex;
       align-items: center;
@@ -109,48 +105,23 @@
       transition: 0.3s;
       z-index: 999;
     }
-    #live-floating:hover {
-      transform: scale(1.15);
-    }
+    #live-floating:hover { transform: scale(1.15); }
 
-    /* Modal da Live */
-    #modal-live {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-    }
-    #modal-live .conteudo-live {
-      width: 90%;
-      max-width: 900px;
-      background: #111;
-      border-radius: 12px;
-      padding: 10px;
-      box-shadow: 0 0 20px rgba(255,0,0,0.6);
-    }
+    /* Modal Live */
+    #modal-live { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
+    #modal-live .conteudo-live { width: 90%; max-width: 900px; background: #111; border-radius: 12px; padding: 10px; box-shadow: 0 0 20px rgba(255,0,0,0.6); }
     #modal-live iframe { border-radius: 8px; width: 100%; height: 500px; }
-    #modal-live .fechar {
-      float: right;
-      font-size: 28px;
-      cursor: pointer;
-      color: #fff;
-      margin-bottom: 8px;
-    }
+    #modal-live .fechar { float: right; font-size: 28px; cursor: pointer; color: #fff; margin-bottom: 8px; }
   </style>
 </head>
 <body>
-  <!-- CONTEÚDO -->
   <main class="dashboard-container">
     <!-- Plataforma -->
     <section class="plataforma">
       <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
 
-    <!-- ÍCONES -->
+    <!-- Ícones -->
     <div class="icon-cards">
       <div class="icon-card" onclick="toggleCard('velas')">📈</div>
       <div class="icon-card" onclick="toggleCard('relatorio')">📊</div>
@@ -158,7 +129,7 @@
       <div class="icon-card" onclick="toggleCard('lucro')">💰</div>
     </div>
 
-    <!-- CONTEÚDOS -->
+    <!-- Conteúdos -->
     <div id="card-velas" class="card-conteudo">
       <h2>📈 Últimas Velas</h2>
       <div class="grid-velas" id="gridVelas"></div>
@@ -178,13 +149,12 @@
     </div>
 
     <div id="card-lucro" class="card-conteudo">
-      <h2>💰 Lucro Virtual (Simulação)</h2>
+      <h2>💰 Lucro Virtual</h2>
       <p>Se tivesse apostado 
-        <input type="number" id="valorAposta" value="10" min="1" style="width:80px; text-align:center;"> 
+        <input type="number" id="valorAposta" value="10" min="1" style="width:80px; text-align:center;">
         em cada call de hoje:
       </p>
       <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
-      <small style="color:#aaa;">*Simulação apenas para fins de demonstração</small>
     </div>
   </main>
 
@@ -194,27 +164,21 @@
     <a href="#" onclick="logout()">Sair</a>
   </footer>
 
-  <!-- TIMER FLUTUANTE -->
+  <!-- Timer Flutuante -->
   <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
 
-  <!-- BOTÃO LIVE FLUTUANTE (YouTube) -->
-  <div id="live-floating" onclick="abrirLive()">
-    ▶️
-  </div>
+  <!-- Botão Live -->
+  <div id="live-floating" onclick="abrirLive()">▶️</div>
 
-  <!-- MODAL LIVE -->
+  <!-- Modal Live -->
   <div id="modal-live">
     <div class="conteudo-live">
       <span class="fechar" onclick="fecharLive()">×</span>
-      <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1"
-              title="Live GoathBet"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1" allowfullscreen></iframe>
     </div>
   </div>
 
-  <!-- PAINEL TIMER -->
+  <!-- Painel Timer -->
   <div id="painel-timer">
     <div class="painel-content">
       <h2>⏳ Próximo Multiplicador</h2>
@@ -225,45 +189,29 @@
     </div>
   </div>
 
-  <!-- SCRIPT -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { doc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Autenticação
-    onAuthStateChanged(auth, (user) => {
-      if (!user) window.location.href = "login.html";
-    });
+    onAuthStateChanged(auth, (user) => { if (!user) window.location.href = "login.html"; });
+    window.logout = ()=>signOut(auth).then(()=>window.location.href="login.html");
 
-    window.logout = function() {
-      signOut(auth).then(() => window.location.href = "login.html");
+    window.toggleCard = (id)=>{
+      document.querySelectorAll('.card-conteudo').forEach(c=>c.classList.remove('ativo'));
+      document.getElementById('card-'+id).classList.add('ativo');
     };
 
-    // Toggle Cards
-    window.toggleCard = function(id) {
-      document.querySelectorAll('.card-conteudo').forEach(c => c.classList.remove('ativo'));
-      document.getElementById('card-' + id).classList.add('ativo');
-    };
+    window.abrirLive = ()=>{ document.getElementById("modal-live").style.display="flex"; };
+    window.fecharLive = ()=>{ document.getElementById("modal-live").style.display="none"; };
 
-    // Live
-    window.abrirLive = function(){
-      document.getElementById("modal-live").style.display="flex";
-    }
-    window.fecharLive = function(){
-      document.getElementById("modal-live").style.display="none";
-    }
-
-    // Timer sincronizado com Admin
     let intervaloTimer;
     function iniciarTimer(segundos, horarioLancado, multEsperado){
       pararTimer();
       let fim = new Date(horarioLancado.getTime() + segundos*1000);
-
       intervaloTimer = setInterval(()=>{
         const agora = new Date();
         const restante = Math.floor((fim - agora)/1000);
-
         if(restante <= 0){
           document.getElementById("timer").innerText = "00:00";
           document.getElementById("msgPsico").innerText = "⏳ Call encerrado, aguardando resultado...";
@@ -276,78 +224,39 @@
         }
       },1000);
     }
-    function pararTimer(){
-      clearInterval(intervaloTimer);
-      document.getElementById("timer").innerText = "00:00";
-    }
+    function pararTimer(){ clearInterval(intervaloTimer); document.getElementById("timer").innerText = "00:00"; }
 
     // Escutar call ativo
-    const callRef = doc(db,"calls","ativo");
-    onSnapshot(callRef,(snap)=>{
+    onSnapshot(doc(db,"calls","ativo"),(snap)=>{
       if(snap.exists()){
         const call = snap.data();
-        if(call.status === "PENDENTE"){
-          iniciarTimer(call.tempo, call.horarioLancado.toDate(), call.multEsperado);
-        } else {
-          pararTimer();
-          document.getElementById("msgPsico").innerText = "📊 Último call: "+call.status;
-        }
-      } else {
-        pararTimer();
-      }
+        if(call.status === "PENDENTE"){ iniciarTimer(call.tempo, call.horarioLancado.toDate(), call.multEsperado); }
+        else { pararTimer(); document.getElementById("msgPsico").innerText = "📊 Último call: "+call.status; }
+      } else { pararTimer(); }
     });
 
-    // Preencher cards com histórico
-    async function carregarHistorico(){
-      const histRef = collection(db,"callsHistorico");
-      const snap = await getDocs(histRef);
-      const tabela = document.getElementById("tabelaVelas");
-      const grid = document.getElementById("gridVelas");
-      const ul = document.getElementById("listaCalls");
-      let lucro = 0;
-      const aposta = parseFloat(document.getElementById("valorAposta").value) || 10;
-
-      tabela.innerHTML="";
-      grid.innerHTML="";
-      ul.innerHTML="";
-
+    // Histórico em tempo real
+    onSnapshot(collection(db,"callsHistorico"),(snap)=>{
+      const tabela=document.getElementById("tabelaVelas");
+      const grid=document.getElementById("gridVelas");
+      const ul=document.getElementById("listaCalls");
+      let lucro=0; const aposta=parseFloat(document.getElementById("valorAposta").value)||10;
+      tabela.innerHTML=""; grid.innerHTML=""; ul.innerHTML="";
       snap.forEach(docSnap=>{
-        const d = docSnap.data();
-        const hora = d.horarioLancado?.toDate ? d.horarioLancado.toDate().toLocaleTimeString("pt-BR") : "--:--";
-        const mult = d.multEsperado || "--";
-        const status = d.status || "PENDENTE";
-
-        tabela.innerHTML += `<tr>
-          <td>${hora}</td>
-          <td>${mult}x</td>
-          <td style="color:${status==='GREEN'?'#2ecc71':status==='RED'?'#e74c3c':'#f1c40f'}">${status}</td>
-        </tr>`;
-
-        grid.innerHTML += `<div class="vela ${status==='GREEN'?'green':'red'}">${mult}x <small>${hora}</small></div>`;
-
-        ul.innerHTML += `<li><strong>${hora}</strong> → ${mult}x 
-          <span style="font-weight:bold;color:${status==='GREEN'?'#2ecc71':status==='RED'?'#e74c3c':'#f1c40f'}">${status}</span></li>`;
-
-        // cálculo do lucro
-        if(status==="GREEN"){ lucro += aposta * mult; }
-        else if(status==="RED"){ lucro -= aposta; }
+        const d=docSnap.data();
+        const hora=d.horarioLancado?.toDate?d.horarioLancado.toDate().toLocaleTimeString("pt-BR"):"--:--";
+        const mult=d.multEsperado||"--"; const status=d.status||"PENDENTE";
+        tabela.innerHTML+=`<tr><td>${hora}</td><td>${mult}x</td><td style="color:${status==='GREEN'?'#2ecc71':status==='RED'?'#e74c3c':'#f1c40f'}">${status}</td></tr>`;
+        grid.innerHTML+=`<div class="vela ${status==='GREEN'?'green':'red'}">${mult}x <small>${hora}</small></div>`;
+        ul.innerHTML+=`<li><strong>${hora}</strong> → ${mult}x <span style="font-weight:bold;color:${status==='GREEN'?'#2ecc71':status==='RED'?'#e74c3c':'#f1c40f'}">${status}</span></li>`;
+        if(status==="GREEN"){ lucro+=aposta*mult; } else if(status==="RED"){ lucro-=aposta; }
       });
+      document.getElementById("lucroVirtual").innerText=(lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
+    });
 
-      document.getElementById("lucroVirtual").innerText = 
-        (lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
-    }
-    carregarHistorico();
-
-    // Atualizar lucro ao mudar aposta
-    document.getElementById("valorAposta").addEventListener("input", carregarHistorico);
-
-    // Painel Timer
-    window.abrirPainelTimer=function(){
-      document.getElementById("painel-timer").classList.add("ativo");
-    };
-    window.fecharPainelTimer=function(){
-      document.getElementById("painel-timer").classList.remove("ativo");
-    };
+    document.getElementById("valorAposta").addEventListener("input",()=>{});
+    window.abrirPainelTimer=()=>{ document.getElementById("painel-timer").classList.add("ativo"); };
+    window.fecharPainelTimer=()=>{ document.getElementById("painel-timer").classList.remove("ativo"); };
   </script>
 </body>
 </html>
