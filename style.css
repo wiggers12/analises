@@ -66,28 +66,58 @@ nav a:hover { color: #ff4da6; }
   transition: 0.3s;
 }
 
-/* Botão principal (rosa/roxo) */
-.btn-green { 
+/* Principal (rosa/roxo) */
+.btn-primary { 
   background: linear-gradient(135deg, #ff4da6, #8e44ad); 
   color: #fff; 
 }
-.btn-green:hover { opacity: 0.9; }
+.btn-primary:hover { opacity: 0.9; }
 
-/* Botão de erro (vermelho) */
-.btn-red { 
-  background: linear-gradient(135deg, #ff4d4d, #c0392b); 
-  color: #fff; 
-}
-.btn-red:hover { 
-  background: linear-gradient(135deg, #e74c3c, #a93226); 
-}
-
-/* Botão alternativo (rosa claro/roxo suave) */
-.btn-blue { 
+/* Sucesso */
+.btn-success { 
   background: linear-gradient(135deg, #ffb6e6, #d291ff); 
   color: #fff; 
 }
-.btn-blue:hover { opacity: 0.9; }
+.btn-success:hover { opacity: 0.9; }
+
+/* Erro */
+.btn-danger { 
+  background: linear-gradient(135deg, #ff4d4d, #c0392b); 
+  color: #fff; 
+}
+.btn-danger:hover { background: linear-gradient(135deg, #e74c3c, #a93226); }
+
+/* ================================
+   LOGIN / FORMULÁRIOS
+================================= */
+.login-box {
+  max-width: 400px;
+  margin: 50px auto;
+  background: #2a0939;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  text-align: center;
+}
+.login-box h2 {
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+  color: #ff4da6;
+}
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 6px;
+  background: #3b0a4e;
+  color: #fff;
+}
+.login-box input::placeholder { color: #f8bbd0; }
+.login-box button {
+  width: 100%;
+  margin-top: 12px;
+}
 
 /* ================================
    SEÇÃO DE PLANOS
@@ -106,11 +136,7 @@ nav a:hover { color: #ff4da6; }
   font-size: 2rem;
   color: #ff4da6;
 }
-.planos p {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #f8bbd0;
-}
+.planos p { text-align: center; margin-bottom: 30px; color: #f8bbd0; }
 .plano-card {
   background: #3b0a4e;
   border-radius: 10px;
@@ -118,19 +144,11 @@ nav a:hover { color: #ff4da6; }
   margin-bottom: 20px;
   box-shadow: 0 3px 12px rgba(0,0,0,0.5);
 }
-.plano-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: #ffb6e6;
-}
+.plano-card h3 { font-size: 1.5rem; margin-bottom: 15px; color: #ffb6e6; }
 .plano-card ul { list-style: none; }
 .plano-card li { margin: 10px 0; color: #ddd; }
 .plano-card li::before { content: "✔"; margin-right: 8px; color: #ff4da6; }
-.plano-card .preco {
-  font-size: 1.6rem;
-  margin: 20px 0;
-  color: #ff4da6;
-}
+.plano-card .preco { font-size: 1.6rem; margin: 20px 0; color: #ff4da6; }
 .plano-card a {
   display: inline-block;
   padding: 12px 25px;
@@ -170,11 +188,7 @@ nav a:hover { color: #ff4da6; }
   color: #fff;
 }
 
-.admin-container { 
-  max-width: 1100px; 
-  margin: 20px auto; 
-  padding: 20px; 
-}
+.admin-container { max-width: 1100px; margin: 20px auto; padding: 20px; }
 .card-admin {
   background: #2a0939;
   padding: 20px;
@@ -198,56 +212,12 @@ nav a:hover { color: #ff4da6; }
   overflow: hidden;
   margin-top: 10px;
 }
-.tabela th, .tabela td {
-  padding: 10px;
-  text-align: center;
-}
+.tabela th, .tabela td { padding: 10px; text-align: center; }
 .tabela th { background: #3b0a4e; color: #ffb6e6; }
 .tabela tr:nth-child(even) { background: #4a145c; }
 .tabela tr:nth-child(odd) { background: #2a0939; }
-.acao-btn { 
-  margin: 2px; padding: 5px 8px; border-radius: 6px; border: none; 
-  cursor: pointer; font-weight: bold; 
-}
-.acao-editar { background: #8e44ad; color: #fff; }
-.acao-remover { background: #e74c3c; color: #fff; }
-
-/* ================================
-   TIMER (PAINEL FIXO)
-================================= */
-#painel-timer {
-  position: fixed;
-  bottom: 0;
-  right: -100%;
-  width: 320px;
-  background: #2a0939;
-  color: #fff;
-  padding: 25px;
-  border-top-left-radius: 12px;
-  box-shadow: -6px -6px 18px rgba(0,0,0,0.6);
-  transition: right 0.4s ease-in-out, opacity 0.4s ease-in-out;
-  opacity: 0;
-  z-index: 1000;
-}
-#painel-timer.ativo { right: 0; opacity: 1; }
-#painel-timer h2 { 
-  margin-bottom: 15px; color: #ff4da6; 
-  font-size: 1.4rem; text-align: center; 
-}
-#painel-timer p { margin: 8px 0; font-size: 1rem; }
-#painel-timer .alerta {
-  font-size: 1.1rem; font-weight: bold; text-align: center;
-  padding: 10px; border-radius: 8px; margin-top: 15px;
-}
-#painel-timer button { 
-  margin-top: 20px; width: 100%; padding: 12px; 
-  background: linear-gradient(135deg, #ff4d4d, #c0392b);
-  border: none; border-radius: 6px; color: #fff; font-weight: bold;
-  cursor: pointer; 
-}
-#painel-timer button:hover { 
-  background: linear-gradient(135deg, #e74c3c, #a93226); 
-}
+.acao-editar { background: #8e44ad; color: #fff; border: none; padding: 5px 8px; border-radius: 6px; }
+.acao-remover { background: #e74c3c; color: #fff; border: none; padding: 5px 8px; border-radius: 6px; }
 
 /* ================================
    STATUS COLORS
@@ -277,5 +247,4 @@ nav a:hover { color: #ff4da6; }
   nav a { font-size: 0.9rem; margin: 5px; }
   .tabela th, .tabela td { font-size: 0.8rem; padding: 5px; }
   .card-admin h2, .plano-card h3 { font-size: 1rem; }
-  footer { font-size: 0.75rem; padding: 10px; }
 }
