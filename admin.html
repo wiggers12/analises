@@ -12,8 +12,6 @@
       color: #fff;
       margin: 0;
     }
-
-    /* Topo */
     .topbar {
       background: #111;
       padding: 20px;
@@ -22,14 +20,7 @@
     }
     .topbar h1 { font-size: 1.5rem; color: #fff; }
     .topbar h1 span { color: #27ae60; }
-
-    /* Containers */
-    .admin-container {
-      max-width: 1100px;
-      margin: 20px auto;
-      padding: 20px;
-    }
-
+    .admin-container { max-width: 1100px; margin: 20px auto; padding: 20px; }
     .card-admin {
       background: #1c1c2b;
       padding: 20px;
@@ -37,313 +28,256 @@
       margin-bottom: 30px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
-    .card-admin h2 {
-      margin-bottom: 15px;
-      font-size: 1.3rem;
-      color: #00c8ff;
-    }
-
-    /* Inputs */
-    .card-admin input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: none;
-      font-size: 1rem;
-    }
-
+    .card-admin h2 { margin-bottom: 15px; font-size: 1.3rem; color: #00c8ff; }
+    .card-admin input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: none; font-size: 1rem; }
     .card-admin button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 12px;
-      background: #27ae60;
-      color: #fff;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
+      margin-top: 5px; padding: 8px 12px; background: #27ae60; color: #fff; font-weight: bold;
+      border: none; border-radius: 6px; cursor: pointer; transition: 0.3s;
     }
     .card-admin button:hover { background: #2ecc71; }
-
-    /* Botões resultado */
     .btn-green { background: #2ecc71 !important; }
-    .btn-green:hover { background: #27ae60 !important; }
     .btn-red { background: #e74c3c !important; }
-    .btn-red:hover { background: #c0392b !important; }
-
-    /* Tabelas */
-    .tabela {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .tabela th, .tabela td { padding: 12px; text-align: center; }
+    .tabela { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+    .tabela th, .tabela td { padding: 10px; text-align: center; }
     .tabela th { background: #222; color: #fff; }
     .tabela tr:nth-child(even) { background: #2a2a3d; }
     .tabela tr:nth-child(odd) { background: #1e1e2f; }
-    .ativo { color: #2ecc71; font-weight: bold; }
-    .inativo { color: #e74c3c; font-weight: bold; }
-
-    .acao-btn {
-      margin: 2px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
+    .acao-btn { margin: 2px; padding: 5px 8px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
     .acao-editar { background: #2980b9; color: #fff; }
-    .acao-editar:hover { background: #3498db; }
-    .acao-toggle { background: #8e44ad; color: #fff; }
-    .acao-toggle:hover { background: #9b59b6; }
     .acao-remover { background: #c0392b; color: #fff; }
-    .acao-remover:hover { background: #e74c3c; }
   </style>
 </head>
 <body>
-  <!-- TOPO -->
   <header class="topbar">
     <h1>👑 Painel de <span>Administração</span></h1>
   </header>
 
-  <!-- CONTEÚDO -->
   <section class="admin-container">
-    <!-- Card: Assinaturas -->
+    <!-- Assinaturas -->
     <div class="card-admin">
       <h2>📋 Gerenciar Assinaturas</h2>
       <table class="tabela">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Validade</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Email</th><th>Status</th><th>Validade</th><th>Ações</th></tr></thead>
         <tbody id="assinaturasTable"></tbody>
       </table>
     </div>
 
-    <!-- Card: Controle Financeiro -->
+    <!-- Financeiro -->
     <div class="card-admin">
       <h2>💰 Controle Financeiro</h2>
       <table class="tabela">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Depósitos</th>
-            <th>Ganhos</th>
-            <th>Perdas</th>
-            <th>Saldo Atual</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Email</th><th>Depósitos</th><th>Ganhos</th><th>Perdas</th><th>Saldo</th></tr></thead>
         <tbody id="financeiroTable"></tbody>
       </table>
     </div>
 
-    <!-- Card: Controle do Timer -->
+    <!-- Oportunidades -->
     <div class="card-admin">
       <h2>⏱ Controle de Oportunidades</h2>
-      <label for="tempoProx">Tempo até o próximo call (segundos):</label>
-      <input type="number" id="tempoProx" min="5" value="60">
-
-      <label for="multProx">Multiplicador esperado:</label>
-      <input type="number" id="multProx" step="0.01" value="2.00">
-
-      <button onclick="definirCall()">🚀 Lançar Próxima Oportunidade</button>
-      <button class="btn-green" onclick="finalizarCall('GREEN')">✅ Finalizar como GREEN</button>
-      <button class="btn-red" onclick="finalizarCall('RED')">❌ Finalizar como RED</button>
+      <input type="number" id="tempoProx" placeholder="Tempo (s)" value="60">
+      <input type="number" id="multProx" placeholder="Multiplicador" step="0.01" value="2.00">
+      <button onclick="definirCall()">🚀 Lançar Call</button>
+      <button class="btn-green" onclick="finalizarCall('GREEN')">✅ GREEN</button>
+      <button class="btn-red" onclick="finalizarCall('RED')">❌ RED</button>
     </div>
 
-    <!-- Card: Gerenciar Ícones -->
+    <!-- Ícones -->
     <div class="card-admin">
-      <h2>🎨 Gerenciar Ícones do Dashboard</h2>
-      <input type="text" id="iconeEmoji" placeholder="Emoji (ex: 📈)">
-      <input type="text" id="iconeTitulo" placeholder="Título do Card">
-      <button id="btnSalvarIcone" onclick="adicionarIcone()">➕ Adicionar Ícone</button>
-
-      <table class="tabela">
-        <thead>
-          <tr>
-            <th>Emoji</th>
-            <th>Título</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
+      <h2>🎨 Gerenciar Ícones</h2>
+      <input type="text" id="iconeEmoji" placeholder="Emoji">
+      <input type="text" id="iconeTitulo" placeholder="Título">
+      <button onclick="adicionarIcone()">➕ Adicionar Ícone</button>
+      <table class="tabela"><thead><tr><th>Emoji</th><th>Título</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tabelaIcones"></tbody>
       </table>
+    </div>
+
+    <!-- Últimas Velas -->
+    <div class="card-admin">
+      <h2>📈 Últimas Velas</h2>
+      <input type="number" id="velaMult" placeholder="Multiplicador">
+      <button onclick="adicionarVela()">➕ Adicionar Vela</button>
+      <table class="tabela"><thead><tr><th>Multiplicador</th><th>Horário</th><th>Ações</th></tr></thead>
+        <tbody id="tabelaVelas"></tbody>
+      </table>
+    </div>
+
+    <!-- Rodadas -->
+    <div class="card-admin">
+      <h2>📊 Relatório de Rodadas</h2>
+      <table class="tabela"><thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabelaRodadas"></tbody>
+      </table>
+    </div>
+
+    <!-- Calls -->
+    <div class="card-admin">
+      <h2>📢 Últimos Calls</h2>
+      <table class="tabela"><thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabelaCalls"></tbody>
+      </table>
+    </div>
+
+    <!-- Lucro Virtual -->
+    <div class="card-admin">
+      <h2>💹 Lucro Virtual</h2>
+      <input type="number" id="lucroInput" placeholder="Valor em R$">
+      <button onclick="atualizarLucro()">💾 Atualizar</button>
+      <p>Valor atual: R$ <span id="lucroAtual">0.00</span></p>
     </div>
   </section>
 
   <!-- SCRIPT -->
   <script type="module">
     import { auth, db } from "./firebase.js";
-    import { 
-      collection, getDocs, getDoc, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { collection, getDocs, getDoc, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const adminEmail = "dionegalato1212@gmail.com";
     let editandoId = null;
 
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
       if (!user || user.email !== adminEmail) {
-        alert("⚠️ Acesso negado");
-        window.location.href = "login.html";
+        alert("⚠️ Acesso negado"); window.location.href = "login.html";
       } else {
         carregarAssinaturas();
         carregarFinanceiro();
         carregarIcones();
+        carregarVelas();
+        carregarRodadas();
+        carregarCalls();
+        carregarLucro();
       }
     });
 
-    // === ASSINATURAS ===
-    function formatarData(timestamp) {
-      if (!timestamp) return "Não definido";
-      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-      return date.toLocaleDateString("pt-BR");
-    }
-
+    // === Assinaturas ===
     async function carregarAssinaturas() {
-      const snapshot = await getDocs(collection(db, "assinaturas"));
-      const table = document.getElementById("assinaturasTable");
-      table.innerHTML = "";
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const validade = formatarData(data.validade);
-        const statusClass = data.status === "ATIVO" ? "ativo" : "inativo";
-        table.innerHTML += `
-          <tr>
-            <td>${data.email}</td>
-            <td class="${statusClass}">${data.status}</td>
-            <td>${validade}</td>
-            <td>
-              <button onclick="atualizarStatus('${docSnap.id}', 'ATIVO', 30)">+30d</button>
-              <button onclick="atualizarStatus('${docSnap.id}', 'INATIVO')">Inativar</button>
-            </td>
-          </tr>`;
+      onSnapshot(collection(db, "assinaturas"), (snap) => {
+        let html = "";
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          const validade = d.validade?.toDate().toLocaleDateString("pt-BR") || "-";
+          html += `<tr><td>${d.email}</td><td>${d.status}</td><td>${validade}</td>
+            <td><button onclick="atualizarStatus('${docSnap.id}','ATIVO',30)">+30d</button>
+            <button onclick="atualizarStatus('${docSnap.id}','INATIVO')">Inativar</button></td></tr>`;
+        });
+        document.getElementById("assinaturasTable").innerHTML = html;
       });
     }
-
-    async function carregarFinanceiro() {
-      const snapshot = await getDocs(collection(db, "financeiro"));
-      const table = document.getElementById("financeiroTable");
-      table.innerHTML = "";
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const saldo = (data.depositos + data.ganhos - data.perdas).toFixed(2);
-        table.innerHTML += `
-          <tr>
-            <td>${data.email}</td>
-            <td>R$ ${data.depositos.toFixed(2)}</td>
-            <td style="color:#2ecc71;">R$ ${data.ganhos.toFixed(2)}</td>
-            <td style="color:#e74c3c;">R$ ${data.perdas.toFixed(2)}</td>
-            <td style="font-weight:bold; color:${saldo>=0?'#2ecc71':'#e74c3c'};">R$ ${saldo}</td>
-          </tr>`;
-      });
-    }
-
-    window.atualizarStatus = async function (id, novoStatus, dias = null) {
+    window.atualizarStatus = async (id, status, dias) => {
       const ref = doc(db, "assinaturas", id);
-      let updateData = { status: novoStatus };
-      if (novoStatus === "ATIVO" && dias) {
-        const novaData = new Date();
-        novaData.setDate(novaData.getDate() + dias);
-        updateData.validade = Timestamp.fromDate(novaData);
+      let data = { status };
+      if (status === "ATIVO" && dias) {
+        let nova = new Date(); nova.setDate(nova.getDate()+dias);
+        data.validade = Timestamp.fromDate(nova);
       }
-      await updateDoc(ref, updateData);
-      carregarAssinaturas();
+      await updateDoc(ref, data);
     };
 
-    // === CALLS ===
-    window.definirCall = async function () {
+    // === Financeiro ===
+    async function carregarFinanceiro() {
+      onSnapshot(collection(db, "financeiro"), (snap) => {
+        let html = "";
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          const saldo = (d.depositos+d.ganhos-d.perdas).toFixed(2);
+          html += `<tr><td>${d.email}</td>
+          <td>R$${d.depositos}</td><td style="color:green">R$${d.ganhos}</td>
+          <td style="color:red">R$${d.perdas}</td>
+          <td style="font-weight:bold">${saldo}</td></tr>`;
+        });
+        document.getElementById("financeiroTable").innerHTML = html;
+      });
+    }
+
+    // === Calls em tempo real ===
+    window.definirCall = async () => {
       const tempo = parseInt(document.getElementById("tempoProx").value);
       const mult = parseFloat(document.getElementById("multProx").value);
-      if (!tempo || !mult) { alert("⚠️ Preencha o tempo e o multiplicador!"); return; }
-      const horarioLancado = new Date();
-      await setDoc(doc(db, "calls", "ativo"), {
-        horarioLancado, tempo, multEsperado: mult, status: "PENDENTE"
-      });
-      alert("✅ Call lançado!");
+      await setDoc(doc(db,"calls","ativo"),{horarioLancado:new Date(),tempo,multEsperado:mult,status:"PENDENTE"});
+    };
+    window.finalizarCall = async (res) => {
+      const ref = doc(db,"calls","ativo");
+      await updateDoc(ref,{status:res,horarioFinal:new Date()});
+      await addDoc(collection(db,"callsHistorico"),{horario:new Date(),mult:parseFloat(document.getElementById("multProx").value),status:res});
     };
 
-    window.finalizarCall = async function (resultado) {
-      const callRef = doc(db, "calls", "ativo");
-      const horarioFinal = new Date();
-      await updateDoc(callRef, { status: resultado, horarioFinal });
-      const ativoSnap = await getDoc(callRef);
-      let horarioLancado = horarioFinal, multEsperado = parseFloat(document.getElementById("multProx").value);
-      if (ativoSnap.exists()) {
-        const data = ativoSnap.data();
-        if (data.horarioLancado) horarioLancado = data.horarioLancado.toDate ? data.horarioLancado.toDate() : data.horarioLancado;
-        if (data.multEsperado) multEsperado = data.multEsperado;
-      }
-      await addDoc(collection(db, "callsHistorico"), {
-        horarioLancado: Timestamp.fromDate(horarioLancado),
-        horarioFinal: Timestamp.fromDate(horarioFinal),
-        multEsperado, status: resultado
-      });
-      alert("📊 Call finalizado como " + resultado);
-    };
-
-    // === ÍCONES ===
+    // === Ícones ===
     async function carregarIcones() {
-      const snapshot = await getDocs(collection(db, "icones"));
-      const tabela = document.getElementById("tabelaIcones");
-      tabela.innerHTML = "";
-      snapshot.forEach(docSnap => {
-        const icone = docSnap.data();
-        tabela.innerHTML += `
-          <tr>
-            <td>${icone.emoji}</td>
-            <td>${icone.titulo}</td>
-            <td>${icone.status || "ATIVO"}</td>
-            <td>
-              <button class="acao-btn acao-editar" onclick="editarIcone('${docSnap.id}','${icone.emoji}','${icone.titulo}')">✏️ Editar</button>
-              <button class="acao-btn acao-toggle" onclick="toggleStatus('${docSnap.id}','${icone.status || "ATIVO"}')">🔄 ${icone.status === "INATIVO" ? "Ativar" : "Inativar"}</button>
-              <button class="acao-btn acao-remover" onclick="removerIcone('${docSnap.id}')">🗑 Remover</button>
-            </td>
-          </tr>`;
+      onSnapshot(collection(db,"icones"),(snap)=>{
+        let html="";
+        snap.forEach(docSnap=>{
+          const d=docSnap.data();
+          html+=`<tr><td>${d.emoji}</td><td>${d.titulo}</td><td>${d.status}</td>
+          <td><button class="acao-btn acao-editar" onclick="editarIcone('${docSnap.id}','${d.emoji}','${d.titulo}')">✏️</button>
+          <button class="acao-btn acao-remover" onclick="removerIcone('${docSnap.id}')">🗑</button></td></tr>`;
+        });
+        document.getElementById("tabelaIcones").innerHTML=html;
       });
     }
-
-    window.adicionarIcone = async function() {
-      const emoji = document.getElementById("iconeEmoji").value;
-      const titulo = document.getElementById("iconeTitulo").value;
-      if (!emoji || !titulo) { alert("⚠️ Preencha os campos!"); return; }
-      if (editandoId) {
-        await updateDoc(doc(db, "icones", editandoId), { emoji, titulo });
-        editandoId = null;
-        document.getElementById("btnSalvarIcone").innerText = "➕ Adicionar Ícone";
-      } else {
-        await addDoc(collection(db, "icones"), { emoji, titulo, status: "ATIVO" });
-      }
-      document.getElementById("iconeEmoji").value = "";
-      document.getElementById("iconeTitulo").value = "";
-      carregarIcones();
+    window.adicionarIcone=async()=>{
+      const e=document.getElementById("iconeEmoji").value;
+      const t=document.getElementById("iconeTitulo").value;
+      if(editandoId){await updateDoc(doc(db,"icones",editandoId),{emoji:e,titulo:t}); editandoId=null;}
+      else{await addDoc(collection(db,"icones"),{emoji:e,titulo:t,status:"ATIVO"});}
     };
+    window.editarIcone=(id,e,t)=>{document.getElementById("iconeEmoji").value=e;document.getElementById("iconeTitulo").value=t;editandoId=id;};
+    window.removerIcone=async(id)=>{await deleteDoc(doc(db,"icones",id));};
 
-    window.editarIcone = function(id, emoji, titulo) {
-      document.getElementById("iconeEmoji").value = emoji;
-      document.getElementById("iconeTitulo").value = titulo;
-      document.getElementById("btnSalvarIcone").innerText = "💾 Salvar Alterações";
-      editandoId = id;
+    // === Velas ===
+    function carregarVelas(){
+      onSnapshot(collection(db,"velas"),(snap)=>{
+        let html="";snap.forEach(docSnap=>{
+          const d=docSnap.data();
+          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
+          html+=`<tr><td>${d.multiplicador}</td><td>${hora}</td>
+          <td><button class="acao-btn acao-remover" onclick="removerVela('${docSnap.id}')">🗑</button></td></tr>`;
+        });document.getElementById("tabelaVelas").innerHTML=html;
+      });
+    }
+    window.adicionarVela=async()=>{
+      const mult=parseFloat(document.getElementById("velaMult").value);
+      await addDoc(collection(db,"velas"),{multiplicador:mult,horario:new Date()});
     };
+    window.removerVela=async(id)=>{await deleteDoc(doc(db,"velas",id));};
 
-    window.removerIcone = async function(id) {
-      if (confirm("❌ Deseja remover este ícone?")) {
-        await deleteDoc(doc(db, "icones", id));
-        carregarIcones();
-      }
-    };
+    // === Rodadas ===
+    function carregarRodadas(){
+      onSnapshot(collection(db,"rodadas"),(snap)=>{
+        let html="";snap.forEach(docSnap=>{
+          const d=docSnap.data();
+          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
+          html+=`<tr><td>${hora}</td><td>${d.mult}</td><td>${d.status}</td>
+          <td><button class="acao-btn acao-editar" onclick="editarRodada('${docSnap.id}')">✏️</button>
+          <button class="acao-btn acao-remover" onclick="removerRodada('${docSnap.id}')">🗑</button></td></tr>`;
+        });document.getElementById("tabelaRodadas").innerHTML=html;
+      });
+    }
+    window.editarRodada=async(id)=>{await updateDoc(doc(db,"rodadas",id),{status:prompt("Novo status (GREEN/RED)","GREEN")});};
+    window.removerRodada=async(id)=>{await deleteDoc(doc(db,"rodadas",id));};
 
-    window.toggleStatus = async function(id, statusAtual) {
-      await updateDoc(doc(db, "icones", id), { status: statusAtual === "ATIVO" ? "INATIVO" : "ATIVO" });
-      carregarIcones();
+    // === Calls Historico ===
+    function carregarCalls(){
+      onSnapshot(collection(db,"callsHistorico"),(snap)=>{
+        let html="";snap.forEach(docSnap=>{
+          const d=docSnap.data();
+          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
+          html+=`<tr><td>${hora}</td><td>${d.mult}</td><td>${d.status}</td>
+          <td><button class="acao-btn acao-remover" onclick="removerCall('${docSnap.id}')">🗑</button></td></tr>`;
+        });document.getElementById("tabelaCalls").innerHTML=html;
+      });
+    }
+    window.removerCall=async(id)=>{await deleteDoc(doc(db,"callsHistorico",id));};
+
+    // === Lucro Virtual ===
+    function carregarLucro(){
+      onSnapshot(doc(db,"lucro","atual"),(docSnap)=>{
+        if(docSnap.exists()){document.getElementById("lucroAtual").innerText=docSnap.data().valor.toFixed(2);}
+      });
+    }
+    window.atualizarLucro=async()=>{
+      const val=parseFloat(document.getElementById("lucroInput").value);
+      await setDoc(doc(db,"lucro","atual"),{valor:val});
     };
   </script>
 </body>
