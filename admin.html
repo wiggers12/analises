@@ -59,7 +59,7 @@
     }
 
     .card-admin button {
-      margin-top: 15px;
+      margin-top: 10px;
       width: 100%;
       padding: 12px;
       background: #27ae60;
@@ -72,6 +72,20 @@
     }
     .card-admin button:hover {
       background: #2ecc71;
+    }
+
+    /* Botões resultado */
+    .btn-green {
+      background: #2ecc71 !important;
+    }
+    .btn-green:hover {
+      background: #27ae60 !important;
+    }
+    .btn-red {
+      background: #e74c3c !important;
+    }
+    .btn-red:hover {
+      background: #c0392b !important;
     }
 
     /* Tabelas */
@@ -97,27 +111,6 @@
     }
     .ativo { color: #2ecc71; font-weight: bold; }
     .inativo { color: #e74c3c; font-weight: bold; }
-
-    .tabela button {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .tabela button:first-child {
-      background: #27ae60; color: #fff;
-    }
-    .tabela button:first-child:hover {
-      background: #2ecc71;
-    }
-    .tabela button:last-child {
-      background: #c0392b; color: #fff;
-    }
-    .tabela button:last-child:hover {
-      background: #e74c3c;
-    }
   </style>
 </head>
 <body>
@@ -171,6 +164,8 @@
       <input type="number" id="multProx" step="0.01" value="2.00">
 
       <button onclick="definirCall()">🚀 Lançar Próxima Oportunidade</button>
+      <button class="btn-green" onclick="finalizarCall('GREEN')">✅ Finalizar como GREEN</button>
+      <button class="btn-red" onclick="finalizarCall('RED')">❌ Finalizar como RED</button>
     </div>
   </section>
 
@@ -178,7 +173,7 @@
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { 
-      collection, getDocs, doc, updateDoc, setDoc, Timestamp 
+      collection, getDocs, doc, updateDoc, setDoc, addDoc, Timestamp 
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -289,6 +284,27 @@
       });
 
       alert("✅ Call lançado! Os dashboards já receberam a oportunidade.");
+    };
+
+    // === FINALIZAR CALL (GREEN/RED) ===
+    window.finalizarCall = async function (resultado) {
+      const callRef = doc(db, "calls", "ativo");
+      const horarioFinal = new Date();
+
+      // Atualiza o doc ativo
+      await updateDoc(callRef, {
+        status: resultado,
+        horarioFinal: horarioFinal
+      });
+
+      // Salva no histórico
+      await addDoc(collection(db, "callsHistorico"), {
+        horarioLancado: horarioFinal,
+        multEsperado: parseFloat(document.getElementById("multProx").value),
+        resultado: resultado
+      });
+
+      alert("📊 Call finalizado como " + resultado);
     };
   </script>
 </body>
