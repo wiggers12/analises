@@ -5,73 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - GoathBet</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0a0a0f, #141422, #0a0a0f);
-      color: #fff;
-      margin: 0;
-    }
-    .topbar {
-      background: #111;
-      padding: 20px;
-      text-align: center;
-      border-bottom: 2px solid #27ae60;
-    }
-    .topbar h1 { font-size: 1.5rem; color: #fff; }
-    .topbar h1 span { color: #27ae60; }
-
-    /* MENU */
-    .menu-admin {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      background: #1c1c2b;
-      padding: 12px;
-      border-bottom: 2px solid #27ae60;
-    }
-    .menu-admin button {
-      background: #2a2a3d;
-      border: none;
-      color: #fff;
-      padding: 8px 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .menu-admin button:hover,
-    .menu-admin button.ativo {
-      background: #27ae60;
-    }
-
-    .admin-container { max-width: 1100px; margin: 20px auto; padding: 20px; }
-    .card-admin {
-      background: #1c1c2b;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 30px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-      display: none;
-    }
-    .card-admin.ativo { display: block; }
-    .card-admin h2 { margin-bottom: 15px; font-size: 1.3rem; color: #00c8ff; }
-    .card-admin input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: none; font-size: 1rem; }
-    .card-admin button {
-      margin-top: 5px; padding: 8px 12px; background: #27ae60; color: #fff; font-weight: bold;
-      border: none; border-radius: 6px; cursor: pointer; transition: 0.3s;
-    }
-    .card-admin button:hover { background: #2ecc71; }
-    .btn-green { background: #2ecc71 !important; }
-    .btn-red { background: #e74c3c !important; }
-    .tabela { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; margin-top: 10px; }
-    .tabela th, .tabela td { padding: 10px; text-align: center; }
-    .tabela th { background: #222; color: #fff; }
-    .tabela tr:nth-child(even) { background: #2a2a3d; }
-    .tabela tr:nth-child(odd) { background: #1e1e2f; }
-    .acao-btn { margin: 2px; padding: 5px 8px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
-    .acao-editar { background: #2980b9; color: #fff; }
-    .acao-remover { background: #c0392b; color: #fff; }
-  </style>
 </head>
 <body>
   <header class="topbar">
@@ -113,7 +46,8 @@
       <h2>📈 Últimas Velas</h2>
       <input type="number" id="velaMult" placeholder="Multiplicador">
       <button onclick="adicionarVela()">➕ Adicionar Vela</button>
-      <table class="tabela"><thead><tr><th>Multiplicador</th><th>Horário</th><th>Ações</th></tr></thead>
+      <table class="tabela">
+        <thead><tr><th>Multiplicador</th><th>Horário</th><th>Ações</th></tr></thead>
         <tbody id="tabelaVelas"></tbody>
       </table>
     </div>
@@ -121,7 +55,8 @@
     <!-- Rodadas -->
     <div id="card-rodadas" class="card-admin">
       <h2>📊 Relatório de Rodadas</h2>
-      <table class="tabela"><thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
+      <table class="tabela">
+        <thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tabelaRodadas"></tbody>
       </table>
     </div>
@@ -129,7 +64,8 @@
     <!-- Calls Historico -->
     <div id="card-callsHist" class="card-admin">
       <h2>📢 Últimos Calls</h2>
-      <table class="tabela"><thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
+      <table class="tabela">
+        <thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tabelaCalls"></tbody>
       </table>
     </div>
@@ -145,32 +81,31 @@
 
   <!-- SCRIPT -->
   <script type="module">
-  import { auth, db } from "./firebase.js";
-  import { collection, getDocs, getDoc, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { auth, db } from "./firebase.js";
+    import { collection, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  // lista de e-mails autorizados
-  const adminEmails = [
-    "dionegalato1212@gmail.com",
-    "garotamenablog@outlook.com"
-  ];
+    // lista de e-mails autorizados
+    const adminEmails = [
+      "dionegalato1212@gmail.com",
+      "garotamenablog@outlook.com"
+    ];
 
-  let editandoId = null;
+    let editandoId = null;
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user || !adminEmails.includes(user.email)) {
-      alert("⚠️ Acesso negado"); 
-      window.location.href = "login.html";
-    } else {
-      carregarAssinaturas();
-      carregarVelas();
-      carregarRodadas();
-      carregarCalls();
-      carregarLucro();
-    }
-  });
-</script>
-
+    onAuthStateChanged(auth, (user) => {
+      if (!user || !adminEmails.includes(user.email)) {
+        alert("⚠️ Acesso negado"); 
+        window.location.href = "login.html";
+      } else {
+        carregarAssinaturas();
+        carregarVelas();
+        carregarRodadas();
+        carregarCalls();
+        carregarLucro();
+      }
+    });
 
     // === MENU ===
     window.mostrarCard = function(nome) {
@@ -204,47 +139,31 @@
       await updateDoc(ref, data);
     };
 
-    // === Calls em tempo real ===
+    // === Calls ===
     window.definirCall = async () => {
       const tempo = parseInt(document.getElementById("tempoProx").value);
       const mult = parseFloat(document.getElementById("multProx").value);
       await setDoc(doc(db,"calls","ativo"),{horarioLancado:new Date(),tempo,multEsperado:mult,status:"PENDENTE"});
     };
-   window.finalizarCall = async (res) => {
-  const mult = parseFloat(document.getElementById("multProx").value);
-
-  // Atualiza call ativo
-  const ref = doc(db,"calls","ativo");
-  await updateDoc(ref, {
-    status: res,
-    horarioFinal: new Date()
-  });
-
-  // Salva em histórico
-  await addDoc(collection(db,"callsHistorico"), {
-    horario: new Date(),
-    mult,
-    status: res
-  });
-
-  // Salva também em rodadas ✅
-  await addDoc(collection(db,"rodadas"), {
-    horario: new Date(),
-    mult,
-    status: res
-  });
-};
-
+    window.finalizarCall = async (res) => {
+      const mult = parseFloat(document.getElementById("multProx").value);
+      await updateDoc(doc(db,"calls","ativo"),{status:res,horarioFinal:new Date()});
+      await addDoc(collection(db,"callsHistorico"),{horario:new Date(),mult,status:res});
+      await addDoc(collection(db,"rodadas"),{horario:new Date(),mult,status:res});
+      alert(`📢 Call finalizado: ${res}`);
+    };
 
     // === Velas ===
     function carregarVelas(){
       onSnapshot(collection(db,"velas"),(snap)=>{
-        let html="";snap.forEach(docSnap=>{
+        let html="";
+        snap.forEach(docSnap=>{
           const d=docSnap.data();
           const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
           html+=`<tr><td>${d.multiplicador}</td><td>${hora}</td>
           <td><button class="acao-btn acao-remover" onclick="removerVela('${docSnap.id}')">🗑</button></td></tr>`;
-        });document.getElementById("tabelaVelas").innerHTML=html;
+        });
+        document.getElementById("tabelaVelas").innerHTML=html;
       });
     }
     window.adicionarVela=async()=>{
@@ -253,10 +172,11 @@
     };
     window.removerVela=async(id)=>{await deleteDoc(doc(db,"velas",id));};
 
-    // === Rodadas (corrigido) ===
+    // === Rodadas ===
     function carregarRodadas(){
       onSnapshot(collection(db,"rodadas"),(snap)=>{
-        let html="";snap.forEach(docSnap=>{
+        let html="";
+        snap.forEach(docSnap=>{
           const d=docSnap.data();
           const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
           const status=d.status||"-";
@@ -264,7 +184,8 @@
           <td style="color:${status==='GREEN'?'#2ecc71':'#e74c3c'}">${status}</td>
           <td><button class="acao-btn acao-editar" onclick="editarRodada('${docSnap.id}','${status}')">✏️</button>
           <button class="acao-btn acao-remover" onclick="removerRodada('${docSnap.id}')">🗑</button></td></tr>`;
-        });document.getElementById("tabelaRodadas").innerHTML=html;
+        });
+        document.getElementById("tabelaRodadas").innerHTML=html;
       });
     }
     window.editarRodada=async(id,statusAtual)=>{
@@ -276,21 +197,25 @@
     // === Calls Historico ===
     function carregarCalls(){
       onSnapshot(collection(db,"callsHistorico"),(snap)=>{
-        let html="";snap.forEach(docSnap=>{
+        let html="";
+        snap.forEach(docSnap=>{
           const d=docSnap.data();
           const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
           html+=`<tr><td>${hora}</td><td>${d.mult}</td>
           <td style="color:${d.status==='GREEN'?'#2ecc71':'#e74c3c'}">${d.status}</td>
           <td><button class="acao-btn acao-remover" onclick="removerCall('${docSnap.id}')">🗑</button></td></tr>`;
-        });document.getElementById("tabelaCalls").innerHTML=html;
+        });
+        document.getElementById("tabelaCalls").innerHTML=html;
       });
     }
     window.removerCall=async(id)=>{await deleteDoc(doc(db,"callsHistorico",id));};
 
-    // === Lucro Virtual ===
+    // === Lucro ===
     function carregarLucro(){
       onSnapshot(doc(db,"lucro","atual"),(docSnap)=>{
-        if(docSnap.exists()){document.getElementById("lucroAtual").innerText=docSnap.data().valor.toFixed(2);}
+        if(docSnap.exists()){
+          document.getElementById("lucroAtual").innerText=docSnap.data().valor.toFixed(2);
+        }
       });
     }
     window.atualizarLucro=async()=>{
