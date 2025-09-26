@@ -286,26 +286,39 @@
       alert("✅ Call lançado! Os dashboards já receberam a oportunidade.");
     };
 
-    // === FINALIZAR CALL (GREEN/RED) ===
-    window.finalizarCall = async function (resultado) {
-      const callRef = doc(db, "calls", "ativo");
-      const horarioFinal = new Date();
+   // === FINALIZAR CALL (GREEN/RED) ===
+window.finalizarCall = async function (resultado) {
+  const callRef = doc(db, "calls", "ativo");
+  const horarioFinal = new Date();
 
-      // Atualiza o doc ativo
-      await updateDoc(callRef, {
-        status: resultado,
-        horarioFinal: horarioFinal
-      });
+  // Atualiza o doc ativo
+  await updateDoc(callRef, {
+    status: resultado,
+    horarioFinal: horarioFinal
+  });
 
-      // Salva no histórico
-      await addDoc(collection(db, "callsHistorico"), {
-        horarioLancado: horarioFinal,
-        multEsperado: parseFloat(document.getElementById("multProx").value),
-        resultado: resultado
-      });
+  // Buscar o doc ativo para pegar horárioLancado
+  const ativoSnap = await getDoc(callRef);
+  let horarioLancado = horarioFinal;
+  let multEsperado = parseFloat(document.getElementById("multProx").value);
 
-      alert("📊 Call finalizado como " + resultado);
-    };
+  if (ativoSnap.exists()) {
+    const data = ativoSnap.data();
+    if (data.horarioLancado) horarioLancado = data.horarioLancado.toDate ? data.horarioLancado.toDate() : data.horarioLancado;
+    if (data.multEsperado) multEsperado = data.multEsperado;
+  }
+
+  // Salva no histórico
+  await addDoc(collection(db, "callsHistorico"), {
+    horarioLancado: Timestamp.fromDate(horarioLancado),
+    horarioFinal: Timestamp.fromDate(horarioFinal),
+    multEsperado: multEsperado,
+    status: resultado
+  });
+
+  alert("📊 Call finalizado como " + resultado);
+};
+
   </script>
 </body>
 </html>
