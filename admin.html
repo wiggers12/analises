@@ -20,6 +20,30 @@
     }
     .topbar h1 { font-size: 1.5rem; color: #fff; }
     .topbar h1 span { color: #27ae60; }
+
+    /* MENU */
+    .menu-admin {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      background: #1c1c2b;
+      padding: 12px;
+      border-bottom: 2px solid #27ae60;
+    }
+    .menu-admin button {
+      background: #2a2a3d;
+      border: none;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .menu-admin button:hover,
+    .menu-admin button.ativo {
+      background: #27ae60;
+    }
+
     .admin-container { max-width: 1100px; margin: 20px auto; padding: 20px; }
     .card-admin {
       background: #1c1c2b;
@@ -27,7 +51,9 @@
       border-radius: 12px;
       margin-bottom: 30px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      display: none;
     }
+    .card-admin.ativo { display: block; }
     .card-admin h2 { margin-bottom: 15px; font-size: 1.3rem; color: #00c8ff; }
     .card-admin input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: none; font-size: 1rem; }
     .card-admin button {
@@ -52,9 +78,19 @@
     <h1>👑 Painel de <span>Administração</span></h1>
   </header>
 
+  <!-- MENU -->
+  <nav class="menu-admin">
+    <button onclick="mostrarCard('assinaturas')" class="ativo">📋 Assinaturas</button>
+    <button onclick="mostrarCard('calls')">⏱ Oportunidades</button>
+    <button onclick="mostrarCard('velas')">📈 Velas</button>
+    <button onclick="mostrarCard('rodadas')">📊 Rodadas</button>
+    <button onclick="mostrarCard('callsHist')">📢 Calls</button>
+    <button onclick="mostrarCard('lucro')">💹 Lucro</button>
+  </nav>
+
   <section class="admin-container">
     <!-- Assinaturas -->
-    <div class="card-admin">
+    <div id="card-assinaturas" class="card-admin ativo">
       <h2>📋 Gerenciar Assinaturas</h2>
       <table class="tabela">
         <thead><tr><th>Email</th><th>Status</th><th>Validade</th><th>Ações</th></tr></thead>
@@ -63,7 +99,7 @@
     </div>
 
     <!-- Oportunidades -->
-    <div class="card-admin">
+    <div id="card-calls" class="card-admin">
       <h2>⏱ Controle de Oportunidades</h2>
       <input type="number" id="tempoProx" placeholder="Tempo (s)" value="60">
       <input type="number" id="multProx" placeholder="Multiplicador" step="0.01" value="2.00">
@@ -72,8 +108,8 @@
       <button class="btn-red" onclick="finalizarCall('RED')">❌ RED</button>
     </div>
 
-    <!-- Últimas Velas -->
-    <div class="card-admin">
+    <!-- Velas -->
+    <div id="card-velas" class="card-admin">
       <h2>📈 Últimas Velas</h2>
       <input type="number" id="velaMult" placeholder="Multiplicador">
       <button onclick="adicionarVela()">➕ Adicionar Vela</button>
@@ -83,15 +119,15 @@
     </div>
 
     <!-- Rodadas -->
-    <div class="card-admin">
+    <div id="card-rodadas" class="card-admin">
       <h2>📊 Relatório de Rodadas</h2>
       <table class="tabela"><thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tabelaRodadas"></tbody>
       </table>
     </div>
 
-    <!-- Calls -->
-    <div class="card-admin">
+    <!-- Calls Historico -->
+    <div id="card-callsHist" class="card-admin">
       <h2>📢 Últimos Calls</h2>
       <table class="tabela"><thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tabelaCalls"></tbody>
@@ -99,7 +135,7 @@
     </div>
 
     <!-- Lucro Virtual -->
-    <div class="card-admin">
+    <div id="card-lucro" class="card-admin">
       <h2>💹 Lucro Virtual</h2>
       <input type="number" id="lucroInput" placeholder="Valor em R$">
       <button onclick="atualizarLucro()">💾 Atualizar</button>
@@ -121,8 +157,6 @@
         alert("⚠️ Acesso negado"); window.location.href = "login.html";
       } else {
         carregarAssinaturas();
-        carregarFinanceiro();
-        carregarIcones();
         carregarVelas();
         carregarRodadas();
         carregarCalls();
@@ -130,8 +164,16 @@
       }
     });
 
+    // === MENU ===
+    window.mostrarCard = function(nome) {
+      document.querySelectorAll('.menu-admin button').forEach(b => b.classList.remove('ativo'));
+      document.querySelectorAll('.card-admin').forEach(c => c.classList.remove('ativo'));
+      document.querySelector(`.menu-admin button[onclick*="${nome}"]`).classList.add('ativo');
+      document.getElementById("card-"+nome).classList.add('ativo');
+    };
+
     // === Assinaturas ===
-    async function carregarAssinaturas() {
+    function carregarAssinaturas() {
       onSnapshot(collection(db, "assinaturas"), (snap) => {
         let html = "";
         snap.forEach(docSnap => {
@@ -154,22 +196,6 @@
       await updateDoc(ref, data);
     };
 
-    // === Financeiro ===
-    async function carregarFinanceiro() {
-      onSnapshot(collection(db, "financeiro"), (snap) => {
-        let html = "";
-        snap.forEach(docSnap => {
-          const d = docSnap.data();
-          const saldo = (d.depositos+d.ganhos-d.perdas).toFixed(2);
-          html += `<tr><td>${d.email}</td>
-          <td>R$${d.depositos}</td><td style="color:green">R$${d.ganhos}</td>
-          <td style="color:red">R$${d.perdas}</td>
-          <td style="font-weight:bold">${saldo}</td></tr>`;
-        });
-        document.getElementById("financeiroTable").innerHTML = html;
-      });
-    }
-
     // === Calls em tempo real ===
     window.definirCall = async () => {
       const tempo = parseInt(document.getElementById("tempoProx").value);
@@ -181,28 +207,6 @@
       await updateDoc(ref,{status:res,horarioFinal:new Date()});
       await addDoc(collection(db,"callsHistorico"),{horario:new Date(),mult:parseFloat(document.getElementById("multProx").value),status:res});
     };
-
-    // === Ícones ===
-    async function carregarIcones() {
-      onSnapshot(collection(db,"icones"),(snap)=>{
-        let html="";
-        snap.forEach(docSnap=>{
-          const d=docSnap.data();
-          html+=`<tr><td>${d.emoji}</td><td>${d.titulo}</td><td>${d.status}</td>
-          <td><button class="acao-btn acao-editar" onclick="editarIcone('${docSnap.id}','${d.emoji}','${d.titulo}')">✏️</button>
-          <button class="acao-btn acao-remover" onclick="removerIcone('${docSnap.id}')">🗑</button></td></tr>`;
-        });
-        document.getElementById("tabelaIcones").innerHTML=html;
-      });
-    }
-    window.adicionarIcone=async()=>{
-      const e=document.getElementById("iconeEmoji").value;
-      const t=document.getElementById("iconeTitulo").value;
-      if(editandoId){await updateDoc(doc(db,"icones",editandoId),{emoji:e,titulo:t}); editandoId=null;}
-      else{await addDoc(collection(db,"icones"),{emoji:e,titulo:t,status:"ATIVO"});}
-    };
-    window.editarIcone=(id,e,t)=>{document.getElementById("iconeEmoji").value=e;document.getElementById("iconeTitulo").value=t;editandoId=id;};
-    window.removerIcone=async(id)=>{await deleteDoc(doc(db,"icones",id));};
 
     // === Velas ===
     function carregarVelas(){
@@ -221,19 +225,24 @@
     };
     window.removerVela=async(id)=>{await deleteDoc(doc(db,"velas",id));};
 
-    // === Rodadas ===
+    // === Rodadas (corrigido) ===
     function carregarRodadas(){
       onSnapshot(collection(db,"rodadas"),(snap)=>{
         let html="";snap.forEach(docSnap=>{
           const d=docSnap.data();
           const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
-          html+=`<tr><td>${hora}</td><td>${d.mult}</td><td>${d.status}</td>
-          <td><button class="acao-btn acao-editar" onclick="editarRodada('${docSnap.id}')">✏️</button>
+          const status=d.status||"-";
+          html+=`<tr><td>${hora}</td><td>${d.mult}</td>
+          <td style="color:${status==='GREEN'?'#2ecc71':'#e74c3c'}">${status}</td>
+          <td><button class="acao-btn acao-editar" onclick="editarRodada('${docSnap.id}','${status}')">✏️</button>
           <button class="acao-btn acao-remover" onclick="removerRodada('${docSnap.id}')">🗑</button></td></tr>`;
         });document.getElementById("tabelaRodadas").innerHTML=html;
       });
     }
-    window.editarRodada=async(id)=>{await updateDoc(doc(db,"rodadas",id),{status:prompt("Novo status (GREEN/RED)","GREEN")});};
+    window.editarRodada=async(id,statusAtual)=>{
+      const novo=prompt("Novo status (GREEN/RED)",statusAtual);
+      if(novo){await updateDoc(doc(db,"rodadas",id),{status:novo});}
+    };
     window.removerRodada=async(id)=>{await deleteDoc(doc(db,"rodadas",id));};
 
     // === Calls Historico ===
@@ -242,7 +251,8 @@
         let html="";snap.forEach(docSnap=>{
           const d=docSnap.data();
           const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
-          html+=`<tr><td>${hora}</td><td>${d.mult}</td><td>${d.status}</td>
+          html+=`<tr><td>${hora}</td><td>${d.mult}</td>
+          <td style="color:${d.status==='GREEN'?'#2ecc71':'#e74c3c'}">${d.status}</td>
           <td><button class="acao-btn acao-remover" onclick="removerCall('${docSnap.id}')">🗑</button></td></tr>`;
         });document.getElementById("tabelaCalls").innerHTML=html;
       });
