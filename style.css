@@ -230,24 +230,53 @@ nav a:hover { color: #ff4da6; }
    RESPONSIVO
 ================================= */
 @media (max-width: 768px) {
-  .topbar { flex-direction: column; padding: 15px 20px; text-align: center; }
-  nav { margin-top: 10px; }
-  nav a { margin: 0 10px; display: inline-block; }
-  .planos { padding: 20px; }
-  .tabela { display: block; overflow-x: auto; white-space: nowrap; }
-  .tabela th, .tabela td { font-size: 0.9rem; padding: 6px; }
-  .card-admin, .planos, .plano-card { margin: 15px 10px; padding: 15px; }
-  .card-admin input, .card-admin button, .plano-card a {
-    width: 100%; display: block; margin-top: 8px;
+  .topbar { 
+    flex-direction: column; 
+    padding: 12px 15px; 
+    text-align: center; 
   }
-}
-@media (max-width: 480px) {
   .topbar h1 { font-size: 1.2rem; }
-  .logo h1 { font-size: 1.4rem; }
-  nav a { font-size: 0.9rem; margin: 5px; }
-  .tabela th, .tabela td { font-size: 0.8rem; padding: 5px; }
-  .card-admin h2, .plano-card h3 { font-size: 1rem; }
+  .logo img { height: 35px; }
+  nav a { margin: 5px; font-size: 0.9rem; }
+
+  .login-box {
+    margin: 20px 10px;
+    padding: 20px;
+  }
+  .login-box h2 { font-size: 1.2rem; }
+  .login-box input { padding: 10px; font-size: 0.9rem; }
+
+  .planos { padding: 20px; margin: 30px 10px; }
+  .plano-card { padding: 15px; }
+  .plano-card h3 { font-size: 1.1rem; }
+  .plano-card .preco { font-size: 1.2rem; }
+
+  .menu-admin { flex-wrap: wrap; gap: 8px; padding: 8px; }
+  .menu-admin button { font-size: 0.8rem; padding: 6px 10px; }
+
+  .card-admin { padding: 15px; margin: 10px; }
+  .card-admin h2 { font-size: 1rem; }
+
+  .tabela { font-size: 0.85rem; }
+  .tabela th, .tabela td { padding: 6px; }
 }
+
+@media (max-width: 480px) {
+  body { font-size: 14px; }
+  .logo h1 { font-size: 1rem; }
+  .btn, .btn-login { padding: 8px 12px; font-size: 0.85rem; }
+
+  .login-box { padding: 15px; }
+  .login-box input { padding: 8px; font-size: 0.85rem; }
+
+  .plano-card { padding: 12px; }
+  .plano-card h3 { font-size: 1rem; }
+  .plano-card .preco { font-size: 1rem; }
+
+  .menu-admin button { font-size: 0.75rem; padding: 5px 8px; }
+  .tabela th, .tabela td { font-size: 0.75rem; padding: 4px; }
+}
+
 /* ===== HERO ===== */
 .hero {
   text-align: center;
