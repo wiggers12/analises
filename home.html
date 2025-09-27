@@ -6,78 +6,6 @@
   <title>GoathBet - Home</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="img/logo.png" type="image/png">
-  <style>
-    /* ===== HERO ===== */
-    .hero {
-      text-align: center;
-      padding: 60px 20px;
-      background: linear-gradient(135deg, #0a0a0f, #141422);
-    }
-    .hero h2 {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
-    .hero span {
-      color: #27ae60;
-      font-weight: bold;
-    }
-
-    /* ===== CARROSSEL ===== */
-    .carousel {
-      position: relative;
-      max-width: 900px;
-      margin: 40px auto;
-      overflow: hidden;
-    }
-    .carousel-track {
-      display: flex;
-      transition: transform 0.5s ease-in-out;
-    }
-    .card {
-      min-width: 100%;
-      box-sizing: border-box;
-      padding: 20px;
-      text-align: center;
-    }
-    .card-img {
-      width: 100%;
-      max-height: 250px;
-      object-fit: contain;
-      margin-bottom: 15px;
-    }
-    .btn-card {
-      display: inline-block;
-      background: #27ae60;
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 6px;
-      font-weight: bold;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .btn-card:hover {
-      background: #2ecc71;
-    }
-
-    /* Botões de navegação */
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      border-radius: 50%;
-      font-size: 1.2rem;
-    }
-    .carousel-btn:hover {
-      background: rgba(0,0,0,0.9);
-    }
-    .prev { left: 10px; }
-    .next { right: 10px; }
-  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -94,68 +22,23 @@
 
   <!-- HERO -->
   <section class="hero">
-    <h2>Os números não mentem,</h2>
-    <p>faça suas <span>escolhas</span> baseadas em <span>dados</span>.</p>
+    <h2>💖 Bem-vinda ao <span>GoathBet</span></h2>
+    <p>Os melhores sinais e relatórios para turbinar sua gestão.</p>
   </section>
 
-  <!-- CARROSSEL DE CARDS -->
-  <section class="carousel">
-    <div class="carousel-track" id="carouselTrack">
-      <div class="card">
-        <img src="img/aviator.png" alt="Aviator" class="card-img">
-        <a href="login.html" class="btn-card">Ver Sinais</a>
-      </div>
-      <div class="card">
-        <img src="img/goath.png" alt="Goath" class="card-img">
-        <a href="login.html" class="btn-card">Ver Sinais</a>
-      </div>
-      <div class="card">
-        <img src="img/goath_aviator.png" alt="Goath Aviator" class="card-img">
-        <a href="login.html" class="btn-card">Ver Sinais</a>
-      </div>
+  <!-- FOTO + FRASES -->
+  <section class="foto-section">
+    <img src="foto.png" alt="Perfil GoathBet">
+    <div class="features">
+      <div class="feature-box">📊 <span>Relatórios de Velas</span> em tempo real</div>
+      <div class="feature-box">🎯 <span>Entradas Inteligentes</span> com alta precisão</div>
+      <div class="feature-box">🧮 <span>Calculadora de Gestão</span> para seu controle</div>
     </div>
-    <button class="carousel-btn prev" onclick="moveCarousel(-1)">❮</button>
-    <button class="carousel-btn next" onclick="moveCarousel(1)">❯</button>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <p>© 2025 GoathBet - Todos os direitos reservados.</p>
+    <p>© 2025 GoathBet - Todos os direitos reservados | Feito com 💜</p>
   </footer>
-
-  <!-- SCRIPT -->
-  <script type="module">
-    import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const ref = doc(db, "assinaturas", user.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          const dados = snap.data();
-          const hoje = new Date();
-          const validade = dados.validade?.toDate ? dados.validade.toDate() : new Date(dados.validade);
-          if (dados.status === "ATIVO" && validade > hoje) {
-            window.location.href = "dashboard.html";
-          }
-        }
-      }
-    });
-
-    // ===== CARROSSEL SCRIPT =====
-    let currentIndex = 0;
-    const track = document.getElementById("carouselTrack");
-    const totalCards = track.children.length;
-
-    function moveCarousel(direction) {
-      currentIndex = (currentIndex + direction + totalCards) % totalCards;
-      track.style.transform = `translateX(-${currentIndex * 100}%)`;
-    }
-
-    // auto play
-    setInterval(() => moveCarousel(1), 5000);
-  </script>
 </body>
 </html>
