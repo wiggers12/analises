@@ -5,130 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GoathBet - Carregando</title>
   <link rel="icon" href="img/logo.png" type="image/png">
-  <style>
-    body {
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: radial-gradient(circle at center, #0d0d0d, #000);
-      overflow: hidden;
-      font-family: "Poppins", sans-serif;
-    }
 
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: conic-gradient(from 180deg, #00ff88, #111, #00ff88);
-      filter: blur(200px);
-      animation: backgroundMove 8s linear infinite;
-      z-index: 0;
-    }
-    @keyframes backgroundMove {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .splash {
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Versão 1: FOTO COMO FUNDO (ocupa a tela toda) */
-    .splash.full-bg {
-      width: 100%; height: 100%;
-      background: url('foto.png') no-repeat center center/cover;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Versão 2: FOTO CENTRAL (no lugar do logo) */
-    .splash img {
-      width: 180px;
-      height: 180px;
-      border-radius: 20px;
-      animation: zoomEffect 2s ease-in-out forwards;
-      filter: drop-shadow(0 0 20px #00ff88);
-    }
-
-    @keyframes zoomEffect {
-      0%   { transform: scale(0) rotate(-180deg); opacity: 0; }
-      40%  { transform: scale(1.2) rotate(0deg); opacity: 1; }
-      60%  { transform: scale(0.9); }
-      80%  { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    .splash h1 {
-      margin-top: 20px;
-      font-size: 28px;
-      color: #fff;
-      text-shadow: 0 0 15px #00ff88;
-      animation: textFade 1.5s ease-in-out 1.5s forwards;
-      opacity: 0;
-    }
-    @keyframes textFade {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .splash p {
-      font-size: 16px;
-      color: #bbb;
-      margin-top: 10px;
-      font-style: italic;
-      animation: textFade 1.5s ease-in-out 2s forwards;
-      opacity: 0;
-    }
-
-    canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 2;
-    }
-  </style>
+  <!-- Manifesto PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff4da6">
 </head>
 <body>
-  <!-- 🔹 Troque a classe "splash" por "splash full-bg" para ver a foto em tela cheia -->
   <div class="splash">
-    <!-- Versão 2: Foto centralizada -->
     <img id="logo" src="img/foto.png" alt="Splash Foto">
-    <h1>🚀 GoathBet</h1>
-    <p>Análises inteligentes com a rainha do aviator</p>
+    <h1>💖 GoathBet</h1>
+    <p>Entradas inteligentes, femininas e poderosas 🎀</p>
   </div>
   
   <canvas id="explosion"></canvas>
 
   <script>
+    // efeito + redirecionamento
     const logo = document.getElementById("logo");
     const canvas = document.getElementById("explosion");
     const ctx = canvas.getContext("2d");
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     function explode(x, y) {
       const particles = [];
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 80; i++) {
         particles.push({
           x, y,
           angle: Math.random() * 2 * Math.PI,
-          speed: Math.random() * 5 + 2,
-          radius: Math.random() * 3 + 2,
+          speed: Math.random() * 4 + 1,
+          radius: Math.random() * 2 + 1,
           alpha: 1,
           decay: Math.random() * 0.02 + 0.01,
-          color: ["#00ff88", "#0f0", "#fff"][Math.floor(Math.random()*3)]
+          color: ["#ff4da6", "#d291ff", "#fff"][Math.floor(Math.random()*3)]
         });
       }
-
       function animate() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
         particles.forEach(p => {
@@ -144,9 +55,7 @@
             ctx.globalAlpha = 1;
           }
         });
-        if (particles.some(p => p.alpha > 0)) {
-          requestAnimationFrame(animate);
-        }
+        if (particles.some(p => p.alpha > 0)) requestAnimationFrame(animate);
       }
       animate();
     }
@@ -154,16 +63,19 @@
     setTimeout(() => {
       if (logo) {
         const rect = logo.getBoundingClientRect();
-        const x = rect.left + rect.width/2;
-        const y = rect.top + rect.height/2;
-        explode(x, y);
+        explode(rect.left + rect.width/2, rect.top + rect.height/2);
         logo.style.opacity = "0";
       }
-    }, 2500);
+    }, 2000);
 
-    setTimeout(() => {
-      window.location.href = "home.html";
-    }, 4500);
+    setTimeout(() => { window.location.href = "home.html"; }, 4000);
+
+    // registrar service worker PWA
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker registrado"))
+        .catch(err => console.log("SW falhou:", err));
+    }
   </script>
 </body>
 </html>
