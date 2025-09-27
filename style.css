@@ -368,3 +368,33 @@ nav a:hover { color: #ff4da6; }
     max-width: 95%;
   }
 }
+/* Splash Screen */
+.splash {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;      /* ocupa a altura inteira */
+  text-align: center;
+  background: linear-gradient(135deg, #1a0f1f, #2a0939); /* fundo feminino */
+}
+
+.splash img {
+  width: 180px;
+  height: 180px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.splash h1 {
+  font-size: 2rem;
+  color: #ff4da6;
+  margin-bottom: 10px;
+}
+
+.splash p {
+  font-size: 1rem;
+  color: #f8bbd0;
+}
+
