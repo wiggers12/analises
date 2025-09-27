@@ -322,3 +322,49 @@ nav a:hover { color: #ff4da6; }
   color: #ff4da6;
   font-weight: bold;
 }
+/* ================================
+   AJUSTES EXTRAS MOBILE
+================================= */
+@media (max-width: 768px) {
+  .hero {
+    padding: 40px 15px;
+  }
+  .hero h2 { font-size: 1.6rem; }
+  .hero p { font-size: 0.95rem; }
+
+  .foto-section img {
+    max-width: 220px;
+    margin-bottom: 15px;
+  }
+
+  .features {
+    gap: 10px;
+  }
+  .feature-box {
+    padding: 12px 15px;
+    font-size: 0.95rem;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 30px 10px;
+  }
+  .hero h2 { font-size: 1.3rem; }
+  .hero p { font-size: 0.85rem; }
+
+  .foto-section {
+    margin: 20px auto;
+  }
+  .foto-section img {
+    max-width: 180px;
+    border-radius: 10px;
+  }
+
+  .feature-box {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    max-width: 95%;
+  }
+}
