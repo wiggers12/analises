@@ -22,8 +22,11 @@
   
   <canvas id="explosion"></canvas>
 
-  <script>
-    // efeito + redirecionamento
+  <script type="module">
+    import { auth } from "./firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // efeito splash
     const logo = document.getElementById("logo");
     const canvas = document.getElementById("explosion");
     const ctx = canvas.getContext("2d");
@@ -63,6 +66,7 @@
       animate();
     }
 
+    // explosão da logo
     setTimeout(() => {
       if (logo) {
         const rect = logo.getBoundingClientRect();
@@ -71,7 +75,16 @@
       }
     }, 2000);
 
-    setTimeout(() => { window.location.href = "home.html"; }, 4000);
+    // redirecionar baseado na autenticação
+    setTimeout(() => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          window.location.href = "dashboard.html"; // já logado
+        } else {
+          window.location.href = "home.html"; // visitante
+        }
+      });
+    }, 4000);
 
     // registrar service worker PWA
     if ("serviceWorker" in navigator) {
