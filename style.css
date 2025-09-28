@@ -435,11 +435,15 @@ nav a:hover { color: #ff4da6; }
   display: flex;
   gap: 12px;
   z-index: 999;
-  background: none !important;   /* remove qualquer faixa */
-  width: auto !important;        /* ajusta ao tamanho dos botões */
-  padding: 0;                    /* sem altura extra */
-  box-shadow: none !important;   /* tira sombra de barra */
+  background: none !important; /* sem fundo */
+  box-shadow: none !important; /* sem sombra */
+  border: none !important;
+  padding: 0; 
+  margin: 0;
+  width: auto; /* só ocupa o espaço dos botões */
+  height: auto; /* sem altura extra */
 }
+
 
 /* Botões */
 .footer-btn {
