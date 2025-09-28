@@ -107,6 +107,24 @@
       border: none;
       color: #fff;
     }
+
+    /* ===== Botão Login ===== */
+    .btn-login-bottom {
+      display: inline-block;
+      margin: 40px auto 0;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .btn-login-bottom:hover {
+      background: linear-gradient(135deg, #219150, #27ae60);
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
@@ -128,6 +146,9 @@
       <div class="btn-card" onclick="abrirModal('planos')"><span>💳</span> Planos</div>
       <div class="btn-card" onclick="abrirJogo()"><span>🎮</span> Jogar</div>
     </div>
+
+    <!-- Botão Login -->
+    <a href="login.html" class="btn-login-bottom">🚀 Fazer Login</a>
   </div>
 
   <!-- ===== Modais ===== -->
