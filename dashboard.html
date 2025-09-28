@@ -4,38 +4,105 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - GoathBet</title>
-  <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
+  <style>
+    /* ===== RESET ===== */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #000; /* fundo preto para o jogo ocupar */
+      font-family: 'Poppins', Arial, sans-serif;
+      color: #fff;
+    }
+
+    /* ===== GAME ===== */
+    .dashboard-container, .plataforma, iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ===== BOTÕES RODAPÉ ===== */
+    .footer-btn {
+      position: fixed;
+      bottom: 20px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #ff4da6, #8e44ad);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 10px 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transition: 0.3s;
+      z-index: 999;
+    }
+    .footer-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #ff69b4, #9b59b6);
+    }
+
+    /* Alinhamento lateral */
+    #btn-velas { left: 20px; }
+    #btn-calls { left: 100px; }
+    #btn-gestao { left: 180px; }
+    #btn-timer { right: 180px; }
+    #btn-live { right: 100px; }
+    #btn-admin { right: 20px; }
+    #btn-sair { right: 260px; }
+
+    /* ===== MODAIS ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .card-box {
+      background: #1c1c2b;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      color: #fff;
+    }
+    .fechar {
+      float: right;
+      font-size: 28px;
+      cursor: pointer;
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
   <main class="dashboard-container">
-    <!-- Plataforma Aviator -->
     <section class="plataforma">
-      <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl" 
-              width="100%" height="600" frameborder="0"></iframe>
+      <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"></iframe>
     </section>
   </main>
 
-  <!-- ===== RODAPÉ COM BOTÕES ===== -->
-  <div class="footer-bar">
-    <div class="footer-btn" onclick="abrirCard('velas')">📈 Velas</div>
-    <div class="footer-btn" onclick="abrirCard('calls')">🎯 Calls</div>
-    <div class="footer-btn" onclick="abrirCard('gestao')">🧮 Gestão</div>
-    <div class="footer-btn" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
-    <div class="footer-btn" onclick="abrirLive()">▶️ Live</div>
-    <a href="admin.html" class="footer-btn">⚙️ Admin</a>
-    <a href="#" onclick="logout()" class="footer-btn">🚪 Sair</a>
-  </div>
+  <!-- ===== BOTÕES ===== -->
+  <div id="btn-velas" class="footer-btn" onclick="abrirCard('velas')">📈 Velas</div>
+  <div id="btn-calls" class="footer-btn" onclick="abrirCard('calls')">🎯 Calls</div>
+  <div id="btn-gestao" class="footer-btn" onclick="abrirCard('gestao')">🧮 Gestão</div>
+  <div id="btn-timer" class="footer-btn" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
+  <div id="btn-live" class="footer-btn" onclick="abrirLive()">▶️ Live</div>
+  <a href="admin.html" id="btn-admin" class="footer-btn">⚙️ Admin</a>
+  <a href="#" id="btn-sair" class="footer-btn" onclick="logout()">🚪 Sair</a>
 
-  <!-- Modal Live -->
+  <!-- ===== MODAIS ===== -->
   <div id="modal-live" class="modal">
     <div class="card-box">
       <span class="fechar" onclick="fecharLive()">×</span>
-      <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1" allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1" width="100%" height="315" allowfullscreen></iframe>
     </div>
   </div>
 
-  <!-- Painel Timer -->
   <div id="painel-timer" class="modal">
     <div class="card-box">
       <span class="fechar" onclick="fecharPainelTimer()">×</span>
@@ -46,7 +113,7 @@
     </div>
   </div>
 
-  <!-- Modais de Conteúdo -->
+  <!-- Velas -->
   <div id="card-velas" class="modal">
     <div class="card-box">
       <span class="fechar" onclick="fecharCard('velas')">×</span>
@@ -55,6 +122,7 @@
     </div>
   </div>
 
+  <!-- Calls -->
   <div id="card-calls" class="modal">
     <div class="card-box">
       <span class="fechar" onclick="fecharCard('calls')">×</span>
@@ -63,6 +131,7 @@
     </div>
   </div>
 
+  <!-- Gestão -->
   <div id="card-gestao" class="modal">
     <div class="card-box">
       <span class="fechar" onclick="fecharCard('gestao')">×</span>
@@ -75,7 +144,7 @@
     </div>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- ===== SCRIPT ===== -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
