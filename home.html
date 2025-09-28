@@ -16,7 +16,7 @@
     </div>
     <nav>
       <a href="home.html" class="ativo">Home</a>
-      <a href="login.html" class="btn-login">Entrar</a>
+      <a href="login.html" class="btn-login" id="btnEntrar">Entrar</a>
     </nav>
   </header>
 
@@ -40,5 +40,23 @@
   <footer>
     <p>© 2025 GoathBet - Todos os direitos reservados | Feito com 💜</p>
   </footer>
+
+  <!-- Firebase Auth Check -->
+  <script type="module">
+    import { auth } from "./firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const btnEntrar = document.getElementById("btnEntrar");
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // já logado → manda pro painel
+        window.location.href = "dashboard.html";
+      } else {
+        // se não está logado, mostra botão Entrar
+        if (btnEntrar) btnEntrar.style.display = "inline-block";
+      }
+    });
+  </script>
 </body>
 </html>
