@@ -7,11 +7,18 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="img/logo.png" type="image/png">
   <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: linear-gradient(135deg, #1a0f1f, #2a0939);
+      color: #fff;
+    }
+
     .login-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 80vh;
+      min-height: 100vh;
       padding: 20px;
     }
 
@@ -26,8 +33,12 @@
       animation: fadeIn 0.8s ease;
     }
 
-    .login-box h2 { color: #ff4da6; font-size: 1.8rem; margin-bottom: 10px; }
-    .login-box p { color: #aaa; margin-bottom: 25px; font-size: 0.95rem; }
+    .login-box img {
+      width: 60px;
+      margin-bottom: 15px;
+    }
+
+    .login-box h2 { color: #fff; font-size: 1.8rem; margin-bottom: 10px; }
     .login-box input {
       width: 100%; padding: 12px 15px; margin-bottom: 15px;
       border: none; border-radius: 8px; outline: none;
@@ -49,12 +60,19 @@
     .login-box .btn-secundario { background: #333; color: #fff; }
     .login-box .btn-secundario:hover { background: #444; }
     .btn-voltar {
+      display: inline-block;
+      margin-top: 15px;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
       background: transparent;
-      color: #ff4da6;
-      font-size: 0.9rem;
-      text-decoration: underline;
-      cursor: pointer;
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid #ff4da6;
+      transition: 0.3s;
     }
+    .btn-voltar:hover { background: #ff4da6; }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -62,21 +80,10 @@
   </style>
 </head>
 <body>
-  <!-- TOPO -->
-  <header class="topbar">
-    <div class="logo">
-      <img src="img/logo.png" alt="GoathBet" width="45">
-      <h1>GOATH<span>BET</span></h1>
-    </div>
-    <nav>
-      <a href="index.html">Início</a>
-      <a href="login.html" class="btn-login ativo">Entrar</a>
-    </nav>
-  </header>
-
   <!-- LOGIN -->
   <section class="login-container">
     <div class="login-box">
+      <img src="img/logo.png" alt="GoathBet">
       <h2>🚀 Seja Bem-vindo</h2>
       <input type="email" id="email" placeholder="Digite seu email">
       <input type="password" id="senha" placeholder="Digite sua senha">
@@ -86,11 +93,6 @@
       <a href="index.html" class="btn-voltar">⬅️ Voltar ao menu principal</a>
     </div>
   </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2025 GoathBet. Todos os direitos reservados.</p>
-  </footer>
 
   <!-- Scripts -->
   <script type="module" src="login.js"></script>
