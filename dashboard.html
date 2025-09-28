@@ -43,8 +43,8 @@
       background: linear-gradient(135deg, #ff69b4, #9b59b6);
     }
 
-    #btn-timer { right: 100px; }
-    #btn-voltar { right: 20px; }
+    #btn-timer { right: 120px; }
+    #btn-sair { right: 20px; }
 
     /* ===== MODAL TIMER ===== */
     .modal {
@@ -82,7 +82,7 @@
 
   <!-- ===== BOTÕES ===== -->
   <div id="btn-timer" class="footer-btn" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
-  <a href="login.html" id="btn-voltar" class="footer-btn">🚪 Voltar</a>
+  <div id="btn-sair" class="footer-btn" onclick="logout()">🚪 Sair</div>
 
   <!-- ===== MODAL TIMER ===== -->
   <div id="painel-timer" class="modal">
@@ -98,11 +98,20 @@
   <!-- ===== SCRIPT ===== -->
   <script type="module">
     import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // 🔑 Autenticação
     onAuthStateChanged(auth,(user)=>{ if(!user) window.location.href="login.html"; });
+
+    // 🚪 Logout
+    window.logout = () => {
+      signOut(auth).then(()=>{
+        window.location.href = "login.html";
+      }).catch((err)=>{
+        console.error("Erro ao sair:", err);
+      });
+    };
 
     // Timer
     let intervaloTimer;
