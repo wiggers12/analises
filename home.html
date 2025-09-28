@@ -6,6 +6,36 @@
   <title>GoathBet - Home</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="img/logo.png" type="image/png">
+  <style>
+    .hub-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+    .hub-card {
+      background: #1c1c2b;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      transition: 0.3s;
+    }
+    .hub-card:hover { transform: translateY(-5px); }
+    .hub-card h2 { margin-bottom: 15px; color: #ff4da6; }
+    .hub-card button {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff4da6, #8e44ad);
+      color: #fff;
+    }
+    .hub-card button:hover { opacity: 0.9; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { margin: 8px 0; padding: 6px; background: #2a0939; border-radius: 6px; }
+  </style>
 </head>
 <body>
   <!-- TOPO -->
@@ -36,27 +66,17 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2025 GoathBet - Todos os direitos reservados | Feito com 💜</p>
-  </footer>
+  <!-- HUB FUNCIONAL -->
+  <main class="hub-container">
+    <!-- Gestão de Banca -->
+    <div class="hub-card">
+      <h2>🧮 Gestão de Banca</h2>
+      <p>Simule seu resultado em calls:</p>
+      <input type="number" id="valorAposta" value="10" min="1" style="width:100%; padding:10px; margin-bottom:10px;">
+      <button onclick="calcularLucro()">Calcular</button>
+      <h3 id="resultadoGestao">Resultado: R$ 0,00</h3>
+    </div>
 
-  <!-- Firebase Auth Check -->
-  <script type="module">
-    import { auth } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    const btnEntrar = document.getElementById("btnEntrar");
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // já logado → manda pro painel
-        window.location.href = "dashboard.html";
-      } else {
-        // se não está logado, mostra botão Entrar
-        if (btnEntrar) btnEntrar.style.display = "inline-block";
-      }
-    });
-  </script>
-</body>
-</html>
+    <!-- Sorteios -->
+    <div class="hub-card">
+      <h2>🎁 Sorteios At
