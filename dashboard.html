@@ -13,26 +13,6 @@
     <section class="plataforma">
       <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
-
-    <!-- Conteúdos dos cards -->
-    <div id="card-velas" class="card-conteudo">
-      <h2>📈 Relatórios de Velas</h2>
-      <div class="grid-velas" id="gridVelas"></div>
-    </div>
-
-    <div id="card-calls" class="card-conteudo">
-      <h2>🎯 Entradas Inteligentes</h2>
-      <ul id="listaCalls"></ul>
-    </div>
-
-    <div id="card-gestao" class="card-conteudo">
-      <h2>🧮 Calculadora de Gestão</h2>
-      <p>Se tivesse apostado 
-        <input type="number" id="valorAposta" value="10" min="1" style="width:80px; text-align:center;">
-        em cada call de hoje:
-      </p>
-      <h3 id="lucroVirtual" style="color:#2ecc71; font-size:1.8rem;">+R$ 0,00</h3>
-    </div>
   </main>
 
   <footer>
@@ -42,9 +22,9 @@
   </footer>
 
   <!-- Botões Flutuantes -->
-  <div id="btn-velas" class="btn-floating" onclick="toggleCard('velas')">📈</div>
-  <div id="btn-calls" class="btn-floating" onclick="toggleCard('calls')">🎯</div>
-  <div id="btn-gestao" class="btn-floating" onclick="toggleCard('gestao')">🧮</div>
+  <div id="btn-velas" class="btn-floating" onclick="abrirCard('velas')">📈</div>
+  <div id="btn-calls" class="btn-floating" onclick="abrirCard('calls')">🎯</div>
+  <div id="btn-gestao" class="btn-floating" onclick="abrirCard('gestao')">🧮</div>
 
   <!-- Timer Flutuante -->
   <div id="timer-floating" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
@@ -53,7 +33,7 @@
   <div id="live-floating" onclick="abrirLive()">▶️</div>
 
   <!-- Modal Live -->
-  <div id="modal-live">
+  <div id="modal-live" class="modal">
     <div class="conteudo-live">
       <span class="fechar" onclick="fecharLive()">×</span>
       <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1" allowfullscreen></iframe>
@@ -61,13 +41,42 @@
   </div>
 
   <!-- Painel Timer -->
-  <div id="painel-timer">
+  <div id="painel-timer" class="modal">
     <div class="painel-content">
       <h2>⏳ Próximo Multiplicador</h2>
       <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
       <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
       <p id="msgPsico" class="alerta">⚠ Aguardando lançamento...</p>
       <button onclick="fecharPainelTimer()">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Modais de Conteúdo -->
+  <div id="card-velas" class="modal">
+    <div class="card-box">
+      <span class="fechar" onclick="fecharCard('velas')">×</span>
+      <h2>📈 Relatórios de Velas</h2>
+      <div id="gridVelas"></div>
+    </div>
+  </div>
+
+  <div id="card-calls" class="modal">
+    <div class="card-box">
+      <span class="fechar" onclick="fecharCard('calls')">×</span>
+      <h2>🎯 Entradas Inteligentes</h2>
+      <ul id="listaCalls"></ul>
+    </div>
+  </div>
+
+  <div id="card-gestao" class="modal">
+    <div class="card-box">
+      <span class="fechar" onclick="fecharCard('gestao')">×</span>
+      <h2>🧮 Calculadora de Gestão</h2>
+      <p>Se tivesse apostado 
+        <input type="number" id="valorAposta" value="10" min="1" style="width:80px; text-align:center;">
+        em cada call de hoje:
+      </p>
+      <h3 id="lucroVirtual">+R$ 0,00</h3>
     </div>
   </div>
 
@@ -81,17 +90,15 @@
     onAuthStateChanged(auth,(user)=>{ if(!user) window.location.href="login.html"; });
     window.logout=()=>signOut(auth).then(()=>window.location.href="login.html");
 
-    // 🔄 Alternar cards
-    window.toggleCard=(id)=>{
-      document.querySelectorAll('.card-conteudo').forEach(c=>c.classList.remove('ativo'));
-      document.getElementById('card-'+id).classList.add('ativo');
-    };
+    // ⚡ Abrir/Fechar Cards
+    window.abrirCard=(id)=>document.getElementById("card-"+id).style.display="flex";
+    window.fecharCard=(id)=>document.getElementById("card-"+id).style.display="none";
 
     // ▶️ Live
-    window.abrirLive=()=>{ document.getElementById("modal-live").style.display="flex"; };
-    window.fecharLive=()=>{ document.getElementById("modal-live").style.display="none"; };
+    window.abrirLive=()=>document.getElementById("modal-live").style.display="flex";
+    window.fecharLive=()=>document.getElementById("modal-live").style.display="none";
 
-    // ⏱ Timer
+    // Timer
     let intervaloTimer;
     function iniciarTimer(segundos,horarioLancado,multEsperado){
       pararTimer();
@@ -100,7 +107,7 @@
         const agora=new Date(); const restante=Math.floor((fim-agora)/1000);
         if(restante<=0){
           document.getElementById("timer").innerText="00:00";
-          document.getElementById("msgPsico").innerText="⏳ Call encerrado, aguardando resultado...";
+          document.getElementById("msgPsico").innerText="⏳ Call encerrado";
           pararTimer();
         } else {
           document.getElementById("timer").innerText="00:"+String(restante).padStart(2,"0");
@@ -111,10 +118,10 @@
       },1000);
     }
     function pararTimer(){ clearInterval(intervaloTimer); document.getElementById("timer").innerText="00:00"; }
-    window.abrirPainelTimer=()=>{ document.getElementById("painel-timer").classList.add("ativo"); };
-    window.fecharPainelTimer=()=>{ document.getElementById("painel-timer").classList.remove("ativo"); };
+    window.abrirPainelTimer=()=>document.getElementById("painel-timer").style.display="flex";
+    window.fecharPainelTimer=()=>document.getElementById("painel-timer").style.display="none";
 
-    // 🔥 Call ativo
+    // 🔥 Firestore (igual estava)
     onSnapshot(doc(db,"calls","ativo"),(snap)=>{
       if(snap.exists()){
         const call=snap.data();
@@ -123,18 +130,16 @@
       } else { pararTimer(); }
     });
 
-    // 📈 Velas
     onSnapshot(collection(db,"velas"),(snap)=>{
       const grid=document.getElementById("gridVelas");
       grid.innerHTML="";
       snap.forEach(docSnap=>{
         const d=docSnap.data();
         const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
-        grid.innerHTML+=`<div class="vela">${d.multiplicador}x <small>${hora}</small></div>`;
+        grid.innerHTML+=`<div>${d.multiplicador}x <small>${hora}</small></div>`;
       });
     });
 
-    // 🎯 Entradas
     onSnapshot(collection(db,"callsHistorico"),(snap)=>{
       const ul=document.getElementById("listaCalls");
       ul.innerHTML="";
@@ -142,7 +147,7 @@
       snap.forEach(docSnap=>{
         const d=docSnap.data();
         const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
-        ul.innerHTML+=`<li><strong>${hora}</strong> → ${d.mult}x <span style="font-weight:bold;color:${d.status==='GREEN'?'#2ecc71':d.status==='RED'?'#e74c3c':'#f1c40f'}">${d.status}</span></li>`;
+        ul.innerHTML+=`<li><strong>${hora}</strong> → ${d.mult}x <span style="color:${d.status==='GREEN'?'#2ecc71':'#e74c3c'}">${d.status}</span></li>`;
         if(d.status==="GREEN"){ lucro+=aposta*d.mult; } else if(d.status==="RED"){ lucro-=aposta; }
       });
       document.getElementById("lucroVirtual").innerText=(lucro>=0?"+R$ ":"-R$ ")+lucro.toFixed(2);
