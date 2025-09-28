@@ -453,4 +453,8 @@ nav a:hover { color: #ff4da6; }
   transition: 0.3s;
 }
 .footer-btn:hover { transform: scale(1.05); background: linear-gradient(135deg, #ff69b4, #9b59b6); }
+/* Fundo do container para não aparecer a faixa roxa do body */
+.dashboard-container {
+  background: #000;   /* ou #111 se quiser mais suave */
+}
 
