@@ -426,4 +426,27 @@ nav a:hover { color: #ff4da6; }
 .fechar {
   float: right; font-size: 28px; cursor: pointer; color: #fff;
 }
+/* Rodapé com botões flutuantes */
+.footer-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 999;
+}
+
+/* Botões */
+.footer-btn {
+  padding: 10px 14px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #ff4da6, #8e44ad);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  transition: 0.3s;
+}
+.footer-btn:hover { transform: scale(1.05); background: linear-gradient(135deg, #ff69b4, #9b59b6); }
 
