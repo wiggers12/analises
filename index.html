@@ -3,242 +3,218 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoathBet - Home</title>
+  <title>GoathBet - Início</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="img/logo.png" type="image/png">
   <script type="module" src="firebase.js"></script>
   <style>
-    /* ===== SPLASH ===== */
+    /* ===== Splash ===== */
     #splash {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #0a0a0f;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 2000;
-      animation: fadeIn 1s ease;
+      height: 100vh;
+      background: linear-gradient(135deg, #1a0f1f, #2a0939);
+      color: #fff;
+      text-align: center;
     }
     #splash img {
-      width: 150px;
-      border-radius: 50%;
+      width: 180px;
+      border-radius: 16px;
       margin-bottom: 20px;
     }
-    #splash h1 {
-      font-size: 1.5rem;
-      color: #ff4da6;
-      margin-bottom: 10px;
-    }
-    #splash .progress {
-      width: 200px;
-      height: 8px;
-      background: #333;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-    #splash .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #ff4da6, #8e44ad);
-      animation: load 3s forwards;
-    }
-    @keyframes load { to { width: 100%; } }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    #splash h1 { color: #ff4da6; margin-bottom: 10px; }
+    #splash p { color: #f8bbd0; }
 
-    /* ===== LAYOUT ===== */
-    body { margin:0; background:#0a0a0f; font-family:'Poppins',sans-serif; color:#fff; }
-    header.topbar {
-      display:flex; justify-content:space-between; align-items:center;
-      padding:15px 25px; background:#141422;
+    /* ===== Home ===== */
+    #home {
+      display: none;
+      padding: 30px;
+      text-align: center;
     }
-    header .logo { display:flex; align-items:center; gap:10px; }
-    header .logo img { height:45px; }
-    header h1 { font-size:1.5rem; color:#ff4da6; }
-    header nav a { color:#fff; margin-left:20px; text-decoration:none; }
-    header nav a:hover { color:#ff4da6; }
+    .btn-card {
+      display: inline-block;
+      margin: 12px;
+      padding: 20px;
+      width: 180px;
+      height: 120px;
+      background: linear-gradient(135deg, #ff4da6, #8e44ad);
+      color: #fff;
+      font-weight: bold;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-card:hover { transform: scale(1.05); }
 
-    .cards-container {
-      display:grid;
-      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-      gap:20px;
-      padding:20px;
+    /* ===== Modal ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
     }
-    .card {
-      background:#1c1c2b;
-      border-radius:12px;
-      padding:20px;
-      box-shadow:0 4px 15px rgba(0,0,0,0.4);
-      transition:0.3s;
+    .modal-content {
+      background: #1c1c2b;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 95%;
+      color: #fff;
+      overflow-y: auto;
+      max-height: 90vh;
     }
-    .card:hover { transform:scale(1.02); }
-    .card h2 { color:#ff4da6; margin-bottom:15px; }
-    .card button {
-      margin-top:10px;
-      padding:10px 14px;
-      border:none;
-      border-radius:8px;
-      background:linear-gradient(135deg,#ff4da6,#8e44ad);
-      color:#fff;
-      font-weight:bold;
-      cursor:pointer;
-      transition:0.3s;
+    .modal .fechar {
+      float: right;
+      font-size: 26px;
+      cursor: pointer;
+      color: #fff;
     }
-    .card button:hover { transform:scale(1.05); }
-    table { width:100%; border-collapse:collapse; }
-    table th, table td { padding:6px; border-bottom:1px solid #333; text-align:left; }
-    .status-green { color:#2ecc71; }
-    .status-red { color:#e74c3c; }
-    footer { text-align:center; padding:15px; background:#141422; margin-top:20px; font-size:0.9rem; color:#aaa; }
   </style>
 </head>
 <body>
-  <!-- SPLASH -->
+  <!-- ===== Splash ===== -->
   <div id="splash">
-    <img src="img/foto.png" alt="Rainha do Aviator">
-    <h1>✨ Entradas Inteligentes com a Rainha do Aviator ✨</h1>
-    <div class="progress"><div class="progress-bar"></div></div>
+    <img src="img/foto.png" alt="GoathBet">
+    <h1>GoathBet</h1>
+    <p>✨ Entradas Inteligentes com a Rainha do Aviator ✨</p>
   </div>
 
-  <!-- TOPO -->
-  <header class="topbar">
-    <div class="logo">
-      <img src="img/logo.png" alt="GoathBet">
-      <h1>GOATH<span>BET</span></h1>
+  <!-- ===== Home ===== -->
+  <div id="home">
+    <h2>📌 Menu Principal</h2>
+    <div class="cards">
+      <div class="btn-card" onclick="abrirModal('gestao')">🧮 Gestão Financeira</div>
+      <div class="btn-card" onclick="abrirModal('entradas')">🎯 Entradas</div>
+      <div class="btn-card" onclick="abrirModal('velas')">📈 Velas</div>
+      <div class="btn-card" onclick="abrirModal('sorteios')">🎁 Sorteios</div>
+      <div class="btn-card" onclick="abrirModal('planos')">💳 Planos</div>
+      <div class="btn-card" onclick="abrirJogo()">🎮 Jogar</div>
     </div>
-    <nav>
-      <a href="login.html" id="btnEntrar">Entrar</a>
-    </nav>
-  </header>
+  </div>
 
-  <!-- CARDS -->
-  <section class="cards-container">
-    <!-- Gestão Financeira -->
-    <div class="card">
+  <!-- ===== Modais ===== -->
+
+  <!-- Gestão -->
+  <div id="modal-gestao" class="modal">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModal('gestao')">&times;</span>
       <h2>🧮 Gestão Financeira</h2>
-      <p>Controle sua banca de forma inteligente.</p>
-      <input type="number" id="banca" placeholder="Banca inicial (R$)">
-      <input type="number" id="aposta" placeholder="Valor por entrada (R$)">
-      <button onclick="salvarGestao()">Salvar Gestão</button>
-      <p id="gestaoDica"></p>
+      <p>Digite o valor da sua banca inicial e veja a recomendação:</p>
+      <input type="number" id="bancaInicial" placeholder="Ex: 1000">
+      <button onclick="salvarGestao()">Salvar</button>
+      <h3 id="recomendacaoGestao">Nenhum cálculo ainda</h3>
     </div>
+  </div>
 
-    <!-- Entradas Inteligentes -->
-    <div class="card">
-      <h2>🎯 Entradas Inteligentes</h2>
-      <ul id="listaCalls"></ul>
+  <!-- Entradas -->
+  <div id="modal-entradas" class="modal">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModal('entradas')">&times;</span>
+      <h2>🎯 Últimos Calls</h2>
+      <ul id="listaEntradas"></ul>
     </div>
+  </div>
 
-    <!-- Relatório de Velas -->
-    <div class="card">
+  <!-- Velas -->
+  <div id="modal-velas" class="modal">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModal('velas')">&times;</span>
       <h2>📈 Relatório de Velas</h2>
-      <table>
-        <thead><tr><th>Mult</th><th>Horário</th></tr></thead>
-        <tbody id="tabelaVelas"></tbody>
-      </table>
+      <div id="listaVelas"></div>
     </div>
+  </div>
 
-    <!-- Sorteios -->
-    <div class="card">
+  <!-- Sorteios -->
+  <div id="modal-sorteios" class="modal">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModal('sorteios')">&times;</span>
       <h2>🎁 Sorteios</h2>
-      <ul id="listaSorteios"></ul>
+      <div id="listaSorteios"></div>
     </div>
+  </div>
 
-    <!-- Planos -->
-    <div class="card">
-      <h2>💎 Planos</h2>
-      <p>Acesse nossos planos exclusivos e desbloqueie o jogo.</p>
-      <button onclick="window.location.href='plano.html'">Ver Planos</button>
+  <!-- Planos -->
+  <div id="modal-planos" class="modal">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModal('planos')">&times;</span>
+      <h2>💳 Nossos Planos</h2>
+      <p><a href="planos.html" class="btn-card">Ver Planos</a></p>
     </div>
+  </div>
 
-    <!-- Jogar -->
-    <div class="card">
-      <h2>✈️ Jogar Aviator</h2>
-      <p>Entre no jogo e acompanhe os sinais em tempo real.</p>
-      <button onclick="acessarJogo()">Entrar no Jogo</button>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2025 GoathBet - Todos os direitos reservados.</p>
-  </footer>
-
-  <!-- SCRIPT -->
+  <!-- ===== Script ===== -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { collection, addDoc, doc, setDoc, getDoc, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { doc, setDoc, getDoc, collection, onSnapshot, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Splash desaparece
-    setTimeout(()=>document.getElementById("splash").style.display="none",3000);
+    // Splash → Home
+    setTimeout(()=>{ 
+      document.getElementById("splash").style.display="none"; 
+      document.getElementById("home").style.display="block"; 
+    }, 2500);
 
-    // Autenticação
-    let userId=null;
-    onAuthStateChanged(auth,(user)=>{
-      if(user){
-        userId=user.uid;
-        document.getElementById("btnEntrar").innerText="Sair";
-        document.getElementById("btnEntrar").onclick=()=>auth.signOut();
-      } else {
-        userId=null;
-        document.getElementById("btnEntrar").innerText="Entrar";
-        document.getElementById("btnEntrar").onclick=()=>window.location.href="login.html";
-      }
-    });
+    // Funções de modal
+    window.abrirModal=(id)=>document.getElementById("modal-"+id).style.display="flex";
+    window.fecharModal=(id)=>document.getElementById("modal-"+id).style.display="none";
 
-    // ===== Gestão =====
+    // Gestão financeira
     window.salvarGestao=async()=>{
-      const banca=parseFloat(document.getElementById("banca").value);
-      const aposta=parseFloat(document.getElementById("aposta").value);
-      if(!userId) return alert("Faça login para salvar");
-      await addDoc(collection(db,"gestao"),{
-        uid:userId, banca, aposta, criadoEm:Timestamp.now()
-      });
-      document.getElementById("gestaoDica").innerText="💡 Recomendação: apostar "+((aposta/banca)*100).toFixed(2)+"% da banca";
+      const val=parseFloat(document.getElementById("bancaInicial").value);
+      if(isNaN(val)) return;
+      const user=auth.currentUser;
+      if(!user){ alert("Precisa estar logado!"); return; }
+      await setDoc(doc(db,"gestao",user.uid),{ banca:val, criado:Timestamp.now() });
+      document.getElementById("recomendacaoGestao").innerText="Sugestão: apostar até "+(val*0.05).toFixed(2)+" por rodada.";
     };
 
-    // ===== Entradas Inteligentes =====
+    // Entradas
     onSnapshot(collection(db,"callsHistorico"),(snap)=>{
-      const ul=document.getElementById("listaCalls");
-      ul.innerHTML="";
+      let html="";
       snap.forEach(docSnap=>{
         const d=docSnap.data();
         const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
-        ul.innerHTML+=`<li><strong>${hora}</strong> → ${d.mult}x <span class="${d.status==='GREEN'?'status-green':'status-red'}">${d.status}</span></li>`;
+        html+=`<li>${hora} → ${d.mult}x (${d.status})</li>`;
       });
+      document.getElementById("listaEntradas").innerHTML=html;
     });
 
-    // ===== Relatório de Velas =====
+    // Velas
     onSnapshot(collection(db,"velas"),(snap)=>{
-      const tb=document.getElementById("tabelaVelas");
-      tb.innerHTML="";
+      let html="";
       snap.forEach(docSnap=>{
         const d=docSnap.data();
         const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
-        tb.innerHTML+=`<tr><td>${d.multiplicador}x</td><td>${hora}</td></tr>`;
+        html+=`<div>${d.multiplicador}x - ${hora}</div>`;
       });
+      document.getElementById("listaVelas").innerHTML=html;
     });
 
-    // ===== Sorteios =====
+    // Sorteios
     onSnapshot(collection(db,"sorteios"),(snap)=>{
-      const ul=document.getElementById("listaSorteios");
-      ul.innerHTML="";
+      let html="";
       snap.forEach(docSnap=>{
         const d=docSnap.data();
-        const data=d.data?.toDate?d.data.toDate().toLocaleDateString("pt-BR"):"--/--";
-        ul.innerHTML+=`<li>🎁 ${d.nome} - ${d.premio} (até ${data})</li>`;
+        html+=`<div>🎁 ${d.nome} - prêmio ${d.premio}</div>`;
       });
+      document.getElementById("listaSorteios").innerHTML=html;
     });
 
-    // ===== Jogar (checa plano ativo) =====
-    window.acessarJogo=async()=>{
-      if(!userId) return alert("⚠️ Faça login primeiro!");
-      const ref=doc(db,"assinaturas",userId);
+    // Jogar (verifica assinatura)
+    window.abrirJogo=async()=>{
+      const user=auth.currentUser;
+      if(!user){ alert("Faça login primeiro!"); return; }
+      const ref=doc(db,"assinaturas",user.uid);
       const snap=await getDoc(ref);
       if(!snap.exists() || snap.data().status!=="ATIVO"){
-        alert("⚠️ Você precisa ter um plano ativo para acessar o jogo!");
+        alert("Plano inativo. Assine primeiro!");
         return;
       }
       window.location.href="dashboard.html";
