@@ -444,3 +444,44 @@ nav a:hover { color: #ff4da6; }
   transform: scale(1.05);
   background: linear-gradient(135deg, #ff69b4, #9b59b6);
 }
+/* Rodapé - alinhamento responsivo */
+.footer-bar {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;   /* permite quebrar linha no mobile */
+  justify-content: center;
+  gap: 8px;
+  z-index: 9999;
+  background: none;
+  width: auto;
+  padding: 0;
+}
+
+/* Botões do rodapé */
+.footer-btn {
+  padding: 8px 12px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #ff4da6, #8e44ad);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;   /* reduz fonte em telas pequenas */
+  white-space: nowrap;  /* evita quebra de texto */
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+.footer-btn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #ff69b4, #9b59b6);
+}
+
+/* Ajuste extra para telas menores */
+@media (max-width: 480px) {
+  .footer-btn {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+}
