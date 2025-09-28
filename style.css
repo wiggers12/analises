@@ -429,7 +429,7 @@ nav a:hover { color: #ff4da6; }
 
 
 
-/* Container invisível só para alinhar os botões */
+/* Container invisível para alinhar os botões */
 .footer-bar {
   position: fixed;
   bottom: 20px;
@@ -438,9 +438,11 @@ nav a:hover { color: #ff4da6; }
   display: flex;
   gap: 12px;
   z-index: 999;
-  background: none;   /* garante que não tenha faixa */
-  box-shadow: none;
+  background: none !important;  /* garante que não tenha fundo */
+  box-shadow: none !important;  /* remove qualquer sombra */
+  border: none !important;      /* remove linha ou borda */
 }
+
 
 /* Botões */
 .footer-btn {
