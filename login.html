@@ -7,82 +7,54 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="img/logo.png" type="image/png">
   <style>
-    body {
-      background: linear-gradient(135deg, #2a0939, #ff4da6);
-      font-family: 'Poppins', sans-serif;
-      margin: 0; padding: 0;
-      color: #fff;
-    }
-
     .login-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      min-height: 80vh;
+      padding: 20px;
     }
 
     .login-box {
-      background: rgba(0,0,0,0.85);
+      background: linear-gradient(135deg, #2a003f, #ff4da6);
       border-radius: 16px;
       padding: 40px 30px;
-      max-width: 380px;
+      max-width: 400px;
       width: 100%;
       text-align: center;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
       animation: fadeIn 0.8s ease;
     }
 
-    .login-box h2 {
-      color: #ff4da6;
-      margin-bottom: 10px;
-    }
-
-    .login-box p {
-      color: #bbb;
-      margin-bottom: 20px;
-    }
-
+    .login-box h2 { color: #ff4da6; font-size: 1.8rem; margin-bottom: 10px; }
+    .login-box p { color: #aaa; margin-bottom: 25px; font-size: 0.95rem; }
     .login-box input {
-      width: 100%;
-      padding: 12px 15px;
-      margin-bottom: 15px;
-      border: none;
-      border-radius: 8px;
-      outline: none;
-      font-size: 1rem;
-      background: #222;
-      color: #fff;
+      width: 100%; padding: 12px 15px; margin-bottom: 15px;
+      border: none; border-radius: 8px; outline: none;
+      font-size: 1rem; background: #222; color: #fff;
     }
-
-    .login-box input::placeholder { color: #888; }
-
+    .login-box input::placeholder { color: #777; }
     .login-box button {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
+      width: 100%; padding: 14px; margin-bottom: 12px;
+      border: none; border-radius: 8px; font-size: 1rem;
+      font-weight: bold; cursor: pointer; transition: 0.3s;
     }
-
     .login-box button:first-of-type {
-      background: linear-gradient(135deg, #ff4da6, #8e44ad);
-      color: #fff;
+      background: linear-gradient(135deg, #ff4da6, #8e44ad); color: #fff;
     }
     .login-box button:first-of-type:hover {
       background: linear-gradient(135deg, #ff69b4, #9b59b6);
       transform: scale(1.02);
     }
-
-    .login-box .btn-secundario {
-      background: #333;
-      color: #fff;
-    }
+    .login-box .btn-secundario { background: #333; color: #fff; }
     .login-box .btn-secundario:hover { background: #444; }
-
+    .btn-voltar {
+      background: transparent;
+      color: #ff4da6;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      cursor: pointer;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -90,40 +62,37 @@
   </style>
 </head>
 <body>
+  <!-- TOPO -->
+  <header class="topbar">
+    <div class="logo">
+      <img src="img/logo.png" alt="GoathBet" width="45">
+      <h1>GOATH<span>BET</span></h1>
+    </div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="login.html" class="btn-login ativo">Entrar</a>
+    </nav>
+  </header>
+
+  <!-- LOGIN -->
   <section class="login-container">
     <div class="login-box">
-      <h2>🚀 Entrar no GoathBet</h2>
-      <p>Faça login para continuar</p>
-
+      <h2>🚀 Seja Bem-vindo</h2>
       <input type="email" id="email" placeholder="Digite seu email">
       <input type="password" id="senha" placeholder="Digite sua senha">
-
-      <button onclick="loginEmail()">Entrar</button>
+      <button onclick="loginEmail()">Entrar com Email</button>
       <button onclick="cadastroEmail()" class="btn-secundario">Criar nova conta</button>
+      <br>
+      <a href="index.html" class="btn-voltar">⬅️ Voltar ao menu principal</a>
     </div>
   </section>
 
-  <script type="module">
-    import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 GoathBet. Todos os direitos reservados.</p>
+  </footer>
 
-    // redirecionamento automático após login
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // pega assinatura
-        const ref = doc(db, "assinaturas", user.uid);
-        const snap = await getDoc(ref);
-
-        if (snap.exists() && snap.data().status === "ATIVO") {
-          window.location.href = "dashboard.html"; // vai pro jogo
-        } else {
-          window.location.href = "plano.html"; // sem plano
-        }
-      }
-    });
-  </script>
-
+  <!-- Scripts -->
   <script type="module" src="login.js"></script>
 </body>
 </html>
