@@ -9,9 +9,10 @@
 </head>
 <body>
   <!-- SPLASH -->
-  <div id="splash">
+  <div id="splash" class="splash">
     <img src="img/foto.png" alt="GoathBet">
-    <h2>Entradas Inteligentes com a Rainha do Aviator</h2>
+    <h1>Entradas Inteligentes</h1>
+    <p>com a Rainha do Aviator</p>
   </div>
 
   <!-- HERO -->
@@ -22,18 +23,27 @@
 
   <!-- HUB DE CARDS -->
   <section class="hub-modulos">
-    <div class="hub-card" onclick="abrirModal('gestao')">🧮 <h3>Gestão Financeira</h3></div>
-    <div class="hub-card" onclick="abrirModal('velas')">📊 <h3>Relatórios de Velas</h3></div>
-    <div class="hub-card" onclick="abrirModal('sinais')">🎯 <h3>Sinais de Entrada</h3></div>
-    <div class="hub-card" onclick="abrirModal('sorteios')">🎁 <h3>Sorteios</h3></div>
-    <div class="hub-card" onclick="window.location.href='plano.html'">💎 <h3>Planos</h3></div>
-    <div class="hub-card" onclick="entrarNoJogo()">🎮 <h3>Entrar no Jogo</h3></div>
+    <div class="hub-card" onclick="abrirModal('gestao')">
+      🧮 <h3>Gestão Financeira</h3>
+    </div>
+    <div class="hub-card" onclick="abrirModal('velas')">
+      📊 <h3>Relatórios de Velas</h3>
+    </div>
+    <div class="hub-card" onclick="abrirModal('sinais')">
+      🎯 <h3>Sinais de Entrada</h3>
+    </div>
+    <div class="hub-card" onclick="abrirModal('sorteios')">
+      🎁 <h3>Sorteios</h3>
+    </div>
+    <div class="hub-card" onclick="window.location.href='plano.html'">
+      💎 <h3>Planos</h3>
+    </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <button onclick="window.location.href='login.html'" class="btn-login">🔑 Fazer Login</button>
     <p>© 2025 GoathBet - Todos os direitos reservados | Feito com 💜</p>
+    <a href="login.html" class="btn-login">Entrar</a>
   </footer>
 
   <!-- MODAIS -->
@@ -42,11 +52,11 @@
     <div class="card-box">
       <span class="fechar" onclick="fecharModal('gestao')">×</span>
       <h2>🧮 Gestão Financeira</h2>
-      <p>Controle sua banca:</p>
+      <p>Preencha os valores para controlar sua banca:</p>
       <input type="number" id="bancaInicial" placeholder="Banca inicial (R$)">
       <input type="number" id="valorEntrada" placeholder="Valor por entrada (R$)">
       <p id="resultadoGestao"></p>
-      <button onclick="calcularGestao()">Calcular</button>
+      <button class="btn-primary" onclick="calcularGestao()">Calcular</button>
     </div>
   </div>
 
@@ -88,16 +98,30 @@
       setTimeout(()=>{ document.getElementById("splash").style.display="none"; }, 2500);
     });
 
-    // Abrir/Fechar Modais
+    // Autenticação + Plano
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const ref = doc(db, "assinaturas", user.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists() && snap.data().status === "ATIVO") {
+          console.log("✅ Plano ativo, acesso liberado ao jogo.");
+        } else {
+          console.log("⚠ Sem plano ativo → Redirecionando para planos.");
+          window.location.href = "plano.html";
+        }
+      }
+    });
+
+    // Modais
     window.abrirModal = (id)=>document.getElementById("modal-"+id).style.display="flex";
     window.fecharModal = (id)=>document.getElementById("modal-"+id).style.display="none";
 
-    // Gestão financeira simples
+    // Gestão financeira
     window.calcularGestao = () => {
       const banca = parseFloat(document.getElementById("bancaInicial").value)||0;
       const entrada = parseFloat(document.getElementById("valorEntrada").value)||0;
       if (banca>0 && entrada>0){
-        document.getElementById("resultadoGestao").innerText =
+        document.getElementById("resultadoGestao").innerText = 
           `Você pode fazer ${Math.floor(banca/entrada)} entradas de R$${entrada.toFixed(2)}.`;
       }
     };
@@ -130,23 +154,6 @@
         ul.innerHTML+=`<li>${d.nome} - ${d.status}</li>`;
       });
     });
-
-    // Entrar no jogo → só se tiver login + plano ativo
-    window.entrarNoJogo = () => {
-      onAuthStateChanged(auth, async (user)=>{
-        if(!user){
-          window.location.href="login.html";
-        } else {
-          const ref = doc(db,"assinaturas",user.uid);
-          const snap = await getDoc(ref);
-          if(snap.exists() && snap.data().status==="ATIVO"){
-            window.location.href="dashboard.html";
-          } else {
-            window.location.href="plano.html";
-          }
-        }
-      });
-    };
   </script>
 </body>
 </html>
