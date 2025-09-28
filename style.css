@@ -397,4 +397,33 @@ nav a:hover { color: #ff4da6; }
   font-size: 1rem;
   color: #f8bbd0;
 }
+.btn-floating {
+  position: fixed;
+  bottom: 20px;
+  width: 55px; height: 55px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff4da6, #8e44ad);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; color: #fff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  cursor: pointer; z-index: 999;
+}
+#btn-velas { right: 160px; }
+#btn-calls { right: 95px; }
+#btn-gestao { right: 30px; }
+
+.modal {
+  display: none; position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  justify-content: center; align-items: center;
+  z-index: 2000;
+}
+.card-box {
+  background: #1c1c2b; padding: 20px; border-radius: 12px;
+  max-width: 600px; width: 90%; color: #fff;
+}
+.fechar {
+  float: right; font-size: 28px; cursor: pointer; color: #fff;
+}
 
