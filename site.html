@@ -35,8 +35,11 @@
     <div class="hub-card" onclick="abrirModal('sorteios')">
       🎁 <h3>Sorteios</h3>
     </div>
-    <div class="hub-card" onclick="window.location.href='plano.html'">
+    <div class="hub-card" onclick="window.location.href='planos.html'">
       💎 <h3>Planos</h3>
+    </div>
+    <div class="hub-card" onclick="irJogar()">
+      🎮 <h3>Jogar</h3>
     </div>
   </section>
 
@@ -107,7 +110,7 @@
           console.log("✅ Plano ativo, acesso liberado ao jogo.");
         } else {
           console.log("⚠ Sem plano ativo → Redirecionando para planos.");
-          window.location.href = "plano.html";
+          window.location.href = "planos.html";
         }
       }
     });
@@ -154,6 +157,15 @@
         ul.innerHTML+=`<li>${d.nome} - ${d.status}</li>`;
       });
     });
+
+    // Função Jogar (verifica login antes de abrir)
+    window.irJogar = () => {
+      if (auth.currentUser) {
+        window.location.href = "dashboard.html"; // Usuário logado
+      } else {
+        window.location.href = "login.html"; // Usuário não logado
+      }
+    };
   </script>
 </body>
 </html>
