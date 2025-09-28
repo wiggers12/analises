@@ -6,99 +6,42 @@
   <title>Dashboard - GoathBet</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="firebase.js"></script>
-  <style>
-    /* FOOTER */
-    .footer-bar {
-      position: fixed;
-      bottom: 0; left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      padding: 10px;
-      background: rgba(20, 0, 30, 0.9);
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
-      z-index: 9999;
-    }
-    .footer-btn {
-      background: linear-gradient(135deg, #ff4da6, #8e44ad);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-      text-decoration: none;
-    }
-    .footer-btn:hover { transform: scale(1.08); }
-
-    /* Modais */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-    }
-    .card-box, .conteudo-live, .painel-content {
-      background: #1c1c2b;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 600px;
-      width: 90%;
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-    .card-box h2, .painel-content h2 { margin-bottom: 12px; color: #ff4da6; }
-    .fechar {
-      float: right;
-      font-size: 24px;
-      cursor: pointer;
-      color: #fff;
-    }
-  </style>
 </head>
 <body>
   <main class="dashboard-container">
     <!-- Plataforma Aviator -->
     <section class="plataforma">
-      <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"
-              width="100%" height="600" frameborder="0"></iframe>
+      <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl" width="100%" height="600" frameborder="0"></iframe>
     </section>
   </main>
 
-  <!-- FOOTER -->
+  <!-- Barra de botões no rodapé -->
   <footer class="footer-bar">
     <a href="admin.html" class="footer-btn">⚙️ Admin</a>
     <a href="#" onclick="logout()" class="footer-btn">🚪 Sair</a>
-    <div id="timer-footer" class="footer-btn" onclick="abrirPainelTimer()">⏱ <span id="timer">00:00</span></div>
-    <div id="live-footer" class="footer-btn" onclick="abrirLive()">▶️ Live</div>
-    <div class="footer-btn" onclick="abrirCard('velas')">📈 Velas</div>
-    <div class="footer-btn" onclick="abrirCard('calls')">🎯 Entradas</div>
-    <div class="footer-btn" onclick="abrirCard('gestao')">🧮 Gestão</div>
+    <button id="timer-floating" onclick="abrirPainelTimer()" class="footer-btn">⏱ <span id="timer">00:00</span></button>
+    <button id="live-floating" onclick="abrirLive()" class="footer-btn">▶️ Live</button>
+    <button onclick="abrirCard('velas')" class="footer-btn">📈 Velas</button>
+    <button onclick="abrirCard('calls')" class="footer-btn">🎯 Entradas</button>
+    <button onclick="abrirCard('gestao')" class="footer-btn">🧮 Gestão</button>
   </footer>
 
   <!-- Modal Live -->
   <div id="modal-live" class="modal">
     <div class="conteudo-live">
       <span class="fechar" onclick="fecharLive()">×</span>
-      <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1"
-              allowfullscreen width="100%" height="400"></iframe>
+      <iframe src="https://www.youtube.com/embed/SEU_ID_DA_LIVE?autoplay=1" allowfullscreen></iframe>
     </div>
   </div>
 
   <!-- Painel Timer -->
   <div id="painel-timer" class="modal">
     <div class="painel-content">
-      <span class="fechar" onclick="fecharPainelTimer()">×</span>
       <h2>⏳ Próximo Multiplicador</h2>
       <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
       <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
       <p id="msgPsico" class="alerta">⚠ Aguardando lançamento...</p>
+      <button onclick="fecharPainelTimer()">Fechar</button>
     </div>
   </div>
 
@@ -131,25 +74,21 @@
     </div>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- Script -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { doc, onSnapshot, collection, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔑 Autenticação
     onAuthStateChanged(auth,(user)=>{ if(!user) window.location.href="login.html"; });
     window.logout=()=>signOut(auth).then(()=>window.location.href="login.html");
 
-    // ⚡ Abrir/Fechar Cards
     window.abrirCard=(id)=>document.getElementById("card-"+id).style.display="flex";
     window.fecharCard=(id)=>document.getElementById("card-"+id).style.display="none";
 
-    // ▶️ Live
     window.abrirLive=()=>document.getElementById("modal-live").style.display="flex";
     window.fecharLive=()=>document.getElementById("modal-live").style.display="none";
 
-    // Timer
     let intervaloTimer;
     function iniciarTimer(segundos,horarioLancado,multEsperado){
       pararTimer();
@@ -172,15 +111,7 @@
     window.abrirPainelTimer=()=>document.getElementById("painel-timer").style.display="flex";
     window.fecharPainelTimer=()=>document.getElementById("painel-timer").style.display="none";
 
-    // 🔥 Firestore
-    onSnapshot(doc(db,"calls","ativo"),(snap)=>{
-      if(snap.exists()){
-        const call=snap.data();
-        if(call.status==="PENDENTE"){ iniciarTimer(call.tempo,call.horarioLancado.toDate(),call.multEsperado); }
-        else { pararTimer(); document.getElementById("msgPsico").innerText="📊 Último call: "+call.status; }
-      } else { pararTimer(); }
-    });
-
+    // Velas
     onSnapshot(collection(db,"velas"),(snap)=>{
       const grid=document.getElementById("gridVelas");
       grid.innerHTML="";
@@ -191,6 +122,7 @@
       });
     });
 
+    // Calls
     onSnapshot(collection(db,"callsHistorico"),(snap)=>{
       const ul=document.getElementById("listaCalls");
       ul.innerHTML="";
