@@ -3,95 +3,159 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoathBet - Carregando</title>
-  <link rel="icon" href="img/logo.png" type="image/png">
-   
-  <!-- CSS global -->
+  <title>GoathBet - Início</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- Manifesto PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ff4da6">
+  <link rel="icon" href="img/logo.png" type="image/png">
 </head>
 <body>
-  <div class="splash">
-    <img id="logo" src="img/foto.png" alt="Splash Foto">
-    <h1>💖 GoathBet</h1>
-    <p>Entradas inteligentes, femininas e poderosas 🎀</p>
+  <!-- TOPO -->
+  <header class="topbar">
+    <div class="logo">
+      <img src="img/logo.png" alt="GoathBet" height="45">
+      <h1>GOATH<span>BET</span></h1>
+    </div>
+    <nav>
+      <a href="index.html" class="ativo">Início</a>
+      <a href="login.html" id="btnEntrar" class="btn-login">Entrar</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h2>🚀 Bem-vindo ao <span>GoathBet</span></h2>
+    <p>Os melhores sinais, relatórios e ferramentas para turbinar sua gestão no Aviator.</p>
+  </section>
+
+  <!-- CARDS PRINCIPAIS -->
+  <section class="cards-container">
+    <!-- Gestão Financeira -->
+    <div class="card">
+      <h3>🧮 Gestão Financeira</h3>
+      <p>Controle sua banca e descubra o valor ideal de cada entrada.</p>
+      <button onclick="abrirCard('gestao')">Abrir Gestão</button>
+    </div>
+
+    <!-- Sinais de Entrada -->
+    <div class="card">
+      <h3>🎯 Sinais de Entrada</h3>
+      <p>Acompanhe os calls inteligentes lançados em tempo real.</p>
+      <button onclick="abrirCard('sinais')">Ver Sinais</button>
+    </div>
+
+    <!-- Sorteios -->
+    <div class="card">
+      <h3>🎁 Sorteios</h3>
+      <p>Participe de sorteios exclusivos para membros ativos.</p>
+      <button onclick="abrirCard('sorteios')">Participar</button>
+    </div>
+
+    <!-- Planos -->
+    <div class="card">
+      <h3>💳 Assine um Plano</h3>
+      <p>Ative sua conta para ter acesso completo ao jogo e relatórios.</p>
+      <a href="plano.html"><button>Ver Planos</button></a>
+    </div>
+
+    <!-- Jogo -->
+    <div class="card">
+      <h3>🎮 Jogar Agora</h3>
+      <p>Acesse o Aviator com sinais integrados e relatórios em tempo real.</p>
+      <button onclick="entrarNoJogo()">Ir para o Jogo</button>
+    </div>
+  </section>
+
+  <!-- MODAIS -->
+  <div id="card-gestao" class="modal">
+    <div class="card-box">
+      <span class="fechar" onclick="fecharCard('gestao')">×</span>
+      <h2>🧮 Calculadora de Gestão</h2>
+      <p>Digite sua banca inicial:</p>
+      <input type="number" id="banca" placeholder="Ex: 1000">
+      <button onclick="calcularGestao()">Calcular</button>
+      <div id="resultadoGestao"></div>
+    </div>
   </div>
-  
-  <canvas id="explosion"></canvas>
 
+  <div id="card-sinais" class="modal">
+    <div class="card-box">
+      <span class="fechar" onclick="fecharCard('sinais')">×</span>
+      <h2>🎯 Últimos Sinais</h2>
+      <ul id="listaSinais"></ul>
+    </div>
+  </div>
+
+  <div id="card-sorteios" class="modal">
+    <div class="card-box">
+      <span class="fechar" onclick="fecharCard('sorteios')">×</span>
+      <h2>🎁 Sorteios Ativos</h2>
+      <p>Em breve novos sorteios exclusivos para assinantes.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 GoathBet - Todos os direitos reservados</p>
+  </footer>
+
+  <!-- SCRIPTS -->
   <script type="module">
-    import { auth } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // efeito splash
-    const logo = document.getElementById("logo");
-    const canvas = document.getElementById("explosion");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const btnEntrar = document.getElementById("btnEntrar");
 
-    function explode(x, y) {
-      const particles = [];
-      for (let i = 0; i < 80; i++) {
-        particles.push({
-          x, y,
-          angle: Math.random() * 2 * Math.PI,
-          speed: Math.random() * 4 + 1,
-          radius: Math.random() * 2 + 1,
-          alpha: 1,
-          decay: Math.random() * 0.02 + 0.01,
-          color: ["#ff4da6", "#d291ff", "#fff"][Math.floor(Math.random()*3)]
-        });
+    // Autenticação
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        btnEntrar.innerText = "Sair";
+        btnEntrar.onclick = () => signOut(auth);
       }
-      function animate() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        particles.forEach(p => {
-          p.x += Math.cos(p.angle) * p.speed;
-          p.y += Math.sin(p.angle) * p.speed;
-          p.alpha -= p.decay;
-          if(p.alpha > 0){
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = p.alpha;
-            ctx.fill();
-            ctx.globalAlpha = 1;
-          }
-        });
-        if (particles.some(p => p.alpha > 0)) requestAnimationFrame(animate);
+    });
+
+    // Abrir/Fechar Cards
+    window.abrirCard = (id) => document.getElementById("card-" + id).style.display = "flex";
+    window.fecharCard = (id) => document.getElementById("card-" + id).style.display = "none";
+
+    // Gestão simples
+    window.calcularGestao = () => {
+      const banca = parseFloat(document.getElementById("banca").value);
+      if (!banca || banca <= 0) {
+        document.getElementById("resultadoGestao").innerHTML = "<p style='color:red'>Informe um valor válido</p>";
+        return;
       }
-      animate();
+      const valorEntrada = (banca * 0.02).toFixed(2); // 2% da banca
+      document.getElementById("resultadoGestao").innerHTML = `<p>Entrada recomendada: R$ ${valorEntrada}</p>`;
+    };
+
+    // Verificação de acesso ao jogo
+    async function verificarAssinatura(user) {
+      const ref = doc(db, "assinaturas", user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const dados = snap.data();
+        const validade = dados.validade?.toDate() || new Date(0);
+        if (dados.status === "ATIVO" && validade > new Date()) {
+          return true;
+        }
+      }
+      return false;
     }
 
-    // explosão da logo
-    setTimeout(() => {
-      if (logo) {
-        const rect = logo.getBoundingClientRect();
-        explode(rect.left + rect.width/2, rect.top + rect.height/2);
-        logo.style.opacity = "0";
-      }
-    }, 2000);
-
-    // redirecionar baseado na autenticação
-    setTimeout(() => {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          window.location.href = "dashboard.html"; // já logado
+    window.entrarNoJogo = () => {
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          window.location.href = "login.html";
         } else {
-          window.location.href = "home.html"; // visitante
+          const ok = await verificarAssinatura(user);
+          if (!ok) {
+            window.location.href = "plano.html";
+          } else {
+            window.location.href = "dashboard.html";
+          }
         }
       });
-    }, 4000);
-
-    // registrar service worker PWA
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ Service Worker registrado"))
-        .catch(err => console.log("SW falhou:", err));
-    }
+    };
   </script>
 </body>
 </html>
