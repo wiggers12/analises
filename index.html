@@ -3,158 +3,245 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoathBet - Início</title>
+  <title>GoathBet - Home</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="img/logo.png" type="image/png">
+  <script type="module" src="firebase.js"></script>
+  <style>
+    /* ===== SPLASH ===== */
+    #splash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #0a0a0f;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      animation: fadeIn 1s ease;
+    }
+    #splash img {
+      width: 150px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+    #splash h1 {
+      font-size: 1.5rem;
+      color: #ff4da6;
+      margin-bottom: 10px;
+    }
+    #splash .progress {
+      width: 200px;
+      height: 8px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    #splash .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff4da6, #8e44ad);
+      animation: load 3s forwards;
+    }
+    @keyframes load { to { width: 100%; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ===== LAYOUT ===== */
+    body { margin:0; background:#0a0a0f; font-family:'Poppins',sans-serif; color:#fff; }
+    header.topbar {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:15px 25px; background:#141422;
+    }
+    header .logo { display:flex; align-items:center; gap:10px; }
+    header .logo img { height:45px; }
+    header h1 { font-size:1.5rem; color:#ff4da6; }
+    header nav a { color:#fff; margin-left:20px; text-decoration:none; }
+    header nav a:hover { color:#ff4da6; }
+
+    .cards-container {
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;
+      padding:20px;
+    }
+    .card {
+      background:#1c1c2b;
+      border-radius:12px;
+      padding:20px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.4);
+      transition:0.3s;
+    }
+    .card:hover { transform:scale(1.02); }
+    .card h2 { color:#ff4da6; margin-bottom:15px; }
+    .card button {
+      margin-top:10px;
+      padding:10px 14px;
+      border:none;
+      border-radius:8px;
+      background:linear-gradient(135deg,#ff4da6,#8e44ad);
+      color:#fff;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+    .card button:hover { transform:scale(1.05); }
+    table { width:100%; border-collapse:collapse; }
+    table th, table td { padding:6px; border-bottom:1px solid #333; text-align:left; }
+    .status-green { color:#2ecc71; }
+    .status-red { color:#e74c3c; }
+    footer { text-align:center; padding:15px; background:#141422; margin-top:20px; font-size:0.9rem; color:#aaa; }
+  </style>
 </head>
 <body>
+  <!-- SPLASH -->
+  <div id="splash">
+    <img src="img/foto.png" alt="Rainha do Aviator">
+    <h1>✨ Entradas Inteligentes com a Rainha do Aviator ✨</h1>
+    <div class="progress"><div class="progress-bar"></div></div>
+  </div>
+
   <!-- TOPO -->
   <header class="topbar">
     <div class="logo">
-      <img src="img/logo.png" alt="GoathBet" height="45">
+      <img src="img/logo.png" alt="GoathBet">
       <h1>GOATH<span>BET</span></h1>
     </div>
     <nav>
-      <a href="index.html" class="ativo">Início</a>
-      <a href="login.html" id="btnEntrar" class="btn-login">Entrar</a>
+      <a href="login.html" id="btnEntrar">Entrar</a>
     </nav>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <h2>🚀 Bem-vindo ao <span>GoathBet</span></h2>
-    <p>Os melhores sinais, relatórios e ferramentas para turbinar sua gestão no Aviator.</p>
-  </section>
-
-  <!-- CARDS PRINCIPAIS -->
+  <!-- CARDS -->
   <section class="cards-container">
     <!-- Gestão Financeira -->
     <div class="card">
-      <h3>🧮 Gestão Financeira</h3>
-      <p>Controle sua banca e descubra o valor ideal de cada entrada.</p>
-      <button onclick="abrirCard('gestao')">Abrir Gestão</button>
+      <h2>🧮 Gestão Financeira</h2>
+      <p>Controle sua banca de forma inteligente.</p>
+      <input type="number" id="banca" placeholder="Banca inicial (R$)">
+      <input type="number" id="aposta" placeholder="Valor por entrada (R$)">
+      <button onclick="salvarGestao()">Salvar Gestão</button>
+      <p id="gestaoDica"></p>
     </div>
 
-    <!-- Sinais de Entrada -->
+    <!-- Entradas Inteligentes -->
     <div class="card">
-      <h3>🎯 Sinais de Entrada</h3>
-      <p>Acompanhe os calls inteligentes lançados em tempo real.</p>
-      <button onclick="abrirCard('sinais')">Ver Sinais</button>
+      <h2>🎯 Entradas Inteligentes</h2>
+      <ul id="listaCalls"></ul>
+    </div>
+
+    <!-- Relatório de Velas -->
+    <div class="card">
+      <h2>📈 Relatório de Velas</h2>
+      <table>
+        <thead><tr><th>Mult</th><th>Horário</th></tr></thead>
+        <tbody id="tabelaVelas"></tbody>
+      </table>
     </div>
 
     <!-- Sorteios -->
     <div class="card">
-      <h3>🎁 Sorteios</h3>
-      <p>Participe de sorteios exclusivos para membros ativos.</p>
-      <button onclick="abrirCard('sorteios')">Participar</button>
+      <h2>🎁 Sorteios</h2>
+      <ul id="listaSorteios"></ul>
     </div>
 
     <!-- Planos -->
     <div class="card">
-      <h3>💳 Assine um Plano</h3>
-      <p>Ative sua conta para ter acesso completo ao jogo e relatórios.</p>
-      <a href="plano.html"><button>Ver Planos</button></a>
+      <h2>💎 Planos</h2>
+      <p>Acesse nossos planos exclusivos e desbloqueie o jogo.</p>
+      <button onclick="window.location.href='plano.html'">Ver Planos</button>
     </div>
 
-    <!-- Jogo -->
+    <!-- Jogar -->
     <div class="card">
-      <h3>🎮 Jogar Agora</h3>
-      <p>Acesse o Aviator com sinais integrados e relatórios em tempo real.</p>
-      <button onclick="entrarNoJogo()">Ir para o Jogo</button>
+      <h2>✈️ Jogar Aviator</h2>
+      <p>Entre no jogo e acompanhe os sinais em tempo real.</p>
+      <button onclick="acessarJogo()">Entrar no Jogo</button>
     </div>
   </section>
 
-  <!-- MODAIS -->
-  <div id="card-gestao" class="modal">
-    <div class="card-box">
-      <span class="fechar" onclick="fecharCard('gestao')">×</span>
-      <h2>🧮 Calculadora de Gestão</h2>
-      <p>Digite sua banca inicial:</p>
-      <input type="number" id="banca" placeholder="Ex: 1000">
-      <button onclick="calcularGestao()">Calcular</button>
-      <div id="resultadoGestao"></div>
-    </div>
-  </div>
-
-  <div id="card-sinais" class="modal">
-    <div class="card-box">
-      <span class="fechar" onclick="fecharCard('sinais')">×</span>
-      <h2>🎯 Últimos Sinais</h2>
-      <ul id="listaSinais"></ul>
-    </div>
-  </div>
-
-  <div id="card-sorteios" class="modal">
-    <div class="card-box">
-      <span class="fechar" onclick="fecharCard('sorteios')">×</span>
-      <h2>🎁 Sorteios Ativos</h2>
-      <p>Em breve novos sorteios exclusivos para assinantes.</p>
-    </div>
-  </div>
-
   <!-- FOOTER -->
   <footer>
-    <p>© 2025 GoathBet - Todos os direitos reservados</p>
+    <p>© 2025 GoathBet - Todos os direitos reservados.</p>
   </footer>
 
-  <!-- SCRIPTS -->
+  <!-- SCRIPT -->
   <script type="module">
     import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, addDoc, doc, setDoc, getDoc, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const btnEntrar = document.getElementById("btnEntrar");
+    // Splash desaparece
+    setTimeout(()=>document.getElementById("splash").style.display="none",3000);
 
     // Autenticação
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        btnEntrar.innerText = "Sair";
-        btnEntrar.onclick = () => signOut(auth);
+    let userId=null;
+    onAuthStateChanged(auth,(user)=>{
+      if(user){
+        userId=user.uid;
+        document.getElementById("btnEntrar").innerText="Sair";
+        document.getElementById("btnEntrar").onclick=()=>auth.signOut();
+      } else {
+        userId=null;
+        document.getElementById("btnEntrar").innerText="Entrar";
+        document.getElementById("btnEntrar").onclick=()=>window.location.href="login.html";
       }
     });
 
-    // Abrir/Fechar Cards
-    window.abrirCard = (id) => document.getElementById("card-" + id).style.display = "flex";
-    window.fecharCard = (id) => document.getElementById("card-" + id).style.display = "none";
-
-    // Gestão simples
-    window.calcularGestao = () => {
-      const banca = parseFloat(document.getElementById("banca").value);
-      if (!banca || banca <= 0) {
-        document.getElementById("resultadoGestao").innerHTML = "<p style='color:red'>Informe um valor válido</p>";
-        return;
-      }
-      const valorEntrada = (banca * 0.02).toFixed(2); // 2% da banca
-      document.getElementById("resultadoGestao").innerHTML = `<p>Entrada recomendada: R$ ${valorEntrada}</p>`;
+    // ===== Gestão =====
+    window.salvarGestao=async()=>{
+      const banca=parseFloat(document.getElementById("banca").value);
+      const aposta=parseFloat(document.getElementById("aposta").value);
+      if(!userId) return alert("Faça login para salvar");
+      await addDoc(collection(db,"gestao"),{
+        uid:userId, banca, aposta, criadoEm:Timestamp.now()
+      });
+      document.getElementById("gestaoDica").innerText="💡 Recomendação: apostar "+((aposta/banca)*100).toFixed(2)+"% da banca";
     };
 
-    // Verificação de acesso ao jogo
-    async function verificarAssinatura(user) {
-      const ref = doc(db, "assinaturas", user.uid);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        const dados = snap.data();
-        const validade = dados.validade?.toDate() || new Date(0);
-        if (dados.status === "ATIVO" && validade > new Date()) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    window.entrarNoJogo = () => {
-      onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          window.location.href = "login.html";
-        } else {
-          const ok = await verificarAssinatura(user);
-          if (!ok) {
-            window.location.href = "plano.html";
-          } else {
-            window.location.href = "dashboard.html";
-          }
-        }
+    // ===== Entradas Inteligentes =====
+    onSnapshot(collection(db,"callsHistorico"),(snap)=>{
+      const ul=document.getElementById("listaCalls");
+      ul.innerHTML="";
+      snap.forEach(docSnap=>{
+        const d=docSnap.data();
+        const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
+        ul.innerHTML+=`<li><strong>${hora}</strong> → ${d.mult}x <span class="${d.status==='GREEN'?'status-green':'status-red'}">${d.status}</span></li>`;
       });
+    });
+
+    // ===== Relatório de Velas =====
+    onSnapshot(collection(db,"velas"),(snap)=>{
+      const tb=document.getElementById("tabelaVelas");
+      tb.innerHTML="";
+      snap.forEach(docSnap=>{
+        const d=docSnap.data();
+        const hora=d.horario?.toDate?d.horario.toDate().toLocaleTimeString("pt-BR"):"--:--";
+        tb.innerHTML+=`<tr><td>${d.multiplicador}x</td><td>${hora}</td></tr>`;
+      });
+    });
+
+    // ===== Sorteios =====
+    onSnapshot(collection(db,"sorteios"),(snap)=>{
+      const ul=document.getElementById("listaSorteios");
+      ul.innerHTML="";
+      snap.forEach(docSnap=>{
+        const d=docSnap.data();
+        const data=d.data?.toDate?d.data.toDate().toLocaleDateString("pt-BR"):"--/--";
+        ul.innerHTML+=`<li>🎁 ${d.nome} - ${d.premio} (até ${data})</li>`;
+      });
+    });
+
+    // ===== Jogar (checa plano ativo) =====
+    window.acessarJogo=async()=>{
+      if(!userId) return alert("⚠️ Faça login primeiro!");
+      const ref=doc(db,"assinaturas",userId);
+      const snap=await getDoc(ref);
+      if(!snap.exists() || snap.data().status!=="ATIVO"){
+        alert("⚠️ Você precisa ter um plano ativo para acessar o jogo!");
+        return;
+      }
+      window.location.href="dashboard.html";
     };
   </script>
 </body>
