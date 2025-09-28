@@ -15,11 +15,11 @@
   <!-- MENU -->
   <nav class="menu-admin">
     <button onclick="mostrarCard('assinaturas')" class="ativo">📋 Assinaturas</button>
-    <button onclick="mostrarCard('calls')">⏱ Oportunidades</button>
     <button onclick="mostrarCard('velas')">📈 Velas</button>
-    <button onclick="mostrarCard('rodadas')">📊 Rodadas</button>
-    <button onclick="mostrarCard('callsHist')">📢 Calls</button>
-    <button onclick="mostrarCard('lucro')">💹 Lucro</button>
+    <button onclick="mostrarCard('calls')">🎯 Calls</button>
+    <button onclick="mostrarCard('gestao')">🧮 Gestão</button>
+    <button onclick="mostrarCard('timer')">⏱ Timer</button>
+    <button onclick="mostrarCard('live')">▶️ Live</button>
   </nav>
 
   <!-- CONTEÚDO -->
@@ -35,16 +35,6 @@
       </table>
     </div>
 
-    <!-- Oportunidades -->
-    <div id="card-calls" class="card-admin">
-      <h2>⏱ Controle de Oportunidades</h2>
-      <input type="number" id="tempoProx" placeholder="Tempo (s)" value="60">
-      <input type="number" id="multProx" placeholder="Multiplicador" step="0.01" value="2.00">
-      <button class="btn btn-blue" onclick="definirCall()">🚀 Lançar Call</button>
-      <button class="btn btn-green" onclick="finalizarCall('GREEN')">✅ GREEN</button>
-      <button class="btn btn-red" onclick="finalizarCall('RED')">❌ RED</button>
-    </div>
-
     <!-- Velas -->
     <div id="card-velas" class="card-admin">
       <h2>📈 Últimas Velas</h2>
@@ -56,30 +46,43 @@
       </table>
     </div>
 
-    <!-- Rodadas -->
-    <div id="card-rodadas" class="card-admin">
-      <h2>📊 Relatório de Rodadas</h2>
-      <table class="tabela">
-        <thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="tabelaRodadas"></tbody>
-      </table>
-    </div>
-
-    <!-- Calls Historico -->
-    <div id="card-callsHist" class="card-admin">
-      <h2>📢 Últimos Calls</h2>
+    <!-- Calls -->
+    <div id="card-calls" class="card-admin">
+      <h2>🎯 Controle de Calls</h2>
+      <input type="number" id="tempoProx" placeholder="Tempo (s)" value="60">
+      <input type="number" id="multProx" placeholder="Multiplicador" step="0.01" value="2.00">
+      <button class="btn btn-blue" onclick="definirCall()">🚀 Lançar Call</button>
+      <button class="btn btn-green" onclick="finalizarCall('GREEN')">✅ GREEN</button>
+      <button class="btn btn-red" onclick="finalizarCall('RED')">❌ RED</button>
+      <h3>📢 Histórico</h3>
       <table class="tabela">
         <thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tabelaCalls"></tbody>
       </table>
     </div>
 
-    <!-- Lucro -->
-    <div id="card-lucro" class="card-admin">
-      <h2>💹 Lucro Virtual</h2>
+    <!-- Gestão -->
+    <div id="card-gestao" class="card-admin">
+      <h2>🧮 Gestão de Lucro</h2>
       <input type="number" id="lucroInput" placeholder="Valor em R$">
       <button class="btn btn-green" onclick="atualizarLucro()">💾 Atualizar</button>
       <p>Valor atual: R$ <span id="lucroAtual">0.00</span></p>
+    </div>
+
+    <!-- Timer -->
+    <div id="card-timer" class="card-admin">
+      <h2>⏱ Controle de Timer</h2>
+      <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
+      <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
+      <p id="msgPsico">⚠ Nenhum call ativo</p>
+    </div>
+
+    <!-- Live -->
+    <div id="card-live" class="card-admin">
+      <h2>▶️ Configuração de Live</h2>
+      <input type="text" id="linkLive" placeholder="URL do YouTube">
+      <button class="btn btn-blue" onclick="atualizarLive()">💾 Salvar</button>
+      <p>Link atual: <a id="liveAtual" href="#" target="_blank">--</a></p>
     </div>
   </section>
 
@@ -87,7 +90,7 @@
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { 
-      collection, getDoc, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp 
+      collection, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp 
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -102,13 +105,14 @@
       } else {
         carregarAssinaturas();
         carregarVelas();
-        carregarRodadas();
         carregarCalls();
         carregarLucro();
+        carregarTimer();
+        carregarLive();
       }
     });
 
-    // === Alternância dos Cards ===
+    // alternância de cards
     window.mostrarCard = function(nome) {
       document.querySelectorAll('.menu-admin button').forEach(b => b.classList.remove('ativo'));
       document.querySelectorAll('.card-admin').forEach(c => c.classList.remove('ativo'));
@@ -147,42 +151,6 @@
       await updateDoc(ref, data);
     };
 
-    // === Calls ===
-    window.definirCall = async () => {
-      const tempo = parseInt(document.getElementById("tempoProx").value);
-      const mult = parseFloat(document.getElementById("multProx").value);
-      await setDoc(doc(db,"calls","ativo"),{
-        horarioLancado:new Date(),
-        tempo,
-        multEsperado:mult,
-        status:"PENDENTE"
-      });
-    };
-    window.finalizarCall = async (res) => {
-      const mult = parseFloat(document.getElementById("multProx").value);
-      const ref = doc(db,"calls","ativo");
-      await updateDoc(ref, { status: res, horarioFinal: new Date() });
-      await addDoc(collection(db,"callsHistorico"), { horario:new Date(), mult, status:res });
-      await addDoc(collection(db,"rodadas"), { horario:new Date(), mult, status:res });
-    };
-
-    function carregarCalls(){
-      onSnapshot(collection(db,"callsHistorico"),(snap)=>{
-        let html="";
-        snap.forEach(docSnap=>{
-          const d=docSnap.data();
-          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
-          html+=`<tr>
-            <td>${hora}</td><td>${d.mult}</td>
-            <td class="${d.status==='GREEN'?'status-green':'status-red'}">${d.status}</td>
-            <td><button class="acao-btn acao-remover" onclick="removerCall('${docSnap.id}')">🗑</button></td>
-          </tr>`;
-        });
-        document.getElementById("tabelaCalls").innerHTML=html;
-      });
-    }
-    window.removerCall=async(id)=>{await deleteDoc(doc(db,"callsHistorico",id));};
-
     // === Velas ===
     function carregarVelas(){
       onSnapshot(collection(db,"velas"),(snap)=>{
@@ -205,9 +173,25 @@
     };
     window.removerVela=async(id)=>{await deleteDoc(doc(db,"velas",id));};
 
-    // === Rodadas ===
-    function carregarRodadas(){
-      onSnapshot(collection(db,"rodadas"),(snap)=>{
+    // === Calls ===
+    window.definirCall = async () => {
+      const tempo = parseInt(document.getElementById("tempoProx").value);
+      const mult = parseFloat(document.getElementById("multProx").value);
+      await setDoc(doc(db,"calls","ativo"),{
+        horarioLancado:new Date(),
+        tempo,
+        multEsperado:mult,
+        status:"PENDENTE"
+      });
+    };
+    window.finalizarCall = async (res) => {
+      const mult = parseFloat(document.getElementById("multProx").value);
+      const ref = doc(db,"calls","ativo");
+      await updateDoc(ref, { status: res, horarioFinal: new Date() });
+      await addDoc(collection(db,"callsHistorico"), { horario:new Date(), mult, status:res });
+    };
+    function carregarCalls(){
+      onSnapshot(collection(db,"callsHistorico"),(snap)=>{
         let html="";
         snap.forEach(docSnap=>{
           const d=docSnap.data();
@@ -215,22 +199,15 @@
           html+=`<tr>
             <td>${hora}</td><td>${d.mult}</td>
             <td class="${d.status==='GREEN'?'status-green':'status-red'}">${d.status}</td>
-            <td>
-              <button class="acao-btn acao-editar" onclick="editarRodada('${docSnap.id}','${d.status}')">✏️</button>
-              <button class="acao-btn acao-remover" onclick="removerRodada('${docSnap.id}')">🗑</button>
-            </td>
+            <td><button class="acao-btn acao-remover" onclick="removerCall('${docSnap.id}')">🗑</button></td>
           </tr>`;
         });
-        document.getElementById("tabelaRodadas").innerHTML=html;
+        document.getElementById("tabelaCalls").innerHTML=html;
       });
     }
-    window.editarRodada=async(id,statusAtual)=>{
-      const novo=prompt("Novo status (GREEN/RED)",statusAtual);
-      if(novo){await updateDoc(doc(db,"rodadas",id),{status:novo});}
-    };
-    window.removerRodada=async(id)=>{await deleteDoc(doc(db,"rodadas",id));};
+    window.removerCall=async(id)=>{await deleteDoc(doc(db,"callsHistorico",id));};
 
-    // === Lucro ===
+    // === Gestão ===
     function carregarLucro(){
       onSnapshot(doc(db,"lucro","atual"),(docSnap)=>{
         if(docSnap.exists()){
@@ -241,6 +218,33 @@
     window.atualizarLucro=async()=>{
       const val=parseFloat(document.getElementById("lucroInput").value);
       await setDoc(doc(db,"lucro","atual"),{valor:val});
+    };
+
+    // === Timer ===
+    function carregarTimer(){
+      onSnapshot(doc(db,"calls","ativo"),(snap)=>{
+        if(snap.exists()){
+          const call=snap.data();
+          document.getElementById("horaProx").innerText = call.horarioLancado?.toDate?.().toLocaleTimeString("pt-BR") || "--:--";
+          document.getElementById("minProx").innerText = call.multEsperado+"x";
+          document.getElementById("msgPsico").innerText = call.status;
+        }
+      });
+    }
+
+    // === Live ===
+    function carregarLive(){
+      onSnapshot(doc(db,"config","live"),(snap)=>{
+        if(snap.exists()){
+          const url=snap.data().url;
+          document.getElementById("liveAtual").innerText=url;
+          document.getElementById("liveAtual").href=url;
+        }
+      });
+    }
+    window.atualizarLive=async()=>{
+      const url=document.getElementById("linkLive").value;
+      await setDoc(doc(db,"config","live"),{url});
     };
   </script>
 </body>
