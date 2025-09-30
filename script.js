@@ -4,7 +4,7 @@ import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp 
 
 const contadorElem = document.getElementById("contador");
 const multElem = document.getElementById("multiplicador");
-const grade = document.getElementById("grade-historico");
+const listaHistorico = document.getElementById("lista-historico"); // ✅ corrigido
 
 const minutosValidos = [
   1,4,7,9,11,14,17,19,21,24,27,29,
@@ -25,29 +25,18 @@ function gerarMultiplicadorDeterministico(hora, minuto){
   return ((seed % 9000) / 100 + 10).toFixed(2);
 }
 
-/* Adicionar bloco visual */
+/* Adicionar item ao histórico visual */
 function adicionarBloco(hora, minuto, mult){
-  const bloco = document.createElement("div");
-  bloco.classList.add("bloco");
+  const li = document.createElement("li");
+  li.innerText = `${hora.toString().padStart(2,"0")}:${minuto.toString().padStart(2,"0")} → ${mult}x`;
 
-  const valor = document.createElement("span");
-  valor.classList.add("valor");
-  valor.innerText = mult + "x";
+  if(mult < 2) li.classList.add("baixo");   // azul
+  else if(mult < 10) li.classList.add("medio"); // roxo
+  else li.classList.add("alto"); // rosa
 
-  const horaTxt = document.createElement("span");
-  horaTxt.classList.add("hora");
-  horaTxt.innerText = `${hora.toString().padStart(2,"0")}:${minuto.toString().padStart(2,"0")}`;
-
-  if(mult < 3.5) bloco.classList.add("baixo");
-  else if(mult < 10) bloco.classList.add("medio");
-  else bloco.classList.add("alto");
-
-  bloco.appendChild(valor);
-  bloco.appendChild(horaTxt);
-
-  grade.prepend(bloco);
-  if(grade.children.length > 30){
-    grade.removeChild(grade.lastChild);
+  listaHistorico.prepend(li);
+  if(listaHistorico.children.length > 30){
+    listaHistorico.removeChild(listaHistorico.lastChild);
   }
 }
 
@@ -73,39 +62,20 @@ function atualizarContador(){
   contadorElem.innerText = `Próxima entrada em: ${min}:${seg}`;
 }
 
-/* Salvar sinal no Firestore */
-async function salvarSinal(hora, minuto, mult){
-  try {
-    await addDoc(collection(db, "sinais"), {
-      hora, minuto, multiplicador: mult,
-      criadoEm: serverTimestamp()
-    });
-    console.log("✅ Sinal salvo:", hora, minuto, mult);
-  } catch(e){
-    console.error("Erro ao salvar:", e);
-  }
-}
+/* 🔹 Apenas Admin deve salvar sinal */
+// async function salvarSinal(hora, minuto, mult){
+//   await addDoc(collection(db, "sinais"), {
+//     hora, minuto, multiplicador: mult,
+//     criadoEm: serverTimestamp()
+//   });
+// }
 
-/* Gerar e salvar automaticamente (executar apenas em 1 instância) */
+/* Timer (somente exibe calls) */
 setInterval(() => {
-  const agora = new Date();
-  const hora = agora.getHours();
-  const minuto = agora.getMinutes();
   atualizarContador();
-
-  if(minutosValidos.includes(minuto)){
-    const mult = gerarMultiplicadorDeterministico(hora, minuto);
-    multElem.innerText = mult + "x";
-    if(mult >= 10) multElem.style.color = "#ff0000";
-    else if(mult >= 5) multElem.style.color = "#00ff00";
-    else multElem.style.color = "#ff4da6";
-
-    // salvar no Firestore
-    salvarSinal(hora, minuto, mult);
-  }
 }, 1000);
 
-/* Escutar sinais do Firestore em tempo real */
+/* 🔹 Escutar sinais do Firestore em tempo real */
 const q = query(
   collection(db, "sinais"),
   orderBy("criadoEm", "desc"),
@@ -113,7 +83,7 @@ const q = query(
 );
 
 onSnapshot(q, (snapshot) => {
-  grade.innerHTML = "";
+  listaHistorico.innerHTML = "";
   snapshot.forEach(doc => {
     const d = doc.data();
     adicionarBloco(d.hora, d.minuto, d.multiplicador);
