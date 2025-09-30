@@ -54,7 +54,7 @@ window.loginEmail = async function () {
       // Agora basta estar ATIVO (e validade maior que hoje se existir)
       if (dados.status === "ATIVO" && (!validade || validade > hoje)) {
         alert("✅ Login autorizado! Acesso liberado.");
-        window.location.href = "home.html"; // direciona pro home/dashboard
+        window.location.href = "index.html"; // direciona pro home/dashboard
       } else {
         alert("⚠️ Sua assinatura expirou ou está inativa.");
       }
