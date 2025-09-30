@@ -3,7 +3,7 @@
 ============================== */
 import { auth, db } from "./firebase.js";
 import { 
-  collection, addDoc, query, orderBy, limit, onSnapshot 
+  collection, addDoc, query, orderBy, limit, onSnapshot, doc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ==============================
@@ -46,9 +46,9 @@ function adicionarBloco(hora, minuto, mult){
   const li = document.createElement("li");
   li.innerText = `${hora.toString().padStart(2,"0")}:${minuto.toString().padStart(2,"0")} → ${mult}x`;
 
-  if(mult < 2) li.classList.add("baixo");
-  else if(mult < 10) li.classList.add("medio");
-  else li.classList.add("alto");
+  if(mult < 2) li.classList.add("baixo");     // azul
+  else if(mult < 10) li.classList.add("medio"); // roxo
+  else li.classList.add("alto");               // rosa
 
   listaHistorico.prepend(li);
   if(listaHistorico.children.length > 30){
@@ -73,9 +73,9 @@ onSnapshot(q, (snapshot) => {
     // exibir o último multiplicador no card principal
     if(primeiro){
       multElem.innerText = d.multiplicador + "x";
-      if(d.multiplicador >= 10) multElem.style.color = "#ff0000";
-      else if(d.multiplicador >= 5) multElem.style.color = "#00ff00";
-      else multElem.style.color = "#ff4da6";
+      if(d.multiplicador >= 10) multElem.style.color = "#ff4da6"; // rosa
+      else if(d.multiplicador >= 2) multElem.style.color = "#a29bfe"; // roxo
+      else multElem.style.color = "#3498db"; // azul
       primeiro = false;
     }
   });
@@ -84,6 +84,7 @@ onSnapshot(q, (snapshot) => {
 /* ==============================
    GERENCIAMENTO FINANCEIRO
 ============================== */
+const resumoSaldo = document.getElementById("resumoSaldo");
 const resumoInvestido = document.getElementById("resumoInvestido");
 const resumoGanhos = document.getElementById("resumoGanhos");
 const resumoPerdas = document.getElementById("resumoPerdas");
@@ -94,10 +95,30 @@ const dicasBox = document.getElementById("dicasGerenciamento");
 const inputValor = document.getElementById("valorEntrada");
 const selectTipo = document.getElementById("tipoEntrada");
 
-/* Escutar dados do usuário logado */
-auth.onAuthStateChanged(user => {
-  if (!user) return;
+/* ==============================
+   BLOQUEIO DE USUÁRIOS
+============================== */
+auth.onAuthStateChanged(async user => {
+  if (!user) {
+    alert("⚠️ Faça login para acessar o app!");
+    return;
+  }
 
+  // verificar se o admin liberou este usuário
+  const refAss = doc(db, "assinaturas", user.uid);
+  const snap = await getDoc(refAss);
+  if (!snap.exists() || snap.data().status !== "ATIVO") {
+    document.body.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a0f1f;color:#fff;font-family:Poppins;text-align:center;">
+        <div>
+          <h2>⏳ Sua conta aguarda liberação</h2>
+          <p>Entre em contato com o administrador para ativar.</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  /* Escutar dados do gerenciamento */
   const ref = collection(db, "usuarios", user.uid, "gerenciamento");
   const q = query(ref, orderBy("data","desc"));
 
@@ -124,7 +145,9 @@ auth.onAuthStateChanged(user => {
     resumoInvestido.innerText = "R$ " + investido.toFixed(2);
     resumoGanhos.innerText = "R$ " + ganhos.toFixed(2);
     resumoPerdas.innerText = "R$ " + perdas.toFixed(2);
-    resumoLucro.innerText = "R$ " + (ganhos - perdas).toFixed(2);
+    const lucro = ganhos - perdas;
+    resumoLucro.innerText = "R$ " + lucro.toFixed(2);
+    resumoSaldo.innerText = "R$ " + (ganhos - perdas).toFixed(2);
 
     gerarDicas(investido, ganhos, perdas);
   });
@@ -149,7 +172,8 @@ window.adicionarEntrada = async () => {
   await addDoc(collection(db, "usuarios", user.uid, "gerenciamento"), {
     tipo,
     valor,
-    data: new Date()
+    data: new Date(),
+    criadoEm: serverTimestamp()
   });
 
   inputValor.value = "";
