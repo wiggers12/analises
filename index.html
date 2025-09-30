@@ -30,10 +30,62 @@
     </section>
 
     <!-- SEÇÃO GERENCIAMENTO -->
-    <section id="gerenciamento" class="secao">
-      <h2>Gerenciamento</h2>
-      <p>Aqui você poderá controlar sua banca e ver relatórios de gestão financeira.</p>
-    </section>
+  <!-- SEÇÃO GERENCIAMENTO -->
+<section id="gerenciamento" class="secao">
+  <h2>📊 Gestão Inteligente</h2>
+
+  <!-- Resumo -->
+  <div class="grid-resumo">
+    <div class="card-gestao destaque">
+      <h3>💰 Saldo Atual</h3>
+      <p>R$ <span id="saldoAtual">0.00</span></p>
+    </div>
+    <div class="card-gestao">
+      <h3>📥 Total Investido</h3>
+      <p>R$ <span id="totalInvestido">0.00</span></p>
+    </div>
+    <div class="card-gestao">
+      <h3>📈 Lucro</h3>
+      <p class="green">R$ <span id="lucroTotal">0.00</span></p>
+    </div>
+    <div class="card-gestao">
+      <h3>📉 Prejuízo</h3>
+      <p class="red">R$ <span id="prejuizoTotal">0.00</span></p>
+    </div>
+  </div>
+
+  <!-- Estatísticas -->
+  <div class="card-gestao">
+    <h3>📊 Estatísticas</h3>
+    <p>Taxa de acerto: <span id="taxaAcerto">0%</span></p>
+    <p>Retorno sobre investimento (ROI): <span id="roi">0%</span></p>
+  </div>
+
+  <!-- Dicas -->
+  <div class="card-gestao dicas">
+    <h3>🤖 Dicas Inteligentes</h3>
+    <p id="dicaTexto">Carregando...</p>
+  </div>
+
+  <!-- Planilha -->
+  <div class="card-gestao">
+    <h3>📜 Histórico de Operações</h3>
+    <div class="tabela-container">
+      <table class="tabela">
+        <thead>
+          <tr><th>Data</th><th>Tipo</th><th>Valor</th><th>Saldo</th></tr>
+        </thead>
+        <tbody id="tabelaHistorico"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Gráfico -->
+  <div class="card-gestao">
+    <h3>📉 Evolução do Saldo</h3>
+    <canvas id="graficoSaldo" height="100"></canvas>
+  </div>
+</section>
 
     <!-- SEÇÃO CALLS -->
     <section id="calls" class="secao">
