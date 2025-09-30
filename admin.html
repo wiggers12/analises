@@ -44,6 +44,12 @@
       padding: 8px; border-radius: 6px; border: none;
       margin: 5px; font-family: inherit;
     }
+    /* Cores do histórico */
+    .baixo { color:#3498db; font-weight:bold; }   /* azul */
+    .medio { color:#a29bfe; font-weight:bold; }  /* roxo */
+    .alto { color:#ff4da6; font-weight:bold; }   /* rosa */
+    ul { list-style:none; padding:0; margin-top:10px; }
+    ul li { padding:4px 0; }
   </style>
 </head>
 <body>
@@ -75,6 +81,12 @@
         <button class="btn-green" onclick="gerarCallsDoDia()">Gerar 24h</button>
         <p id="statusCalls" style="margin-top:10px; color:#ffd700;">Aguardando ação...</p>
       </div>
+
+      <!-- Histórico -->
+      <div class="calls-box" style="margin-top:20px;">
+        <h3>📜 Últimos Calls</h3>
+        <ul id="listaHistorico"></ul>
+      </div>
     </section>
   </div>
 
@@ -82,7 +94,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { 
-      getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, addDoc, Timestamp 
+      getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, Timestamp, query, orderBy, limit
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // Config Firebase
@@ -137,7 +149,6 @@
     /* =====================
        CONTROLE DE CALLS
     ====================== */
-    // minutos fixos
     const minutosValidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,49,51,54,57,59];
 
     // salvar call manual
@@ -156,7 +167,7 @@
         criadoEm:new Date()
       });
 
-      alert(`✅ Call ${mult}x salva para ${h}:${m}`);
+      alert(`✅ Call ${mult}x salvo para ${h}:${m}`);
     };
 
     // gerar calls automáticas
@@ -192,6 +203,29 @@
       }
       document.getElementById("statusCalls").innerText = `✅ ${total} calls geradas para ${dia}/${mes+1}/${ano}`;
     };
+
+    /* =====================
+       HISTÓRICO DE CALLS
+    ====================== */
+    const listaHistorico = document.getElementById("listaHistorico");
+    const qHist = query(collection(db,"sinais"), orderBy("criadoEm","desc"), limit(30));
+
+    onSnapshot(qHist, (snap) => {
+      listaHistorico.innerHTML = "";
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const li = document.createElement("li");
+        const hora = String(d.hora).padStart(2,"0");
+        const minuto = String(d.minuto).padStart(2,"0");
+        li.textContent = `${hora}:${minuto} → ${d.multiplicador}x`;
+
+        if(d.multiplicador < 2) li.classList.add("baixo");
+        else if(d.multiplicador < 10) li.classList.add("medio");
+        else li.classList.add("alto");
+
+        listaHistorico.appendChild(li);
+      });
+    });
   </script>
 </body>
 </html>
