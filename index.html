@@ -77,10 +77,51 @@
     </section>
 
     <!-- SEÇÃO HISTÓRICO -->
-    <section id="historico" class="secao">
-      <h2>Histórico</h2>
-      <p>Veja o histórico das últimas entradas e resultados.</p>
-    </section>
+   <section id="historicoSec" class="secao">
+  <h2>📊 Histórico Premium</h2>
+
+  <!-- 🔹 Filtros -->
+  <div class="filtros-historico">
+    <select id="filtro-dia">
+      <option value="all">Todos os dias</option>
+      <option value="segunda">Segunda</option>
+      <option value="terca">Terça</option>
+      <option value="quarta">Quarta</option>
+      <option value="quinta">Quinta</option>
+      <option value="sexta">Sexta</option>
+      <option value="sabado">Sábado</option>
+      <option value="domingo">Domingo</option>
+    </select>
+
+    <select id="filtro-mes">
+      <option value="all">Todos os meses</option>
+      <option value="1">Janeiro</option>
+      <option value="2">Fevereiro</option>
+      <option value="3">Março</option>
+      <option value="4">Abril</option>
+      <option value="5">Maio</option>
+      <option value="6">Junho</option>
+      <option value="7">Julho</option>
+      <option value="8">Agosto</option>
+      <option value="9">Setembro</option>
+      <option value="10">Outubro</option>
+      <option value="11">Novembro</option>
+      <option value="12">Dezembro</option>
+    </select>
+
+    <select id="filtro-valor">
+      <option value="all">Todos os valores</option>
+      <option value="baixo">Abaixo de 2x</option>
+      <option value="medio">Entre 2x e 10x</option>
+      <option value="alto">Acima de 10x</option>
+    </select>
+  </div>
+
+  <!-- 🔹 Grade de Resultados -->
+  <div id="grade-historico-premium" class="grade-historico">
+    <!-- Cards renderizados dinamicamente -->
+  </div>
+</section>
 
     <!-- SEÇÃO LIVE -->
     <section id="live" class="secao">
