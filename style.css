@@ -169,78 +169,97 @@ h1, h2, h3 { font-weight: bold; }
 .historico li.medio { background: #00b894; }
 .historico li.alto { background: #e74c3c; }
 
-/* ==========================
-   GERENCIAMENTO
-========================== */
-.gerenciamento-container {
-  background: #1c0f2e;
-  padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-  text-align: left;
-  max-width: 900px;
-  margin: auto;
-  border: 2px solid #ff4da6;
-}
-.gerenciamento-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #ff4da6;
-}
-.grid-resumo {
+/* ==============================
+   Gerenciamento Financeiro
+============================== */
+.resumos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
-  gap: 10px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 15px 0;
 }
-.card-resumo {
+
+.resumo-card {
   background: #2a0939;
   padding: 15px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  font-weight: bold;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
-.card-resumo h3 { font-size: 1rem; color: #ffb6e6; margin-bottom: 8px; }
-.card-resumo p { font-size: 1.2rem; font-weight: bold; }
-.tabela {
+.resumo-card h4 {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  color: #ffb6e6;
+}
+.resumo-card p {
+  font-size: 1.2rem;
+}
+
+.resumo-card.saldo { border-left: 4px solid #ffd700; }
+.resumo-card.investido { border-left: 4px solid #3498db; }
+.resumo-card.lucro { border-left: 4px solid #2ecc71; }
+.resumo-card.perdas { border-left: 4px solid #e74c3c; }
+
+.estatisticas-box,
+.dicas-box {
+  background: #1c0f2e;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 15px 0;
+  border: 1px solid #ff4da6;
+}
+
+.form-gerenciamento {
+  margin: 20px 0;
+  background: #1c0f2e;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #ff4da6;
+}
+.form-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.form-gerenciamento input,
+.form-gerenciamento select,
+.form-gerenciamento button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+}
+.form-gerenciamento button {
+  background: #ff4da6;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tabela-wrapper {
+  overflow-x: auto;
+}
+.tabela-historico {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  background: #1c0f2e;
+  border-radius: 10px;
+  overflow: hidden;
 }
-.tabela th, .tabela td {
-  border: 1px solid #3b0a4e;
+.tabela-historico th, .tabela-historico td {
   padding: 10px;
   text-align: center;
 }
-.tabela th {
+.tabela-historico th {
   background: #2a0939;
-  color: #ffb6e6;
+  color: #ff4da6;
 }
-.tabela td { background: #1c0f2e; }
-.form-entrada {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+.tabela-historico tr:nth-child(even) {
+  background: #2a0939;
 }
-.form-entrada input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-}
-.form-entrada button {
-  background: #ff4da6;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.form-entrada button:hover { background: #e84393; }
-
 /* ==========================
    HISTÓRICO PREMIUM
 ========================== */
