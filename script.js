@@ -74,79 +74,54 @@ onSnapshot(q, (snapshot) => {
 });
 
 /* ==============================
-   GERENCIAMENTO FINANCEIRO
+   GERENCIAMENTO FINANCEIRO (RESUMO)
 ============================== */
+import { 
+  doc, setDoc, updateDoc, onSnapshot, increment 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 const resumoSaldo = document.getElementById("resumoSaldo");
 const resumoInvestido = document.getElementById("resumoInvestido");
 const resumoGanhos = document.getElementById("resumoGanhos");
 const resumoPerdas = document.getElementById("resumoPerdas");
 const resumoLucro = document.getElementById("resumoLucro");
-const tabelaEntradas = document.getElementById("tabelaEntradas");
 const dicasBox = document.getElementById("dicasGerenciamento");
 
 const inputValor = document.getElementById("valorEntrada");
 const selectTipo = document.getElementById("tipoEntrada");
 
-/* Bloqueio + Escutar dados do gerenciamento */
+/* Escutar o usuário logado */
 auth.onAuthStateChanged(async user => {
   if (!user) {
     alert("⚠️ Faça login para acessar o app!");
     return;
   }
 
-  // verificar se o admin liberou este usuário
-  const refAss = doc(db, "assinaturas", user.uid);
-  const snap = await getDoc(refAss);
-  if (!snap.exists() || snap.data().status !== "ATIVO") {
-    document.body.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a0f1f;color:#fff;font-family:Poppins;text-align:center;">
-        <div>
-          <h2>⏳ Sua conta aguarda liberação</h2>
-          <p>Entre em contato com o administrador para ativar.</p>
-        </div>
-      </div>`;
-    return;
-  }
+  // referência do resumo único
+  const resumoRef = doc(db, "usuarios", user.uid, "gerenciamento", "resumo");
 
-  const ref = collection(db, "usuarios", user.uid, "gerenciamento");
-  const q = query(ref, orderBy("data","desc"));
+  // inicializa caso não exista
+  await setDoc(resumoRef, {
+    investido: 0,
+    ganhos: 0,
+    perdas: 0,
+    lucro: 0,
+    saldo: 0
+  }, { merge: true });
 
-  onSnapshot(q, (snap) => {
-    let investido = 0, ganhos = 0, perdas = 0;
-    let html = "";
-
-    snap.forEach(docSnap => {
+  // escuta em tempo real o resumo
+  onSnapshot(resumoRef, (docSnap) => {
+    if (docSnap.exists()) {
       const d = docSnap.data();
 
-      // soma valores conforme o tipo
-      if (d.tipo === "investido") investido += d.valor;
-      if (d.tipo === "ganho") ganhos += d.valor;
-      if (d.tipo === "perda") perdas += d.valor;
+      resumoInvestido.innerText = "R$ " + d.investido.toFixed(2);
+      resumoGanhos.innerText    = "R$ " + d.ganhos.toFixed(2);
+      resumoPerdas.innerText    = "R$ " + d.perdas.toFixed(2);
+      resumoLucro.innerText     = "R$ " + d.lucro.toFixed(2);
+      resumoSaldo.innerText     = "R$ " + d.saldo.toFixed(2);
 
-      // monta tabela
-      html += `
-        <tr>
-          <td data-label="Data">${d.data.toDate().toLocaleString("pt-BR")}</td>
-          <td data-label="Tipo">${d.tipo}</td>
-          <td data-label="Valor">R$ ${d.valor.toFixed(2)}</td>
-        </tr>`;
-    });
-
-    tabelaEntradas.innerHTML = html;
-
-    // cálculos principais
-    const saldo = investido + ganhos - perdas;
-    const lucro = ganhos - perdas;
-
-    // atualiza resumos
-    resumoInvestido.innerText = "R$ " + investido.toFixed(2);
-    resumoGanhos.innerText = "R$ " + ganhos.toFixed(2);
-    resumoPerdas.innerText = "R$ " + perdas.toFixed(2);
-    resumoLucro.innerText = "R$ " + lucro.toFixed(2);
-    resumoSaldo.innerText = "R$ " + saldo.toFixed(2);
-
-    // chama dicas
-    gerarDicas(investido, ganhos, perdas);
+      gerarDicas(d.investido, d.ganhos, d.perdas);
+    }
   });
 });
 
@@ -158,6 +133,7 @@ window.adicionarEntrada = async () => {
     return;
   }
 
+  const resumoRef = doc(db, "usuarios", user.uid, "gerenciamento", "resumo");
   const tipo = selectTipo.value;
   const valor = parseFloat(inputValor.value);
 
@@ -166,19 +142,35 @@ window.adicionarEntrada = async () => {
     return;
   }
 
-  await addDoc(collection(db, "usuarios", user.uid, "gerenciamento"), {
-    tipo,       // agora pode ser "investido", "ganho" ou "perda"
-    valor,
-    data: new Date(),
-    criadoEm: serverTimestamp()
-  });
+  if (tipo === "investido") {
+    await updateDoc(resumoRef, {
+      investido: increment(valor),
+      saldo: increment(valor)
+    });
+  }
+
+  if (tipo === "ganho") {
+    await updateDoc(resumoRef, {
+      ganhos: increment(valor),
+      lucro: increment(valor),
+      saldo: increment(valor)
+    });
+  }
+
+  if (tipo === "perda") {
+    await updateDoc(resumoRef, {
+      perdas: increment(valor),
+      lucro: increment(-valor),
+      saldo: increment(-valor)
+    });
+  }
 
   inputValor.value = "";
-  selectTipo.value = "investido"; // valor padrão ao resetar
+  selectTipo.value = "investido"; // reseta para investimento
 };
 
 /* Dicas inteligentes */
-function gerarDicas(investido, ganhos, perdas){
+function gerarDicas(investido, ganhos, perdas) {
   let dicas = [];
   const lucro = ganhos - perdas;
 
@@ -189,11 +181,11 @@ function gerarDicas(investido, ganhos, perdas){
     dicas.push(`📊 Sua taxa de retorno é de ${isNaN(taxaRetorno)?0:taxaRetorno}%`);
 
     if (lucro > 0) {
-      dicas.push("✅ Você está lucrando! Continue com disciplina e aumente aos poucos.");
+      dicas.push("✅ Você está lucrando! Continue com disciplina.");
     } else if (lucro < 0) {
-      dicas.push("⚠️ Está em prejuízo. Reduza suas apostas até se recuperar.");
+      dicas.push("⚠️ Está em prejuízo. Reduza o risco até se recuperar.");
     } else {
-      dicas.push("ℹ️ Você está no zero a zero. Continue monitorando.");
+      dicas.push("ℹ️ Você está no zero a zero, mantenha a estratégia.");
     }
 
     const sugestao = Math.max(1, (investido * 0.05).toFixed(2));
