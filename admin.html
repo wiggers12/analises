@@ -4,25 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel de Administração</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <!-- TOPO -->
-  <header class="topbar">
-    <h1>👑 Painel de <span>Administração</span></h1>
-  </header>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel de Administração</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg,#1a0f1f,#2a0939,#1a0f1f);
-      color: #fff;
-      margin: 0; padding: 0;
+      color: #fff; margin: 0; padding: 0;
     }
     header {
       background: #2a0939;
@@ -37,9 +23,7 @@
       width: 100%; border-collapse: collapse; margin-top: 15px;
       background: #1c0f2e; border-radius: 10px; overflow: hidden;
     }
-    table th, table td {
-      padding: 10px; text-align: center;
-    }
+    table th, table td { padding: 10px; text-align: center; }
     table th { background: #2a0939; color: #ff4da6; }
     table tr:nth-child(even) { background: #2a0939; }
     button {
@@ -55,6 +39,10 @@
       padding: 20px; border-radius: 12px;
       text-align: center; margin-top: 15px;
       border: 2px solid #ff4da6;
+    }
+    input, select {
+      padding: 8px; border-radius: 6px; border: none;
+      margin: 5px; font-family: inherit;
     }
   </style>
 </head>
@@ -76,10 +64,15 @@
 
     <!-- Calls -->
     <section>
-      <h2>🎯 Automatizar Calls</h2>
+      <h2>🎯 Controle de Calls</h2>
       <div class="calls-box">
-        <p>Gerar automaticamente todas as entradas (24h)</p>
-        <button class="btn-blue" onclick="gerarCallsDoDia()">⚡ Gerar Calls do Dia</button>
+        <h3>➕ Definir Call Manual</h3>
+        <input type="time" id="horaManual">
+        <input type="number" id="multManual" step="0.01" placeholder="Multiplicador">
+        <button class="btn-blue" onclick="definirCallManual()">Salvar Call</button>
+
+        <h3 style="margin-top:20px;">⚡ Automatizar Calls do Dia</h3>
+        <button class="btn-green" onclick="gerarCallsDoDia()">Gerar 24h</button>
         <p id="statusCalls" style="margin-top:10px; color:#ffd700;">Aguardando ação...</p>
       </div>
     </section>
@@ -88,12 +81,11 @@
   <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { 
       getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, addDoc, Timestamp 
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Config do seu Firebase
+    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyA430IFeF_f8Z_DGgQCDg6EbXBQ6pei-1k",
       authDomain: "analises-tecnicas.firebaseapp.com",
@@ -105,23 +97,11 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Emails autorizados
-    const adminEmails = ["dionegalato1212@gmail.com"];
-
-    // Autenticação
-    onAuthStateChanged(auth, (user) => {
-      if (!user || !adminEmails.includes(user.email)) {
-        alert("⚠️ Acesso negado");
-        window.location.href = "login.html";
-      } else {
-        carregarUsuarios();
-      }
-    });
-
-    // === Usuários ===
+    /* =====================
+       CONTROLE DE USUÁRIOS
+    ====================== */
     function carregarUsuarios(){
       onSnapshot(collection(db, "assinaturas"), (snap) => {
         let html = "";
@@ -141,6 +121,7 @@
         document.getElementById("tabelaUsuarios").innerHTML = html;
       });
     }
+    carregarUsuarios();
 
     window.atualizarStatus = async (id, status, dias) => {
       const ref = doc(db, "assinaturas", id);
@@ -153,9 +134,32 @@
       await updateDoc(ref, data);
     };
 
-    // === Calls automáticas ===
+    /* =====================
+       CONTROLE DE CALLS
+    ====================== */
+    // minutos fixos
     const minutosValidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,49,51,54,57,59];
 
+    // salvar call manual
+    window.definirCallManual = async () => {
+      const horaInput = document.getElementById("horaManual").value;
+      const mult = parseFloat(document.getElementById("multManual").value);
+
+      if (!horaInput || !mult) {
+        alert("⚠ Preencha horário e multiplicador");
+        return;
+      }
+
+      const [h,m] = horaInput.split(":").map(Number);
+      await addDoc(collection(db,"sinais"),{
+        hora:h, minuto:m, multiplicador:mult,
+        criadoEm:new Date()
+      });
+
+      alert(`✅ Call ${mult}x salva para ${h}:${m}`);
+    };
+
+    // gerar calls automáticas
     function gerarMultiplicador(h,m){
       const data = new Date();
       const chave = `${data.getFullYear()}-${data.getMonth()}-${data.getDate()}-${h}-${m}`;
@@ -187,243 +191,6 @@
         }
       }
       document.getElementById("statusCalls").innerText = `✅ ${total} calls geradas para ${dia}/${mes+1}/${ano}`;
-    };
-  </script>
-</body>
-</html>
-  <!-- MENU -->
-  <nav class="menu-admin">
-    <button onclick="mostrarCard('assinaturas')" class="ativo">📋 Assinaturas</button>
-    <button onclick="mostrarCard('velas')">📈 Velas</button>
-    <button onclick="mostrarCard('calls')">🎯 Calls</button>
-    <button onclick="mostrarCard('gestao')">🧮 Gestão</button>
-    <button onclick="mostrarCard('timer')">⏱ Timer</button>
-    <button onclick="mostrarCard('live')">▶️ Live</button>
-  </nav>
-
-  <!-- CONTEÚDO -->
-  <section class="admin-container">
-    <!-- Assinaturas -->
-    <div id="card-assinaturas" class="card-admin ativo">
-      <h2>📋 Gerenciar Assinaturas</h2>
-      <table class="tabela">
-        <thead>
-          <tr><th>Email</th><th>Status</th><th>Validade</th><th>Ações</th></tr>
-        </thead>
-        <tbody id="assinaturasTable"></tbody>
-      </table>
-    </div>
-
-    <!-- Velas -->
-    <div id="card-velas" class="card-admin">
-      <h2>📈 Últimas Velas</h2>
-      <input type="number" id="velaMult" placeholder="Multiplicador">
-      <button class="btn btn-blue" onclick="adicionarVela()">➕ Adicionar Vela</button>
-      <table class="tabela">
-        <thead><tr><th>Multiplicador</th><th>Horário</th><th>Ações</th></tr></thead>
-        <tbody id="tabelaVelas"></tbody>
-      </table>
-    </div>
-
-    <!-- Calls -->
-    <div id="card-calls" class="card-admin">
-      <h2>🎯 Controle de Calls</h2>
-      <input type="number" id="tempoProx" placeholder="Tempo (s)" value="60">
-      <input type="number" id="multProx" placeholder="Multiplicador" step="0.01" value="2.00">
-      <button class="btn btn-blue" onclick="definirCall()">🚀 Lançar Call</button>
-      <button class="btn btn-green" onclick="finalizarCall('GREEN')">✅ GREEN</button>
-      <button class="btn btn-red" onclick="finalizarCall('RED')">❌ RED</button>
-      <h3>📢 Histórico</h3>
-      <table class="tabela">
-        <thead><tr><th>Horário</th><th>Mult</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="tabelaCalls"></tbody>
-      </table>
-    </div>
-
-    <!-- Gestão -->
-    <div id="card-gestao" class="card-admin">
-      <h2>🧮 Gestão de Lucro</h2>
-      <input type="number" id="lucroInput" placeholder="Valor em R$">
-      <button class="btn btn-green" onclick="atualizarLucro()">💾 Atualizar</button>
-      <p>Valor atual: R$ <span id="lucroAtual">0.00</span></p>
-    </div>
-
-    <!-- Timer -->
-    <div id="card-timer" class="card-admin">
-      <h2>⏱ Controle de Timer</h2>
-      <p><strong>Horário:</strong> <span id="horaProx">--:--</span></p>
-      <p><strong>Mínimo Esperado:</strong> <span id="minProx">--</span></p>
-      <p id="msgPsico">⚠ Nenhum call ativo</p>
-    </div>
-
-    <!-- Live -->
-    <div id="card-live" class="card-admin">
-      <h2>▶️ Configuração de Live</h2>
-      <input type="text" id="linkLive" placeholder="URL do YouTube">
-      <button class="btn btn-blue" onclick="atualizarLive()">💾 Salvar</button>
-      <p>Link atual: <a id="liveAtual" href="#" target="_blank">--</a></p>
-    </div>
-  </section>
-
-  <!-- SCRIPT -->
-  <script type="module">
-    import { auth, db } from "./firebase.js";
-    import { 
-      collection, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, Timestamp 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    // emails autorizados
-    const adminEmails = ["dionegalato1212@gmail.com", "garotamenablog@outlook.com"];
-
-    // autenticação
-    onAuthStateChanged(auth, (user) => {
-      if (!user || !adminEmails.includes(user.email)) {
-        alert("⚠️ Acesso negado");
-        window.location.href = "login.html";
-      } else {
-        carregarAssinaturas();
-        carregarVelas();
-        carregarCalls();
-        carregarLucro();
-        carregarTimer();
-        carregarLive();
-      }
-    });
-
-    // alternância de cards
-    window.mostrarCard = function(nome) {
-      document.querySelectorAll('.menu-admin button').forEach(b => b.classList.remove('ativo'));
-      document.querySelectorAll('.card-admin').forEach(c => c.classList.remove('ativo'));
-      document.querySelector(`.menu-admin button[onclick*="${nome}"]`).classList.add('ativo');
-      document.getElementById("card-" + nome).classList.add('ativo');
-    };
-
-    // === Assinaturas ===
-    function carregarAssinaturas() {
-      onSnapshot(collection(db, "assinaturas"), (snap) => {
-        let html = "";
-        snap.forEach(docSnap => {
-          const d = docSnap.data();
-          const validade = d.validade?.toDate().toLocaleDateString("pt-BR") || "-";
-          html += `<tr>
-            <td>${d.email}</td>
-            <td>${d.status}</td>
-            <td>${validade}</td>
-            <td>
-              <button class="btn btn-green" onclick="atualizarStatus('${docSnap.id}','ATIVO',30)">+30d</button>
-              <button class="btn btn-red" onclick="atualizarStatus('${docSnap.id}','INATIVO')">Inativar</button>
-            </td>
-          </tr>`;
-        });
-        document.getElementById("assinaturasTable").innerHTML = html;
-      });
-    }
-    window.atualizarStatus = async (id, status, dias) => {
-      const ref = doc(db, "assinaturas", id);
-      let data = { status };
-      if (status === "ATIVO" && dias) {
-        let nova = new Date();
-        nova.setDate(nova.getDate() + dias);
-        data.validade = Timestamp.fromDate(nova);
-      }
-      await updateDoc(ref, data);
-    };
-
-    // === Velas ===
-    function carregarVelas(){
-      onSnapshot(collection(db,"velas"),(snap)=>{
-        let html="";
-        snap.forEach(docSnap=>{
-          const d=docSnap.data();
-          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
-          html+=`<tr>
-            <td>${d.multiplicador}</td>
-            <td>${hora}</td>
-            <td><button class="acao-btn acao-remover" onclick="removerVela('${docSnap.id}')">🗑</button></td>
-          </tr>`;
-        });
-        document.getElementById("tabelaVelas").innerHTML=html;
-      });
-    }
-    window.adicionarVela=async()=>{
-      const mult=parseFloat(document.getElementById("velaMult").value);
-      await addDoc(collection(db,"velas"),{multiplicador:mult,horario:new Date()});
-    };
-    window.removerVela=async(id)=>{await deleteDoc(doc(db,"velas",id));};
-
-    // === Calls ===
-    window.definirCall = async () => {
-      const tempo = parseInt(document.getElementById("tempoProx").value);
-      const mult = parseFloat(document.getElementById("multProx").value);
-      await setDoc(doc(db,"calls","ativo"),{
-        horarioLancado:new Date(),
-        tempo,
-        multEsperado:mult,
-        status:"PENDENTE"
-      });
-    };
-    window.finalizarCall = async (res) => {
-      const mult = parseFloat(document.getElementById("multProx").value);
-      const ref = doc(db,"calls","ativo");
-      await updateDoc(ref, { status: res, horarioFinal: new Date() });
-      await addDoc(collection(db,"callsHistorico"), { horario:new Date(), mult, status:res });
-    };
-    function carregarCalls(){
-      onSnapshot(collection(db,"callsHistorico"),(snap)=>{
-        let html="";
-        snap.forEach(docSnap=>{
-          const d=docSnap.data();
-          const hora=d.horario?.toDate().toLocaleTimeString("pt-BR")||"-";
-          html+=`<tr>
-            <td>${hora}</td><td>${d.mult}</td>
-            <td class="${d.status==='GREEN'?'status-green':'status-red'}">${d.status}</td>
-            <td><button class="acao-btn acao-remover" onclick="removerCall('${docSnap.id}')">🗑</button></td>
-          </tr>`;
-        });
-        document.getElementById("tabelaCalls").innerHTML=html;
-      });
-    }
-    window.removerCall=async(id)=>{await deleteDoc(doc(db,"callsHistorico",id));};
-
-    // === Gestão ===
-    function carregarLucro(){
-      onSnapshot(doc(db,"lucro","atual"),(docSnap)=>{
-        if(docSnap.exists()){
-          document.getElementById("lucroAtual").innerText=docSnap.data().valor.toFixed(2);
-        }
-      });
-    }
-    window.atualizarLucro=async()=>{
-      const val=parseFloat(document.getElementById("lucroInput").value);
-      await setDoc(doc(db,"lucro","atual"),{valor:val});
-    };
-
-    // === Timer ===
-    function carregarTimer(){
-      onSnapshot(doc(db,"calls","ativo"),(snap)=>{
-        if(snap.exists()){
-          const call=snap.data();
-          document.getElementById("horaProx").innerText = call.horarioLancado?.toDate?.().toLocaleTimeString("pt-BR") || "--:--";
-          document.getElementById("minProx").innerText = call.multEsperado+"x";
-          document.getElementById("msgPsico").innerText = call.status;
-        }
-      });
-    }
-
-    // === Live ===
-    function carregarLive(){
-      onSnapshot(doc(db,"config","live"),(snap)=>{
-        if(snap.exists()){
-          const url=snap.data().url;
-          document.getElementById("liveAtual").innerText=url;
-          document.getElementById("liveAtual").href=url;
-        }
-      });
-    }
-    window.atualizarLive=async()=>{
-      const url=document.getElementById("linkLive").value;
-      await setDoc(doc(db,"config","live"),{url});
     };
   </script>
 </body>
