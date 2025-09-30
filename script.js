@@ -1,91 +1,114 @@
-import { db } from "./firebase.js";
-import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } 
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { auth, db } from "./firebase.js";
+import { 
+  collection, addDoc, onSnapshot, query, orderBy 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const contadorElem = document.getElementById("contador");
-const multElem = document.getElementById("multiplicador");
-const listaHistorico = document.getElementById("lista-historico"); // ✅ corrigido
+// ==============================
+// ELEMENTOS DA TELA
+// ==============================
+const resumoInvestido = document.getElementById("resumoInvestido");
+const resumoGanhos = document.getElementById("resumoGanhos");
+const resumoPerdas = document.getElementById("resumoPerdas");
+const resumoLucro = document.getElementById("resumoLucro");
+const tabelaEntradas = document.getElementById("tabelaEntradas");
+const dicasBox = document.getElementById("dicasGerenciamento");
 
-const minutosValidos = [
-  1,4,7,9,11,14,17,19,21,24,27,29,
-  31,34,37,39,41,44,47,49,51,54,57,59
-];
+// inputs do formulário
+const inputValor = document.getElementById("valorEntrada");
+const selectTipo = document.getElementById("tipoEntrada");
+const btnAdicionar = document.getElementById("btnAdicionarEntrada");
 
-/* Multiplicador determinístico */
-function gerarMultiplicadorDeterministico(hora, minuto){
-  const data = new Date();
-  const chave = `${data.getFullYear()}-${data.getMonth()}-${data.getDate()}-${hora}-${minuto}`;
-  let seed = 0;
-  for(let i=0;i<chave.length;i++){
-    seed = (seed*31 + chave.charCodeAt(i)) % 1000000;
-  }
-  const chance = seed % 100;
-  if(chance < 70) return ((seed % 180) / 100 + 1.8).toFixed(2);
-  if(chance < 95) return ((seed % 650) / 100 + 3.5).toFixed(2);
-  return ((seed % 9000) / 100 + 10).toFixed(2);
-}
+// ==============================
+// ESCUTAR AUTENTICAÇÃO
+// ==============================
+auth.onAuthStateChanged(user => {
+  if (!user) return;
 
-/* Adicionar item ao histórico visual */
-function adicionarBloco(hora, minuto, mult){
-  const li = document.createElement("li");
-  li.innerText = `${hora.toString().padStart(2,"0")}:${minuto.toString().padStart(2,"0")} → ${mult}x`;
+  const ref = collection(db, "usuarios", user.uid, "gerenciamento");
+  const q = query(ref, orderBy("data","desc"));
 
-  if(mult < 2) li.classList.add("baixo");   // azul
-  else if(mult < 10) li.classList.add("medio"); // roxo
-  else li.classList.add("alto"); // rosa
+  onSnapshot(q, (snap) => {
+    let investido = 0, ganhos = 0, perdas = 0;
+    let html = "";
 
-  listaHistorico.prepend(li);
-  if(listaHistorico.children.length > 30){
-    listaHistorico.removeChild(listaHistorico.lastChild);
-  }
-}
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      if (d.tipo === "aposta") investido += d.valor;
+      if (d.tipo === "ganho") ganhos += d.valor;
+      if (d.tipo === "perda") perdas += d.valor;
 
-/* Atualizar contador */
-function atualizarContador(){
-  const agora = new Date();
-  const minutoAtual = agora.getMinutes();
-  const horaAtual = agora.getHours();
+      html += `
+        <tr>
+          <td data-label="Data">${d.data.toDate().toLocaleDateString("pt-BR")}</td>
+          <td data-label="Tipo">${d.tipo}</td>
+          <td data-label="Valor">R$ ${d.valor.toFixed(2)}</td>
+        </tr>`;
+    });
 
-  let proxMinuto = minutosValidos.find(m => m > minutoAtual);
-  let proxHora = horaAtual;
-  if(proxMinuto === undefined){
-    proxMinuto = minutosValidos[0];
-    proxHora = (horaAtual+1)%24;
-  }
+    tabelaEntradas.innerHTML = html;
 
-  const alvo = new Date();
-  alvo.setHours(proxHora, proxMinuto, 0, 0);
+    // atualizar resumo
+    resumoInvestido.innerText = "R$ " + investido.toFixed(2);
+    resumoGanhos.innerText = "R$ " + ganhos.toFixed(2);
+    resumoPerdas.innerText = "R$ " + perdas.toFixed(2);
+    resumoLucro.innerText = "R$ " + (ganhos - perdas).toFixed(2);
 
-  const diff = Math.floor((alvo - agora)/1000);
-  const min = String(Math.floor(diff/60)).padStart(2,"0");
-  const seg = String(diff%60).padStart(2,"0");
-  contadorElem.innerText = `Próxima entrada em: ${min}:${seg}`;
-}
-
-/* 🔹 Apenas Admin deve salvar sinal */
-// async function salvarSinal(hora, minuto, mult){
-//   await addDoc(collection(db, "sinais"), {
-//     hora, minuto, multiplicador: mult,
-//     criadoEm: serverTimestamp()
-//   });
-// }
-
-/* Timer (somente exibe calls) */
-setInterval(() => {
-  atualizarContador();
-}, 1000);
-
-/* 🔹 Escutar sinais do Firestore em tempo real */
-const q = query(
-  collection(db, "sinais"),
-  orderBy("criadoEm", "desc"),
-  limit(30)
-);
-
-onSnapshot(q, (snapshot) => {
-  listaHistorico.innerHTML = "";
-  snapshot.forEach(doc => {
-    const d = doc.data();
-    adicionarBloco(d.hora, d.minuto, d.multiplicador);
+    // atualizar dicas inteligentes
+    gerarDicas(investido, ganhos, perdas);
   });
 });
+
+// ==============================
+// FUNÇÃO: adicionar entrada
+// ==============================
+window.adicionarEntrada = async () => {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("⚠️ Faça login para usar o gerenciamento!");
+    return;
+  }
+
+  const tipo = selectTipo.value;
+  const valor = parseFloat(inputValor.value);
+
+  if (!valor || valor <= 0) {
+    alert("Digite um valor válido!");
+    return;
+  }
+
+  await addDoc(collection(db, "usuarios", user.uid, "gerenciamento"), {
+    tipo,
+    valor,
+    data: new Date()
+  });
+
+  inputValor.value = "";
+  selectTipo.value = "aposta";
+};
+
+// ==============================
+// FUNÇÃO: gerar dicas inteligentes
+// ==============================
+function gerarDicas(investido, ganhos, perdas){
+  let dicas = [];
+  const lucro = ganhos - perdas;
+
+  if (investido === 0) {
+    dicas.push("⚡ Comece registrando suas apostas para ter controle.");
+  } else {
+    const taxaRetorno = (ganhos / investido * 100).toFixed(1);
+
+    dicas.push(`📊 Sua taxa de retorno é de ${isNaN(taxaRetorno)?0:taxaRetorno}%`);
+    if (lucro > 0) {
+      dicas.push("✅ Você está lucrando! Considere aumentar suas apostas gradualmente.");
+    } else if (lucro < 0) {
+      dicas.push("⚠️ Está em prejuízo. Reduza o valor das próximas apostas para proteger a banca.");
+    }
+
+    // sugestão de aposta baseada no saldo
+    const sugestao = Math.max(1, (investido * 0.05).toFixed(2));
+    dicas.push(`🎯 Sugestão: aposte até R$ ${sugestao} na próxima rodada.`);
+  }
+
+  dicasBox.innerHTML = dicas.map(d => `<p>${d}</p>`).join("");
+}
