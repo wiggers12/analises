@@ -168,6 +168,79 @@ h1, h2, h3 { font-weight: bold; }
 .historico li.baixo { background: #ff4da6; }
 .historico li.medio { background: #00b894; }
 .historico li.alto { background: #e74c3c; }
+
+/* ==========================
+   GERENCIAMENTO
+========================== */
+.gerenciamento-container {
+  background: #1c0f2e;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  text-align: left;
+  max-width: 900px;
+  margin: auto;
+  border: 2px solid #ff4da6;
+}
+.gerenciamento-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ff4da6;
+}
+.grid-resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.card-resumo {
+  background: #2a0939;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.card-resumo h3 { font-size: 1rem; color: #ffb6e6; margin-bottom: 8px; }
+.card-resumo p { font-size: 1.2rem; font-weight: bold; }
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.tabela th, .tabela td {
+  border: 1px solid #3b0a4e;
+  padding: 10px;
+  text-align: center;
+}
+.tabela th {
+  background: #2a0939;
+  color: #ffb6e6;
+}
+.tabela td { background: #1c0f2e; }
+.form-entrada {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.form-entrada input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+.form-entrada button {
+  background: #ff4da6;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.form-entrada button:hover { background: #e84393; }
+
 /* ==========================
    HISTÓRICO PREMIUM
 ========================== */
