@@ -11,7 +11,186 @@
   <header class="topbar">
     <h1>👑 Painel de <span>Administração</span></h1>
   </header>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Administração</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg,#1a0f1f,#2a0939,#1a0f1f);
+      color: #fff;
+      margin: 0; padding: 0;
+    }
+    header {
+      background: #2a0939;
+      padding: 15px 20px;
+      border-bottom: 2px solid #ff4da6;
+      text-align: center;
+    }
+    header h1 { margin: 0; color: #ff4da6; font-size: 1.5rem; }
+    .container { padding: 20px; }
+    h2 { color: #ffb6e6; margin-top: 30px; }
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 15px;
+      background: #1c0f2e; border-radius: 10px; overflow: hidden;
+    }
+    table th, table td {
+      padding: 10px; text-align: center;
+    }
+    table th { background: #2a0939; color: #ff4da6; }
+    table tr:nth-child(even) { background: #2a0939; }
+    button {
+      padding: 6px 12px; border: none; border-radius: 6px;
+      cursor: pointer; font-weight: bold;
+    }
+    .btn-green { background: #00c853; color: #fff; }
+    .btn-red { background: #d50000; color: #fff; }
+    .btn-blue { background: #2962ff; color: #fff; }
+    .acoes button { margin: 0 2px; }
+    .calls-box {
+      background: #1c0f2e;
+      padding: 20px; border-radius: 12px;
+      text-align: center; margin-top: 15px;
+      border: 2px solid #ff4da6;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>👑 Painel de Administração</h1>
+  </header>
+  <div class="container">
+    <!-- Usuários -->
+    <section>
+      <h2>📋 Controle de Usuários</h2>
+      <table>
+        <thead>
+          <tr><th>Email</th><th>Status</th><th>Validade</th><th>Ações</th></tr>
+        </thead>
+        <tbody id="tabelaUsuarios"></tbody>
+      </table>
+    </section>
 
+    <!-- Calls -->
+    <section>
+      <h2>🎯 Automatizar Calls</h2>
+      <div class="calls-box">
+        <p>Gerar automaticamente todas as entradas (24h)</p>
+        <button class="btn-blue" onclick="gerarCallsDoDia()">⚡ Gerar Calls do Dia</button>
+        <p id="statusCalls" style="margin-top:10px; color:#ffd700;">Aguardando ação...</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { 
+      getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, addDoc, Timestamp 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Config do seu Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyA430IFeF_f8Z_DGgQCDg6EbXBQ6pei-1k",
+      authDomain: "analises-tecnicas.firebaseapp.com",
+      projectId: "analises-tecnicas",
+      storageBucket: "analises-tecnicas.firebasestorage.app",
+      messagingSenderId: "27903942755",
+      appId: "1:27903942755:web:3a4bfd623e0b13479e1856",
+      measurementId: "G-5PSFEV9208"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Emails autorizados
+    const adminEmails = ["dionegalato1212@gmail.com"];
+
+    // Autenticação
+    onAuthStateChanged(auth, (user) => {
+      if (!user || !adminEmails.includes(user.email)) {
+        alert("⚠️ Acesso negado");
+        window.location.href = "login.html";
+      } else {
+        carregarUsuarios();
+      }
+    });
+
+    // === Usuários ===
+    function carregarUsuarios(){
+      onSnapshot(collection(db, "assinaturas"), (snap) => {
+        let html = "";
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          const validade = d.validade?.toDate().toLocaleDateString("pt-BR") || "-";
+          html += `<tr>
+            <td>${d.email}</td>
+            <td>${d.status}</td>
+            <td>${validade}</td>
+            <td class="acoes">
+              <button class="btn-green" onclick="atualizarStatus('${docSnap.id}','ATIVO',30)">+30d</button>
+              <button class="btn-red" onclick="atualizarStatus('${docSnap.id}','INATIVO')">Bloquear</button>
+            </td>
+          </tr>`;
+        });
+        document.getElementById("tabelaUsuarios").innerHTML = html;
+      });
+    }
+
+    window.atualizarStatus = async (id, status, dias) => {
+      const ref = doc(db, "assinaturas", id);
+      let data = { status };
+      if (status === "ATIVO" && dias) {
+        let nova = new Date();
+        nova.setDate(nova.getDate() + dias);
+        data.validade = Timestamp.fromDate(nova);
+      }
+      await updateDoc(ref, data);
+    };
+
+    // === Calls automáticas ===
+    const minutosValidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,49,51,54,57,59];
+
+    function gerarMultiplicador(h,m){
+      const data = new Date();
+      const chave = `${data.getFullYear()}-${data.getMonth()}-${data.getDate()}-${h}-${m}`;
+      let seed = 0;
+      for(let i=0;i<chave.length;i++){
+        seed = (seed*31 + chave.charCodeAt(i)) % 1000000;
+      }
+      const chance = seed % 100;
+      if(chance < 70) return ((seed % 180) / 100 + 1.8).toFixed(2);
+      if(chance < 95) return ((seed % 650) / 100 + 3.5).toFixed(2);
+      return ((seed % 9000) / 100 + 10).toFixed(2);
+    }
+
+    window.gerarCallsDoDia = async () => {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = hoje.getMonth();
+      const dia = hoje.getDate();
+      let total = 0;
+
+      for(let h=0; h<24; h++){
+        for(let m of minutosValidos){
+          const mult = gerarMultiplicador(h,m);
+          await addDoc(collection(db,"sinais"),{
+            hora:h, minuto:m, multiplicador:mult,
+            criadoEm:new Date(), data:`${ano}-${mes+1}-${dia}`
+          });
+          total++;
+        }
+      }
+      document.getElementById("statusCalls").innerText = `✅ ${total} calls geradas para ${dia}/${mes+1}/${ano}`;
+    };
+  </script>
+</body>
+</html>
   <!-- MENU -->
   <nav class="menu-admin">
     <button onclick="mostrarCard('assinaturas')" class="ativo">📋 Assinaturas</button>
