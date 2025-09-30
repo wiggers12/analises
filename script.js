@@ -3,7 +3,7 @@
 ============================== */
 import { auth, db } from "./firebase.js";
 import { 
-  collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp 
+  collection, addDoc, query, orderBy, limit, onSnapshot 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ==============================
@@ -17,35 +17,6 @@ const minutosValidos = [
   1,4,7,9,11,14,17,19,21,24,27,29,
   31,34,37,39,41,44,47,49,51,54,57,59
 ];
-
-/* Multiplicador determinístico */
-function gerarMultiplicadorDeterministico(hora, minuto){
-  const data = new Date();
-  const chave = `${data.getFullYear()}-${data.getMonth()}-${data.getDate()}-${hora}-${minuto}`;
-  let seed = 0;
-  for(let i=0;i<chave.length;i++){
-    seed = (seed*31 + chave.charCodeAt(i)) % 1000000;
-  }
-  const chance = seed % 100;
-  if(chance < 70) return ((seed % 180) / 100 + 1.8).toFixed(2);
-  if(chance < 95) return ((seed % 650) / 100 + 3.5).toFixed(2);
-  return ((seed % 9000) / 100 + 10).toFixed(2);
-}
-
-/* Adicionar item ao histórico visual */
-function adicionarBloco(hora, minuto, mult){
-  const li = document.createElement("li");
-  li.innerText = `${hora.toString().padStart(2,"0")}:${minuto.toString().padStart(2,"0")} → ${mult}x`;
-
-  if(mult < 2) li.classList.add("baixo");   // azul
-  else if(mult < 10) li.classList.add("medio"); // roxo
-  else li.classList.add("alto"); // rosa
-
-  listaHistorico.prepend(li);
-  if(listaHistorico.children.length > 30){
-    listaHistorico.removeChild(listaHistorico.lastChild);
-  }
-}
 
 /* Atualizar contador */
 function atualizarContador(){
@@ -68,13 +39,24 @@ function atualizarContador(){
   const seg = String(diff%60).padStart(2,"0");
   contadorElem.innerText = `Próxima entrada em: ${min}:${seg}`;
 }
+setInterval(atualizarContador, 1000);
 
-/* Timer (somente exibe calls) */
-setInterval(() => {
-  atualizarContador();
-}, 1000);
+/* Adicionar item ao histórico */
+function adicionarBloco(hora, minuto, mult){
+  const li = document.createElement("li");
+  li.innerText = `${hora.toString().padStart(2,"0")}:${minuto.toString().padStart(2,"0")} → ${mult}x`;
 
-/* 🔹 Escutar sinais do Firestore em tempo real */
+  if(mult < 2) li.classList.add("baixo");
+  else if(mult < 10) li.classList.add("medio");
+  else li.classList.add("alto");
+
+  listaHistorico.prepend(li);
+  if(listaHistorico.children.length > 30){
+    listaHistorico.removeChild(listaHistorico.lastChild);
+  }
+}
+
+/* Escutar sinais do ADMIN em tempo real */
 const q = query(
   collection(db, "sinais"),
   orderBy("criadoEm", "desc"),
@@ -83,9 +65,19 @@ const q = query(
 
 onSnapshot(q, (snapshot) => {
   listaHistorico.innerHTML = "";
+  let primeiro = true;
   snapshot.forEach(doc => {
     const d = doc.data();
     adicionarBloco(d.hora, d.minuto, d.multiplicador);
+
+    // exibir o último multiplicador no card principal
+    if(primeiro){
+      multElem.innerText = d.multiplicador + "x";
+      if(d.multiplicador >= 10) multElem.style.color = "#ff0000";
+      else if(d.multiplicador >= 5) multElem.style.color = "#00ff00";
+      else multElem.style.color = "#ff4da6";
+      primeiro = false;
+    }
   });
 });
 
