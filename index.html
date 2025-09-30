@@ -32,41 +32,71 @@
     </section>
 
     <!-- SEÇÃO GERENCIAMENTO -->
-    <section id="gerenciamento" class="secao">
-      <h2>📊 Gestão Inteligente</h2>
-      <div class="resumos">
-        <div class="resumo-card">💰 Saldo Atual <p id="resumoSaldo">R$ 0.00</p></div>
-        <div class="resumo-card">📩 Total Investido <p id="resumoInvestido">R$ 0.00</p></div>
-        <div class="resumo-card">📈 Lucro <p id="resumoLucro">R$ 0.00</p></div>
-        <div class="resumo-card">📉 Prejuízo <p id="resumoPerdas">R$ 0.00</p></div>
-      </div>
-      <div class="estatisticas">
-        <h3>📊 Estatísticas</h3>
-        <p id="taxaAcerto">Taxa de acerto: 0%</p>
-        <p id="roi">Retorno sobre investimento (ROI): 0%</p>
-      </div>
-      <div class="dicas">
-        <h3>🤖 Dicas Inteligentes</h3>
-        <div id="dicasGerenciamento">Carregando...</div>
-      </div>
-      <div class="form-gerenciamento">
-        <h3>➕ Nova Operação</h3>
-        <input type="number" id="valorEntrada" placeholder="Valor em R$">
-        <select id="tipoEntrada">
-          <option value="aposta">💸 Aposta</option>
-          <option value="ganho">✅ Ganho</option>
-          <option value="perda">❌ Perda</option>
-        </select>
-        <button onclick="adicionarEntrada()">Adicionar</button>
-      </div>
-      <h3>📜 Histórico de Operações</h3>
-      <table class="tabela-historico">
-        <thead><tr><th>Data</th><th>Tipo</th><th>Valor</th></tr></thead>
-        <tbody id="tabelaEntradas"></tbody>
-      </table>
-      <h3>📉 Evolução do Saldo</h3>
-      <canvas id="graficoSaldo" style="max-width:100%;height:300px;"></canvas>
-    </section>
+<section id="gerenciamento" class="secao">
+  <h2>📊 Gestão Inteligente</h2>
+
+  <!-- Cards de Resumo -->
+  <div class="resumos-grid">
+    <div class="resumo-card saldo">
+      <h4>💰 Saldo Atual</h4>
+      <p id="resumoSaldo">R$ 0,00</p>
+    </div>
+    <div class="resumo-card investido">
+      <h4>📩 Investido</h4>
+      <p id="resumoInvestido">R$ 0,00</p>
+    </div>
+    <div class="resumo-card lucro">
+      <h4>📈 Lucro</h4>
+      <p id="resumoLucro">R$ 0,00</p>
+    </div>
+    <div class="resumo-card perdas">
+      <h4>📉 Prejuízo</h4>
+      <p id="resumoPerdas">R$ 0,00</p>
+    </div>
+  </div>
+
+  <!-- Estatísticas -->
+  <div class="estatisticas-box">
+    <h3>📊 Estatísticas</h3>
+    <p id="taxaAcerto">Taxa de acerto: 0%</p>
+    <p id="roi">ROI: 0%</p>
+  </div>
+
+  <!-- Dicas -->
+  <div class="dicas-box">
+    <h3>🤖 Dicas Inteligentes</h3>
+    <div id="dicasGerenciamento">Carregando...</div>
+  </div>
+
+  <!-- Nova Operação -->
+  <div class="form-gerenciamento">
+    <h3>➕ Nova Operação</h3>
+    <div class="form-grid">
+      <input type="number" id="valorEntrada" placeholder="Valor em R$">
+      <select id="tipoEntrada">
+        <option value="aposta">💸 Aposta</option>
+        <option value="ganho">✅ Ganho</option>
+        <option value="perda">❌ Perda</option>
+      </select>
+      <button onclick="adicionarEntrada()">Adicionar</button>
+    </div>
+  </div>
+
+  <!-- Histórico -->
+  <h3>📜 Histórico</h3>
+  <div class="tabela-wrapper">
+    <table class="tabela-historico">
+      <thead>
+        <tr><th>Data</th><th>Tipo</th><th>Valor</th></tr>
+      </thead>
+      <tbody id="tabelaEntradas"></tbody>
+    </table>
+  </div>
+
+  <!-- Gráfico -->
+  <h3>📉 Evolução do Saldo</h3>
+  <canvas id="graficoSaldo" height="250"></canvas>
+</section>
 
     <!-- SEÇÃO CALLS -->
     <section id="calls" class="secao">
