@@ -131,8 +131,9 @@ auth.onAuthStateChanged(async user => {
 
     tabelaEntradas.innerHTML = html;
 
-    const lucro = ganhos - perdas;
-    const saldo = ganhos - perdas;
+    // calcula totais corretamente
+const saldo = ganhos - perdas; 
+const lucro = (ganhos - perdas) - investido;
 
     resumoInvestido.innerText = "R$ " + investido.toFixed(2);
     resumoGanhos.innerText = "R$ " + ganhos.toFixed(2);
