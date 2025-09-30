@@ -1,4 +1,6 @@
-/* ================= RESET ================= */
+/* ==========================
+   RESET & BASE
+========================== */
 * {
   margin: 0;
   padding: 0;
@@ -9,104 +11,242 @@ body {
   background: linear-gradient(135deg, #1a0f1f, #2a0939, #1a0f1f);
   color: #fff;
   line-height: 1.6;
+  padding-top: 60px;   /* espaço para cabeçalho fixo */
+  padding-bottom: 70px;/* espaço para rodapé fixo */
 }
+h1, h2, h3 { font-weight: bold; }
 
-/* ================= CABEÇALHO FIXO ================= */
+/* ==========================
+   CABEÇALHO FIXO
+========================== */
 .topbar {
   position: fixed;
   top: 0; left: 0;
   width: 100%;
-  display: flex; justify-content: space-between; align-items: center;
-  background: linear-gradient(135deg, #ff4da6, #8e44ad);
-  padding: 10px 20px;
-  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #2a0939;
+  border-bottom: 2px solid #ff4da6;
   z-index: 1000;
 }
+.topbar .logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ff4da6;
+}
+.topbar nav a {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #f8bbd0;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.topbar nav a:hover { color: #ff4da6; }
 .menu-btn {
   background: none;
   border: none;
   color: #fff;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   cursor: pointer;
 }
-.logo { font-weight: bold; font-size: 1.2rem; }
-.topbar nav a {
-  margin-left: 15px;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: 0.3s;
-}
-.topbar nav a:hover { color: #ffe4f2; }
 
-/* ================= CONTEÚDO CENTRAL ================= */
+/* ==========================
+   CONTEÚDO CENTRAL
+========================== */
 .conteudo {
+  padding: 20px;
   text-align: center;
-  margin-top: 80px;   /* espaço por causa do cabeçalho */
-  margin-bottom: 80px; /* espaço por causa do rodapé */
 }
-.foto-principal {
-  width: 200px;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-.conteudo h1 {
-  font-size: 1.8rem;
-  color: #ff4da6;
-}
-.conteudo p {
-  font-size: 1.1rem;
-  color: #f8bbd0;
-}
-
-/* ================= SEÇÕES ================= */
-.secao { display: none; padding: 20px; }
+.secao { display: none; }
 .secao.ativo { display: block; }
 
+/* ==========================
+   HOME
+========================== */
+.foto-principal {
+  width: 180px;
+  margin: 20px 0;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+#home h1 { color: #ff4da6; }
+#home p { color: #f8bbd0; }
+
+/* ==========================
+   CALLS
+========================== */
+.calls-box {
+  background: #1c0f2e;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  text-align: center;
+  max-width: 500px;
+  margin: auto;
+  border: 2px solid #ff4da6;
+}
+.contador {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #ffd700;
+  font-weight: bold;
+}
+.multiplicador-card {
+  background: linear-gradient(135deg, #ff4da6, #8e44ad);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 15px auto;
+  box-shadow: 0 0 25px rgba(255,77,166,0.6);
+}
+.multiplicador {
+  font-size: 2.8rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 15px #fff;
+}
+.multiplicador.ativo {
+  animation: glowPulse 1.5s infinite alternate;
+}
+.info-cards {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 15px 0;
+}
+.info-card {
+  flex: 1;
+  background: #2a0939;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.protecao { color: #00ffcc; }
+.probabilidade { color: #ffd700; }
+.alerta-bar {
+  margin: 15px 0;
+  padding: 10px;
+  background: linear-gradient(135deg, #ff85c1, #ff4da6);
+  border-radius: 8px;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+.responsabilidade {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #ff4d4d;
+  font-style: italic;
+}
+.historico {
+  margin-top: 20px;
+  text-align: left;
+}
+.historico h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #ffb6e6;
+}
+.historico ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.historico li {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #3b0a4e;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+.historico li.baixo { background: #ff4da6; }
+.historico li.medio { background: #00b894; }
+.historico li.alto { background: #e74c3c; }
+
+/* ==========================
+   JOGAR
+========================== */
 .jogo-frame {
   width: 100%;
-  height: calc(100vh - 160px); /* ajusta ao espaço do header + footer */
+  height: calc(100vh - 160px);
   border: none;
   border-radius: 12px;
   background: #000;
   box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
 
-/* ================= RODAPÉ FIXO ================= */
+/* ==========================
+   RODAPÉ FIXO
+========================== */
 .footer-bar {
   position: fixed;
   bottom: 0; left: 0;
   width: 100%;
-  display: flex; justify-content: space-around; align-items: center;
-  background: #2a0939;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
   padding: 8px 0;
+  background: #2a0939;
   border-top: 2px solid #ff4da6;
   z-index: 1000;
 }
 .footer-bar a {
+  flex: 1;
+  text-align: center;
+  color: #f8bbd0;
+  font-size: 0.9rem;
+  text-decoration: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.8rem;
+  gap: 4px;
   transition: 0.3s;
 }
-.footer-bar a:hover { color: #ff4da6; }
-.footer-bar i {
-  font-size: 1.3rem;
-  margin-bottom: 3px;
+.footer-bar a i { font-size: 1.2rem; }
+.footer-bar a:hover,
+.footer-bar a.ativo {
+  color: #ff4da6;
+}
+.btn-jogar {
+  font-weight: bold;
+  color: #fff !important;
 }
 .btn-jogar i {
+  font-size: 1.6rem !important;
   color: #ff4da6;
-  font-size: 1.5rem;
 }
 
-/* ================= RESPONSIVO ================= */
+/* ==========================
+   ANIMAÇÕES
+========================== */
+@keyframes glowPulse {
+  from { text-shadow: 0 0 15px #fff, 0 0 30px #ff4da6; }
+  to   { text-shadow: 0 0 25px #ff85c1, 0 0 40px #ffb6e6; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ==========================
+   RESPONSIVIDADE
+========================== */
+@media (max-width: 768px) {
+  .topbar { flex-direction: row; padding: 10px 15px; }
+  .logo { font-size: 1.2rem; }
+  .conteudo { padding: 10px; }
+  .multiplicador { font-size: 2.2rem; }
+  .info-cards { flex-direction: column; }
+  .jogo-frame { height: 400px; }
+}
 @media (max-width: 480px) {
-  .conteudo h1 { font-size: 1.4rem; }
-  .conteudo p { font-size: 0.95rem; }
-  .footer-bar i { font-size: 1.1rem; }
-  .footer-bar span { font-size: 0.7rem; }
+  .footer-bar a span { display: none; }
+  .footer-bar a i { font-size: 1.4rem; }
+  .multiplicador { font-size: 2rem; }
 }
