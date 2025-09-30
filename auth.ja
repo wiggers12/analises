@@ -66,7 +66,7 @@ window.loginUsuario = async function () {
 
       if (dados.status === "ATIVO" && (!validade || validade > hoje)) {
         alert("✅ Login autorizado! Bem-vindo(a).");
-        document.getElementById("loginModal").style.display = "none"; // fecha modal
+        document.getElementById("loginModal").style.display = "none"; 
       } else {
         alert("⚠️ Sua assinatura expirou ou está inativa. Aguarde liberação.");
         await signOut(auth);
@@ -96,7 +96,9 @@ window.mostrarLogin = function () {
 window.logoutUsuario = async function () {
   await signOut(auth);
   alert("🚪 Logout realizado com sucesso.");
-  document.getElementById("loginModal").style.display = "flex"; // força login de novo
+  document.getElementById("btnLogin").style.display = "inline";
+  document.getElementById("btnLogout").style.display = "none";
+  document.getElementById("loginModal").style.display = "flex";
 };
 
 /* ==============================
@@ -104,13 +106,21 @@ window.logoutUsuario = async function () {
 ============================== */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
+    document.getElementById("btnLogin").style.display = "inline";
+    document.getElementById("btnLogout").style.display = "none";
     document.getElementById("loginModal").style.display = "flex";
   } else {
     const ref = doc(db, "assinaturas", user.uid);
     const snap = await getDoc(ref);
 
     if (!snap.exists() || snap.data().status !== "ATIVO") {
+      document.getElementById("btnLogin").style.display = "inline";
+      document.getElementById("btnLogout").style.display = "none";
       document.getElementById("loginModal").style.display = "flex";
+    } else {
+      document.getElementById("btnLogin").style.display = "none";
+      document.getElementById("btnLogout").style.display = "inline";
+      document.getElementById("loginModal").style.display = "none";
     }
   }
 });
