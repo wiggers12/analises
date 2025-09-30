@@ -140,26 +140,4 @@
     <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
   </footer>
 
-  <!-- =================== SCRIPT NAVEGAÇÃO =================== -->
-  <script>
-    const links = document.querySelectorAll('.footer-bar a');
-    const secoes = document.querySelectorAll('.secao');
-
-    links.forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-
-        // Esconde todas as seções
-        secoes.forEach(sec => sec.classList.remove('ativo'));
-        links.forEach(l => l.classList.remove('ativo'));
-
-        // Mostra a seção correspondente
-        const alvo = link.getAttribute('href').replace('#','');
-        document.getElementById(alvo).classList.add('ativo');
-        link.classList.add('ativo');
-      });
-    });
-  </script>
-
-</body>
-</html>
+  
