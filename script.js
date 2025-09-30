@@ -3,7 +3,8 @@
 ============================== */
 import { auth, db } from "./firebase.js";
 import { 
-  collection, addDoc, query, orderBy, limit, onSnapshot, doc, getDoc, serverTimestamp
+  collection, addDoc, query, orderBy, limit, onSnapshot,
+  doc, getDoc, setDoc, updateDoc, serverTimestamp, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ==============================
@@ -76,10 +77,6 @@ onSnapshot(q, (snapshot) => {
 /* ==============================
    GERENCIAMENTO FINANCEIRO (RESUMO)
 ============================== */
-import { 
-  doc, setDoc, updateDoc, onSnapshot, increment 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 const resumoSaldo = document.getElementById("resumoSaldo");
 const resumoInvestido = document.getElementById("resumoInvestido");
 const resumoGanhos = document.getElementById("resumoGanhos");
@@ -105,7 +102,6 @@ auth.onAuthStateChanged(async user => {
     investido: 0,
     ganhos: 0,
     perdas: 0,
-    lucro: 0,
     saldo: 0
   }, { merge: true });
 
@@ -114,11 +110,15 @@ auth.onAuthStateChanged(async user => {
     if (docSnap.exists()) {
       const d = docSnap.data();
 
+      // calcula lucro dinamicamente
+      const lucro = d.ganhos - d.perdas;
+      const saldo = d.investido + d.ganhos - d.perdas;
+
       resumoInvestido.innerText = "R$ " + d.investido.toFixed(2);
       resumoGanhos.innerText    = "R$ " + d.ganhos.toFixed(2);
       resumoPerdas.innerText    = "R$ " + d.perdas.toFixed(2);
-      resumoLucro.innerText     = "R$ " + d.lucro.toFixed(2);
-      resumoSaldo.innerText     = "R$ " + d.saldo.toFixed(2);
+      resumoLucro.innerText     = "R$ " + lucro.toFixed(2);
+      resumoSaldo.innerText     = "R$ " + saldo.toFixed(2);
 
       gerarDicas(d.investido, d.ganhos, d.perdas);
     }
@@ -152,7 +152,6 @@ window.adicionarEntrada = async () => {
   if (tipo === "ganho") {
     await updateDoc(resumoRef, {
       ganhos: increment(valor),
-      lucro: increment(valor),
       saldo: increment(valor)
     });
   }
@@ -160,7 +159,6 @@ window.adicionarEntrada = async () => {
   if (tipo === "perda") {
     await updateDoc(resumoRef, {
       perdas: increment(valor),
-      lucro: increment(-valor),
       saldo: increment(-valor)
     });
   }
