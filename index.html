@@ -1,102 +1,100 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GoathBet — Início</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="img/logo.png" type="image/png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tay Aviator 100x</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <!-- HERO / topo -->
-  <header class="hero">
-    <div class="hero-content">
-      <img src="img/logo.png" alt="GoathBet Logo" class="hero-logo" />
-      <h1>GoathBet</h1>
-      <p>Entradas Inteligentes com a Rainha do Aviator</p>
-      <a href="site.html" class="btn-primary">Entrar no App</a>
-    </div>
-    <div class="hero-image">
-      <img src="img/foto.png" alt="Rainha do Aviator" />
-    </div>
+
+  <!-- =================== CABEÇALHO FIXO =================== -->
+  <header class="topbar">
+    <button class="menu-btn"><i class="fas fa-bars"></i></button>
+    <div class="logo">GoathBet</div>
+    <nav>
+      <a href="login.html">Login</a>
+      <a href="planos.html">Planos</a>
+    </nav>
   </header>
 
-  <!-- SOBRE / missão -->
-  <section class="section sobre">
-    <div class="container">
-      <h2>Sobre a GoathBet</h2>
-      <p>
-        Somos uma plataforma que oferece sinais, relatórios de velas e gestão
-        financeira personalizada para quem quer operar com mais confiança e
-        controle no Aviator.
-      </p>
-    </div>
-  </section>
+  <!-- =================== CONTEÚDO CENTRAL =================== -->
+  <main class="conteudo">
 
-  <!-- RECURSOS / funcionalidades -->
-  <section class="section recursos">
-    <div class="container">
-      <h2>Funcionalidades</h2>
-      <div class="cards-recursos">
-        <div class="card-rec">
-          <span>📊</span>
-          <h3>Relatórios de Velas</h3>
-          <p>Acompanhe as últimas velas em tempo real.</p>
-        </div>
-        <div class="card-rec">
-          <span>🎯</span>
-          <h3>Sinais de Entrada</h3>
-          <p>Receba sinais com alertas e estatísticas.</p>
-        </div>
-        <div class="card-rec">
-          <span>🧮</span>
-          <h3>Gestão Financeira</h3>
-          <p>Simule suas entradas, perdas e ganhos com controle.</p>
-        </div>
-        <div class="card-rec">
-          <span>🎁</span>
-          <h3>Sorteios e Prêmios</h3>
-          <p>Participe de sorteios exclusivos para assinantes.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- SEÇÃO INICIAL -->
+    <section id="home" class="secao ativo">
+      <img src="img/foto.png" alt="Tay Aviator" class="foto-principal">
+      <h1>Tay Aviator 100x</h1>
+      <p>Entradas inteligentes</p>
+    </section>
 
-  <!-- PLANOS -->
-  <section class="section planos">
-    <div class="container">
-      <h2>Planos Disponíveis</h2>
-      <div class="cards-planos">
-        <div class="plano-card">
-          <h3>Básico</h3>
-          <p>Acesso aos sinais + relatórios</p>
-          <p class="preco">R$29,90 / mês</p>
-          <a href="plano.html" class="btn-primary">Assinar</a>
-        </div>
-        <div class="plano-card">
-          <h3>Premium</h3>
-          <p>Todas funcionalidades + sorteios</p>
-          <p class="preco">R$59,90 / mês</p>
-          <a href="plano.html" class="btn-primary">Assinar</a>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- SEÇÃO GERENCIAMENTO -->
+    <section id="gerenciamento" class="secao">
+      <h2>Gerenciamento</h2>
+      <p>Aqui você poderá controlar sua banca e ver relatórios de gestão financeira.</p>
+    </section>
 
-  <!-- RODAPÉ -->
-  <footer class="footer">
-    <div class="container">
-      <p>© 2025 GoathBet. Todos os direitos reservados.</p>
-      <a href="site.html" class="btn-login">Entrar no App</a>
-    </div>
+    <!-- SEÇÃO CALLS -->
+    <section id="calls" class="secao">
+      <h2>Calls</h2>
+      <p>Sinais e entradas inteligentes em tempo real aparecerão aqui.</p>
+    </section>
+
+    <!-- SEÇÃO JOGAR -->
+    <section id="jogar" class="secao">
+      <h2>Jogar</h2>
+      <iframe 
+        src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"
+        class="jogo-frame"
+        title="Aviator"
+        allowfullscreen>
+      </iframe>
+    </section>
+
+    <!-- SEÇÃO HISTÓRICO -->
+    <section id="historico" class="secao">
+      <h2>Histórico</h2>
+      <p>Veja o histórico das últimas entradas e resultados.</p>
+    </section>
+
+    <!-- SEÇÃO LIVE -->
+    <section id="live" class="secao">
+      <h2>Live</h2>
+      <p>Transmissões ao vivo e sinais em tempo real.</p>
+    </section>
+
+  </main>
+
+  <!-- =================== RODAPÉ FIXO =================== -->
+  <footer class="footer-bar">
+    <a href="#gerenciamento"><i class="fas fa-cogs"></i><span>Gerenciamento</span></a>
+    <a href="#calls"><i class="fas fa-signal"></i><span>Calls</span></a>
+    <a href="#jogar" class="btn-jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
+    <a href="#historico"><i class="fas fa-clock"></i><span>Histórico</span></a>
+    <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
   </footer>
 
-  <!-- Script para splash ou efeitos se quiser -->
+  <!-- =================== SCRIPT NAVEGAÇÃO =================== -->
   <script>
-    // Se quiser algum efeito de splash ou animação leve
-    window.addEventListener("load", () => {
-      // por exemplo esconder splash se tiver
+    const links = document.querySelectorAll('.footer-bar a');
+    const secoes = document.querySelectorAll('.secao');
+
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+
+        // Esconde todas as seções
+        secoes.forEach(sec => sec.classList.remove('ativo'));
+        links.forEach(l => l.classList.remove('ativo'));
+
+        // Mostra a seção correspondente
+        const alvo = link.getAttribute('href').replace('#','');
+        document.getElementById(alvo).classList.add('ativo');
+        link.classList.add('ativo');
+      });
     });
   </script>
+
 </body>
 </html>
