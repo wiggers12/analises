@@ -117,9 +117,15 @@ auth.onAuthStateChanged(async user => {
 
     snap.forEach(docSnap => {
       const d = docSnap.data();
-      if (d.tipo === "aposta") investido += d.valor;
-      if (d.tipo === "ganho") ganhos += d.valor;
-      if (d.tipo === "perda") perdas += d.valor;
+      if (d.tipo === "aposta") {
+        investido += d.valor;
+      }
+      if (d.tipo === "ganho") {
+        ganhos += d.valor;
+      }
+      if (d.tipo === "perda") {
+        perdas += d.valor;
+      }
 
       html += `
         <tr>
@@ -131,9 +137,9 @@ auth.onAuthStateChanged(async user => {
 
     tabelaEntradas.innerHTML = html;
 
-    // calcula totais corretamente
-const saldo = ganhos - perdas; 
-const lucro = (ganhos - perdas) - investido;
+    // lógica correta: saldo parte do investido e ajusta ganhos/perdas
+    const lucro = ganhos - perdas;
+    const saldo = investido + ganhos - perdas;
 
     resumoInvestido.innerText = "R$ " + investido.toFixed(2);
     resumoGanhos.innerText = "R$ " + ganhos.toFixed(2);
@@ -141,7 +147,7 @@ const lucro = (ganhos - perdas) - investido;
     resumoLucro.innerText = "R$ " + lucro.toFixed(2);
     resumoSaldo.innerText = "R$ " + saldo.toFixed(2);
 
-    gerarDicas(investido, ganhos, perdas);
+    gerarDicas(investido, ganhos, perdas, saldo);
   });
 });
 
@@ -173,25 +179,26 @@ window.adicionarEntrada = async () => {
 };
 
 /* Dicas inteligentes */
-function gerarDicas(investido, ganhos, perdas){
+function gerarDicas(investido, ganhos, perdas, saldo){
   let dicas = [];
   const lucro = ganhos - perdas;
 
   if (investido === 0) {
     dicas.push("⚡ Comece registrando suas apostas para ter controle.");
   } else {
-    const taxaRetorno = (ganhos / investido * 100).toFixed(1);
+    const taxaRetorno = ((lucro) / investido * 100).toFixed(1);
     dicas.push(`📊 Sua taxa de retorno é de ${isNaN(taxaRetorno)?0:taxaRetorno}%`);
+    dicas.push(`💰 Seu saldo atual é R$ ${saldo.toFixed(2)}`);
 
     if (lucro > 0) {
-      dicas.push("✅ Você está lucrando! Continue com disciplina e aumente aos poucos.");
+      dicas.push("✅ Você está lucrando! Continue com disciplina.");
     } else if (lucro < 0) {
-      dicas.push("⚠️ Você está em prejuízo. Diminua o valor das apostas até recuperar.");
+      dicas.push("⚠️ Você está em prejuízo. Reduza o valor das apostas.");
     } else {
       dicas.push("ℹ️ Você está no zero a zero, mantenha a estratégia.");
     }
 
-    const sugestao = Math.max(1, (investido * 0.05).toFixed(2));
+    const sugestao = Math.max(1, (saldo * 0.05).toFixed(2));
     dicas.push(`🎯 Sugestão: aposte até R$ ${sugestao} na próxima rodada.`);
   }
 
