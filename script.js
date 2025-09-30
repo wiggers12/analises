@@ -117,16 +117,13 @@ auth.onAuthStateChanged(async user => {
 
     snap.forEach(docSnap => {
       const d = docSnap.data();
-      if (d.tipo === "aposta") {
-        investido += d.valor;
-      }
-      if (d.tipo === "ganho") {
-        ganhos += d.valor;
-      }
-      if (d.tipo === "perda") {
-        perdas += d.valor;
-      }
 
+      // soma valores conforme o tipo
+      if (d.tipo === "investido") investido += d.valor;
+      if (d.tipo === "ganho") ganhos += d.valor;
+      if (d.tipo === "perda") perdas += d.valor;
+
+      // monta tabela
       html += `
         <tr>
           <td data-label="Data">${d.data.toDate().toLocaleString("pt-BR")}</td>
@@ -137,17 +134,19 @@ auth.onAuthStateChanged(async user => {
 
     tabelaEntradas.innerHTML = html;
 
-    // lógica correta: saldo parte do investido e ajusta ganhos/perdas
-    const lucro = ganhos - perdas;
+    // cálculos principais
     const saldo = investido + ganhos - perdas;
+    const lucro = ganhos - perdas;
 
+    // atualiza resumos
     resumoInvestido.innerText = "R$ " + investido.toFixed(2);
     resumoGanhos.innerText = "R$ " + ganhos.toFixed(2);
     resumoPerdas.innerText = "R$ " + perdas.toFixed(2);
     resumoLucro.innerText = "R$ " + lucro.toFixed(2);
     resumoSaldo.innerText = "R$ " + saldo.toFixed(2);
 
-    gerarDicas(investido, ganhos, perdas, saldo);
+    // chama dicas
+    gerarDicas(investido, ganhos, perdas);
   });
 });
 
@@ -168,37 +167,36 @@ window.adicionarEntrada = async () => {
   }
 
   await addDoc(collection(db, "usuarios", user.uid, "gerenciamento"), {
-    tipo,
+    tipo,       // agora pode ser "investido", "ganho" ou "perda"
     valor,
     data: new Date(),
     criadoEm: serverTimestamp()
   });
 
   inputValor.value = "";
-  selectTipo.value = "aposta";
+  selectTipo.value = "investido"; // valor padrão ao resetar
 };
 
 /* Dicas inteligentes */
-function gerarDicas(investido, ganhos, perdas, saldo){
+function gerarDicas(investido, ganhos, perdas){
   let dicas = [];
   const lucro = ganhos - perdas;
 
   if (investido === 0) {
-    dicas.push("⚡ Comece registrando suas apostas para ter controle.");
+    dicas.push("⚡ Comece registrando seu primeiro investimento.");
   } else {
-    const taxaRetorno = ((lucro) / investido * 100).toFixed(1);
+    const taxaRetorno = (ganhos / investido * 100).toFixed(1);
     dicas.push(`📊 Sua taxa de retorno é de ${isNaN(taxaRetorno)?0:taxaRetorno}%`);
-    dicas.push(`💰 Seu saldo atual é R$ ${saldo.toFixed(2)}`);
 
     if (lucro > 0) {
-      dicas.push("✅ Você está lucrando! Continue com disciplina.");
+      dicas.push("✅ Você está lucrando! Continue com disciplina e aumente aos poucos.");
     } else if (lucro < 0) {
-      dicas.push("⚠️ Você está em prejuízo. Reduza o valor das apostas.");
+      dicas.push("⚠️ Está em prejuízo. Reduza suas apostas até se recuperar.");
     } else {
-      dicas.push("ℹ️ Você está no zero a zero, mantenha a estratégia.");
+      dicas.push("ℹ️ Você está no zero a zero. Continue monitorando.");
     }
 
-    const sugestao = Math.max(1, (saldo * 0.05).toFixed(2));
+    const sugestao = Math.max(1, (investido * 0.05).toFixed(2));
     dicas.push(`🎯 Sugestão: aposte até R$ ${sugestao} na próxima rodada.`);
   }
 
