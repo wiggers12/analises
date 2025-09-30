@@ -168,7 +168,54 @@ h1, h2, h3 { font-weight: bold; }
 .historico li.baixo { background: #ff4da6; }
 .historico li.medio { background: #00b894; }
 .historico li.alto { background: #e74c3c; }
+/* ==========================
+   HISTÓRICO PREMIUM
+========================== */
+.filtros-historico {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
+.filtros-historico select {
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  background: #2a0939;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+.filtros-historico select:hover {
+  background: #3b0a4e;
+}
+
+#grade-historico-premium {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.card-historico {
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #fff;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+  transition: transform 0.2s;
+}
+.card-historico:hover { transform: scale(1.1); }
+
+/* Cores dos multiplicadores */
+.card-historico.azul { background: #0077cc; }   /* < 2 */
+.card-historico.roxo { background: #7a00cc; }  /* 2 a 10 */
+.card-historico.rosa { background: #cc0066; }  /* > 10 */
 /* ==========================
    JOGAR
 ========================== */
