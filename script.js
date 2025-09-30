@@ -13,10 +13,7 @@ const contadorElem = document.getElementById("contador");
 const multElem = document.getElementById("multiplicador");
 const listaHistorico = document.getElementById("lista-historico");
 
-const minutosValidos = [
-  1,4,7,9,11,14,17,19,21,24,27,29,
-  31,34,37,39,41,44,47,49,51,54,57,59
-];
+const minutosValidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,49,51,54,57,59];
 
 /* Atualizar contador */
 function atualizarContador(){
@@ -57,11 +54,7 @@ function adicionarBloco(hora, minuto, mult){
 }
 
 /* Escutar sinais do ADMIN em tempo real */
-const q = query(
-  collection(db, "sinais"),
-  orderBy("criadoEm", "desc"),
-  limit(30)
-);
+const q = query(collection(db, "sinais"), orderBy("criadoEm", "desc"), limit(30));
 
 onSnapshot(q, (snapshot) => {
   listaHistorico.innerHTML = "";
@@ -70,7 +63,6 @@ onSnapshot(q, (snapshot) => {
     const d = doc.data();
     adicionarBloco(d.hora, d.minuto, d.multiplicador);
 
-    // exibir o último multiplicador no card principal
     if(primeiro){
       multElem.innerText = d.multiplicador + "x";
       if(d.multiplicador >= 10) multElem.style.color = "#ff4da6"; // rosa
@@ -95,9 +87,7 @@ const dicasBox = document.getElementById("dicasGerenciamento");
 const inputValor = document.getElementById("valorEntrada");
 const selectTipo = document.getElementById("tipoEntrada");
 
-/* ==============================
-   BLOQUEIO DE USUÁRIOS
-============================== */
+/* Bloqueio + Escutar dados do gerenciamento */
 auth.onAuthStateChanged(async user => {
   if (!user) {
     alert("⚠️ Faça login para acessar o app!");
@@ -118,7 +108,6 @@ auth.onAuthStateChanged(async user => {
     return;
   }
 
-  /* Escutar dados do gerenciamento */
   const ref = collection(db, "usuarios", user.uid, "gerenciamento");
   const q = query(ref, orderBy("data","desc"));
 
@@ -134,7 +123,7 @@ auth.onAuthStateChanged(async user => {
 
       html += `
         <tr>
-          <td data-label="Data">${d.data.toDate().toLocaleDateString("pt-BR")}</td>
+          <td data-label="Data">${d.data.toDate().toLocaleString("pt-BR")}</td>
           <td data-label="Tipo">${d.tipo}</td>
           <td data-label="Valor">R$ ${d.valor.toFixed(2)}</td>
         </tr>`;
@@ -142,12 +131,14 @@ auth.onAuthStateChanged(async user => {
 
     tabelaEntradas.innerHTML = html;
 
+    const lucro = ganhos - perdas;
+    const saldo = ganhos - perdas;
+
     resumoInvestido.innerText = "R$ " + investido.toFixed(2);
     resumoGanhos.innerText = "R$ " + ganhos.toFixed(2);
     resumoPerdas.innerText = "R$ " + perdas.toFixed(2);
-    const lucro = ganhos - perdas;
     resumoLucro.innerText = "R$ " + lucro.toFixed(2);
-    resumoSaldo.innerText = "R$ " + (ganhos - perdas).toFixed(2);
+    resumoSaldo.innerText = "R$ " + saldo.toFixed(2);
 
     gerarDicas(investido, ganhos, perdas);
   });
@@ -192,9 +183,11 @@ function gerarDicas(investido, ganhos, perdas){
     dicas.push(`📊 Sua taxa de retorno é de ${isNaN(taxaRetorno)?0:taxaRetorno}%`);
 
     if (lucro > 0) {
-      dicas.push("✅ Você está lucrando! Considere aumentar suas apostas gradualmente.");
+      dicas.push("✅ Você está lucrando! Continue com disciplina e aumente aos poucos.");
     } else if (lucro < 0) {
-      dicas.push("⚠️ Está em prejuízo. Reduza o valor das próximas apostas para proteger a banca.");
+      dicas.push("⚠️ Você está em prejuízo. Diminua o valor das apostas até recuperar.");
+    } else {
+      dicas.push("ℹ️ Você está no zero a zero, mantenha a estratégia.");
     }
 
     const sugestao = Math.max(1, (investido * 0.05).toFixed(2));
@@ -210,11 +203,7 @@ function gerarDicas(investido, ganhos, perdas){
 const gradeHistoricoPremium = document.getElementById("grade-historico-premium");
 
 if (gradeHistoricoPremium) {
-  const qHist = query(
-    collection(db, "historico"),
-    orderBy("criadoEm", "desc"),
-    limit(50)
-  );
+  const qHist = query(collection(db, "historico"), orderBy("criadoEm", "desc"), limit(50));
 
   onSnapshot(qHist, (snap) => {
     gradeHistoricoPremium.innerHTML = "";
