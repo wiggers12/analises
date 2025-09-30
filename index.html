@@ -36,34 +36,35 @@
     </section>
 
     <!-- SEÇÃO CALLS -->
-  <section id="calls" class="secao">
-  <h2>Calls</h2>
-  <div class="calls-box">
+    <section id="calls" class="secao">
+      <h2>Calls</h2>
+      <div class="calls-box">
 
-    <p id="contador" class="contador">Próxima entrada em: --:--</p>
+        <p id="contador" class="contador">Próxima entrada em: --:--</p>
 
-    <div class="multiplicador-card">
-      <p id="multiplicador" class="multiplicador">-- x</p>
-    </div>
+        <div class="multiplicador-card">
+          <p id="multiplicador" class="multiplicador">-- x</p>
+        </div>
 
-    <div class="info-cards">
-      <div class="info-card protecao">🛡 Proteção no 2.0x</div>
-      <div class="info-card probabilidade">🎯 Probabilidade 100.0x</div>
-    </div>
+        <div class="info-cards">
+          <div class="info-card protecao">🛡 Proteção no 2.0x</div>
+          <div class="info-card probabilidade">🎯 Probabilidade 100.0x</div>
+        </div>
 
-    <div class="alerta-bar">
-      ⚡ Entrar 1 minuto antes e 1 minuto depois
-    </div>
+        <div class="alerta-bar">
+          ⚡ Entrar 1 minuto antes e 1 minuto depois
+        </div>
 
-    <p class="responsabilidade">⚠️ Jogue com responsabilidade</p>
+        <p class="responsabilidade">⚠️ Jogue com responsabilidade</p>
 
-    <div id="historico" class="historico">
-      <h3>📜 Últimos sinais</h3>
-      <ul id="lista-historico"></ul>
-    </div>
+        <!-- 🔹 Últimos sinais -->
+        <div id="grade-sinais" class="historico">
+          <h3>📜 Últimos sinais</h3>
+          <ul id="lista-historico"></ul>
+        </div>
 
-  </div>
-</section>
+      </div>
+    </section>
 
     <!-- SEÇÃO JOGAR -->
     <section id="jogar" class="secao">
@@ -76,52 +77,52 @@
       </iframe>
     </section>
 
-    <!-- SEÇÃO HISTÓRICO -->
-   <section id="historicoSec" class="secao">
-  <h2>📊 Histórico Premium</h2>
+    <!-- SEÇÃO HISTÓRICO PREMIUM -->
+    <section id="historicoSec" class="secao">
+      <h2>📊 Histórico Premium</h2>
 
-  <!-- 🔹 Filtros -->
-  <div class="filtros-historico">
-    <select id="filtro-dia">
-      <option value="all">Todos os dias</option>
-      <option value="segunda">Segunda</option>
-      <option value="terca">Terça</option>
-      <option value="quarta">Quarta</option>
-      <option value="quinta">Quinta</option>
-      <option value="sexta">Sexta</option>
-      <option value="sabado">Sábado</option>
-      <option value="domingo">Domingo</option>
-    </select>
+      <!-- 🔹 Filtros -->
+      <div class="filtros-historico">
+        <select id="filtro-dia">
+          <option value="all">Todos os dias</option>
+          <option value="segunda">Segunda</option>
+          <option value="terca">Terça</option>
+          <option value="quarta">Quarta</option>
+          <option value="quinta">Quinta</option>
+          <option value="sexta">Sexta</option>
+          <option value="sabado">Sábado</option>
+          <option value="domingo">Domingo</option>
+        </select>
 
-    <select id="filtro-mes">
-      <option value="all">Todos os meses</option>
-      <option value="1">Janeiro</option>
-      <option value="2">Fevereiro</option>
-      <option value="3">Março</option>
-      <option value="4">Abril</option>
-      <option value="5">Maio</option>
-      <option value="6">Junho</option>
-      <option value="7">Julho</option>
-      <option value="8">Agosto</option>
-      <option value="9">Setembro</option>
-      <option value="10">Outubro</option>
-      <option value="11">Novembro</option>
-      <option value="12">Dezembro</option>
-    </select>
+        <select id="filtro-mes">
+          <option value="all">Todos os meses</option>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
 
-    <select id="filtro-valor">
-      <option value="all">Todos os valores</option>
-      <option value="baixo">Abaixo de 2x</option>
-      <option value="medio">Entre 2x e 10x</option>
-      <option value="alto">Acima de 10x</option>
-    </select>
-  </div>
+        <select id="filtro-valor">
+          <option value="all">Todos os valores</option>
+          <option value="baixo">Abaixo de 2x</option>
+          <option value="medio">Entre 2x e 10x</option>
+          <option value="alto">Acima de 10x</option>
+        </select>
+      </div>
 
-  <!-- 🔹 Grade de Resultados -->
-  <div id="grade-historico-premium" class="grade-historico">
-    <!-- Cards renderizados dinamicamente -->
-  </div>
-</section>
+      <!-- 🔹 Grade de Resultados -->
+      <div id="grade-historico-premium" class="grade-historico">
+        <!-- Cards renderizados dinamicamente -->
+      </div>
+    </section>
 
     <!-- SEÇÃO LIVE -->
     <section id="live" class="secao">
@@ -136,8 +137,13 @@
     <a href="#gerenciamento"><i class="fas fa-cogs"></i><span>Gerenciamento</span></a>
     <a href="#calls"><i class="fas fa-signal"></i><span>Calls</span></a>
     <a href="#jogar" class="btn-jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
-    <a href="#historico"><i class="fas fa-clock"></i><span>Histórico</span></a>
+    <a href="#historicoSec"><i class="fas fa-clock"></i><span>Histórico</span></a>
     <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
   </footer>
 
-  
+  <!-- 🔹 Scripts -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="script.js"></script>
+
+</body>
+</html>
