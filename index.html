@@ -141,27 +141,27 @@
     <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
   </footer>
 
-  <!-- 🔹 Scripts -->
+  <!-- =================== SCRIPTS =================== -->
   <script type="module" src="firebase.js"></script>
   <script type="module" src="script.js"></script>
-<script>
-  const links = document.querySelectorAll('.footer-bar a');
-  const secoes = document.querySelectorAll('.secao');
+  <script>
+    const links = document.querySelectorAll('.footer-bar a');
+    const secoes = document.querySelectorAll('.secao');
 
-  links.forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
 
-      // remove "ativo" de todas
-      secoes.forEach(sec => sec.classList.remove('ativo'));
-      links.forEach(l => l.classList.remove('ativo'));
+        // remove "ativo" de todas
+        secoes.forEach(sec => sec.classList.remove('ativo'));
+        links.forEach(l => l.classList.remove('ativo'));
 
-      // pega alvo pelo id
-      const alvo = link.getAttribute('href').replace('#','');
-      document.getElementById(alvo).classList.add('ativo');
-      link.classList.add('ativo');
+        // pega alvo pelo id
+        const alvo = link.getAttribute('href').replace('#','');
+        document.getElementById(alvo).classList.add('ativo');
+        link.classList.add('ativo');
+      });
     });
-  });
-</script>
+  </script>
 </body>
 </html>
