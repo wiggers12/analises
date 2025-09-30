@@ -1,102 +1,121 @@
-/* ====================================
-   NAVEGAÇÃO ENTRE SEÇÕES
-==================================== */
-const links = document.querySelectorAll('.footer-bar a');
-const secoes = document.querySelectorAll('.secao');
+import { db } from "./firebase.js";
+import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } 
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-links.forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    // esconde todas
-    secoes.forEach(sec => sec.classList.remove('ativo'));
-    links.forEach(l => l.classList.remove('ativo'));
-    // mostra só a escolhida
-    const alvo = link.getAttribute('href').replace('#','');
-    document.getElementById(alvo).classList.add('ativo');
-    link.classList.add('ativo');
-  });
-});
+const contadorElem = document.getElementById("contador");
+const multElem = document.getElementById("multiplicador");
+const grade = document.getElementById("grade-historico");
 
-/* ====================================
-   CALLS INTELIGENTE
-==================================== */
 const minutosValidos = [
   1,4,7,9,11,14,17,19,21,24,27,29,
   31,34,37,39,41,44,47,49,51,54,57,59
 ];
 
-const contadorElem = document.getElementById("contador");
-const multElem = document.getElementById("multiplicador");
-const listaHistorico = document.getElementById("lista-historico");
-
-/* Gera multiplicador com probabilidade */
-function gerarMultiplicador(){
-  const chance = Math.random()*100;
-  if(chance < 70) return (Math.random()*(3.5-1.8)+1.8).toFixed(2); // 70% até 3.5x
-  if(chance < 95) return (Math.random()*(10-3.5)+3.5).toFixed(2); // 25% até 10x
-  return (Math.random()*(100-10)+10).toFixed(2); // 5% até 100x
+/* Multiplicador determinístico */
+function gerarMultiplicadorDeterministico(hora, minuto){
+  const data = new Date();
+  const chave = `${data.getFullYear()}-${data.getMonth()}-${data.getDate()}-${hora}-${minuto}`;
+  let seed = 0;
+  for(let i=0;i<chave.length;i++){
+    seed = (seed*31 + chave.charCodeAt(i)) % 1000000;
+  }
+  const chance = seed % 100;
+  if(chance < 70) return ((seed % 180) / 100 + 1.8).toFixed(2);
+  if(chance < 95) return ((seed % 650) / 100 + 3.5).toFixed(2);
+  return ((seed % 9000) / 100 + 10).toFixed(2);
 }
 
-/* Define próximo horário fixo */
-function proximoHorario(){
+/* Adicionar bloco visual */
+function adicionarBloco(hora, minuto, mult){
+  const bloco = document.createElement("div");
+  bloco.classList.add("bloco");
+
+  const valor = document.createElement("span");
+  valor.classList.add("valor");
+  valor.innerText = mult + "x";
+
+  const horaTxt = document.createElement("span");
+  horaTxt.classList.add("hora");
+  horaTxt.innerText = `${hora.toString().padStart(2,"0")}:${minuto.toString().padStart(2,"0")}`;
+
+  if(mult < 3.5) bloco.classList.add("baixo");
+  else if(mult < 10) bloco.classList.add("medio");
+  else bloco.classList.add("alto");
+
+  bloco.appendChild(valor);
+  bloco.appendChild(horaTxt);
+
+  grade.prepend(bloco);
+  if(grade.children.length > 30){
+    grade.removeChild(grade.lastChild);
+  }
+}
+
+/* Atualizar contador */
+function atualizarContador(){
   const agora = new Date();
-  let minutoAtual = agora.getMinutes();
-  let horaAtual = agora.getHours();
+  const minutoAtual = agora.getMinutes();
+  const horaAtual = agora.getHours();
 
   let proxMinuto = minutosValidos.find(m => m > minutoAtual);
+  let proxHora = horaAtual;
   if(proxMinuto === undefined){
     proxMinuto = minutosValidos[0];
-    horaAtual = (horaAtual+1)%24;
+    proxHora = (horaAtual+1)%24;
   }
 
   const alvo = new Date();
-  alvo.setHours(horaAtual, proxMinuto, 0, 0);
+  alvo.setHours(proxHora, proxMinuto, 0, 0);
 
-  atualizarContador(alvo);
-  const timer = setInterval(() => {
-    const agora2 = new Date();
-    let diff = Math.floor((alvo-agora2)/1000);
-
-    if(diff <= 0){
-      clearInterval(timer);
-      gerarSinal(alvo);
-      proximoHorario(); // recursivo para seguir rodando
-    } else {
-      const min = String(Math.floor(diff/60)).padStart(2,"0");
-      const seg = String(diff%60).padStart(2,"0");
-      contadorElem.innerText = `Próxima entrada em: ${min}:${seg}`;
-    }
-  },1000);
+  const diff = Math.floor((alvo - agora)/1000);
+  const min = String(Math.floor(diff/60)).padStart(2,"0");
+  const seg = String(diff%60).padStart(2,"0");
+  contadorElem.innerText = `Próxima entrada em: ${min}:${seg}`;
 }
 
-/* Mostra o sinal quando chega a hora */
-function gerarSinal(horario){
-  const mult = gerarMultiplicador();
-  multElem.innerText = mult + "x";
-  multElem.classList.remove("ativo");
-  void multElem.offsetWidth; // hack reiniciar animação
-  multElem.classList.add("ativo");
-
-  // cor conforme valor
-  if(mult >= 10) multElem.style.color = "#ff0000";   // vermelho
-  else if(mult >= 5) multElem.style.color = "#00ff00"; // verde
-  else multElem.style.color = "#ff4da6";             // rosa
-
-  // adiciona no histórico
-  const li = document.createElement("li");
-  li.innerText = `${horario.getHours().toString().padStart(2,"0")}:${horario.getMinutes().toString().padStart(2,"0")} → ${mult}x`;
-
-  if(mult < 3.5) li.classList.add("baixo");
-  else if(mult < 10) li.classList.add("medio");
-  else li.classList.add("alto");
-
-  listaHistorico.prepend(li);
-  if(listaHistorico.children.length > 5){
-    listaHistorico.removeChild(listaHistorico.lastChild);
+/* Salvar sinal no Firestore */
+async function salvarSinal(hora, minuto, mult){
+  try {
+    await addDoc(collection(db, "sinais"), {
+      hora, minuto, multiplicador: mult,
+      criadoEm: serverTimestamp()
+    });
+    console.log("✅ Sinal salvo:", hora, minuto, mult);
+  } catch(e){
+    console.error("Erro ao salvar:", e);
   }
 }
 
-/* Inicia o ciclo */
-if(contadorElem && multElem){
-  proximoHorario();
-}
+/* Gerar e salvar automaticamente (executar apenas em 1 instância) */
+setInterval(() => {
+  const agora = new Date();
+  const hora = agora.getHours();
+  const minuto = agora.getMinutes();
+  atualizarContador();
+
+  if(minutosValidos.includes(minuto)){
+    const mult = gerarMultiplicadorDeterministico(hora, minuto);
+    multElem.innerText = mult + "x";
+    if(mult >= 10) multElem.style.color = "#ff0000";
+    else if(mult >= 5) multElem.style.color = "#00ff00";
+    else multElem.style.color = "#ff4da6";
+
+    // salvar no Firestore
+    salvarSinal(hora, minuto, mult);
+  }
+}, 1000);
+
+/* Escutar sinais do Firestore em tempo real */
+const q = query(
+  collection(db, "sinais"),
+  orderBy("criadoEm", "desc"),
+  limit(30)
+);
+
+onSnapshot(q, (snapshot) => {
+  grade.innerHTML = "";
+  snapshot.forEach(doc => {
+    const d = doc.data();
+    adicionarBloco(d.hora, d.minuto, d.multiplicador);
+  });
+});
