@@ -29,56 +29,56 @@
       <p>Entradas inteligentes</p>
     </section>
 
-    <!-- SEÇÃO GERENCIAMENTO -->
   <!-- SEÇÃO GERENCIAMENTO -->
 <section id="gerenciamento" class="secao">
   <h2>📊 Gestão Inteligente</h2>
 
-  <!-- Resumo -->
-  <div class="grid-resumo">
-    <div class="card-gestao destaque">
-      <h3>💰 Saldo Atual</h3>
-      <p>R$ <span id="saldoAtual">0.00</span></p>
-    </div>
-    <div class="card-gestao">
-      <h3>📥 Total Investido</h3>
-      <p>R$ <span id="totalInvestido">0.00</span></p>
-    </div>
-    <div class="card-gestao">
-      <h3>📈 Lucro</h3>
-      <p class="green">R$ <span id="lucroTotal">0.00</span></p>
-    </div>
-    <div class="card-gestao">
-      <h3>📉 Prejuízo</h3>
-      <p class="red">R$ <span id="prejuizoTotal">0.00</span></p>
-    </div>
+  <!-- Resumos -->
+  <div class="resumos">
+    <div class="resumo-card">💰 Saldo Atual <p id="resumoSaldo">R$ 0.00</p></div>
+    <div class="resumo-card">📩 Total Investido <p id="resumoInvestido">R$ 0.00</p></div>
+    <div class="resumo-card">📈 Lucro <p id="resumoLucro">R$ 0.00</p></div>
+    <div class="resumo-card">📉 Prejuízo <p id="resumoPerdas">R$ 0.00</p></div>
   </div>
 
   <!-- Estatísticas -->
-  <div class="card-gestao">
+  <div class="estatisticas">
     <h3>📊 Estatísticas</h3>
-    <p>Taxa de acerto: <span id="taxaAcerto">0%</span></p>
-    <p>Retorno sobre investimento (ROI): <span id="roi">0%</span></p>
+    <p id="taxaAcerto">Taxa de acerto: 0%</p>
+    <p id="roi">Retorno sobre investimento (ROI): 0%</p>
   </div>
 
   <!-- Dicas -->
-  <div class="card-gestao dicas">
+  <div class="dicas">
     <h3>🤖 Dicas Inteligentes</h3>
-    <p id="dicaTexto">Carregando...</p>
+    <div id="dicasGerenciamento">Carregando...</div>
   </div>
 
-  <!-- Planilha -->
-  <div class="card-gestao">
-    <h3>📜 Histórico de Operações</h3>
-    <div class="tabela-container">
-      <table class="tabela">
-        <thead>
-          <tr><th>Data</th><th>Tipo</th><th>Valor</th><th>Saldo</th></tr>
-        </thead>
-        <tbody id="tabelaHistorico"></tbody>
-      </table>
-    </div>
+  <!-- Formulário -->
+  <div class="form-gerenciamento">
+    <h3>➕ Nova Operação</h3>
+    <input type="number" id="valorEntrada" placeholder="Valor em R$">
+    <select id="tipoEntrada">
+      <option value="aposta">💸 Aposta</option>
+      <option value="ganho">✅ Ganho</option>
+      <option value="perda">❌ Perda</option>
+    </select>
+    <button onclick="adicionarEntrada()">Adicionar</button>
   </div>
+
+  <!-- Histórico -->
+  <h3>📜 Histórico de Operações</h3>
+  <table class="tabela-historico">
+    <thead>
+      <tr><th>Data</th><th>Tipo</th><th>Valor</th></tr>
+    </thead>
+    <tbody id="tabelaEntradas"></tbody>
+  </table>
+
+  <!-- Gráfico -->
+  <h3>📉 Evolução do Saldo</h3>
+  <canvas id="graficoSaldo" style="max-width:100%;height:300px;"></canvas>
+</section>
 
   <!-- Gráfico -->
   <div class="card-gestao">
