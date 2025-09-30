@@ -41,7 +41,7 @@ function atualizarContador(){
 }
 setInterval(atualizarContador, 1000);
 
-/* Adicionar item ao histórico */
+/* Adicionar item ao histórico de calls */
 function adicionarBloco(hora, minuto, mult){
   const li = document.createElement("li");
   li.innerText = `${hora.toString().padStart(2,"0")}:${minuto.toString().padStart(2,"0")} → ${mult}x`;
@@ -202,4 +202,42 @@ function gerarDicas(investido, ganhos, perdas){
   }
 
   dicasBox.innerHTML = dicas.map(d => `<p>${d}</p>`).join("");
+}
+
+/* ==============================
+   HISTÓRICO PREMIUM (RESULTADOS REAIS)
+============================== */
+const gradeHistoricoPremium = document.getElementById("grade-historico-premium");
+
+if (gradeHistoricoPremium) {
+  const qHist = query(
+    collection(db, "historico"),
+    orderBy("criadoEm", "desc"),
+    limit(50)
+  );
+
+  onSnapshot(qHist, (snap) => {
+    gradeHistoricoPremium.innerHTML = "";
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      const card = document.createElement("div");
+      card.classList.add("card-historico");
+
+      let cor = "#3498db"; // azul padrão
+      if (d.multiplicador >= 10) cor = "#ff4da6"; // rosa
+      else if (d.multiplicador >= 2) cor = "#a29bfe"; // roxo
+
+      card.style.border = `2px solid ${cor}`;
+      card.style.padding = "10px";
+      card.style.margin = "5px";
+      card.style.borderRadius = "6px";
+
+      card.innerHTML = `
+        <p><strong>${d.hora.toString().padStart(2,"0")}:${d.minuto.toString().padStart(2,"0")}</strong></p>
+        <p style="color:${cor};font-weight:bold;">${d.multiplicador}x</p>
+      `;
+
+      gradeHistoricoPremium.appendChild(card);
+    });
+  });
 }
