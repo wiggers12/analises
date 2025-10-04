@@ -309,15 +309,21 @@ h1, h2, h3 { font-weight: bold; }
 .card-historico.roxo { background: #7a00cc; }  /* 2 a 10 */
 .card-historico.rosa { background: #cc0066; }  /* > 10 */
 /* ==========================
-   JOGAR
+   FULLSCREEN JOGAR
 ========================== */
-.jogo-frame {
-  width: 100%;
-  height: calc(100vh - 160px);
+#jogar.ativo {
+  padding: 0;
+  margin: 0;
+}
+
+#jogar.ativo .jogo-frame {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
   border: none;
-  border-radius: 12px;
-  background: #000;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  border-radius: 0;
+  z-index: 999;
 }
 
 /* ==========================
