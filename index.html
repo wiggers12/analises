@@ -6,7 +6,6 @@
   <title>Tay Aviator 100x</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    /* ===== RESET ===== */
     *{margin:0;padding:0;box-sizing:border-box}
     body{
       font-family:'Poppins',sans-serif;
@@ -35,8 +34,6 @@
     .conteudo{text-align:center;padding:20px}
     .secao{display:none}
     .secao.ativo{display:block}
-
-    /* ===== HOME ===== */
     .foto-principal{width:180px;margin:20px 0;border-radius:15px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
     #home h1{color:#ff4da6}#home p{color:#f8bbd0}
 
@@ -88,19 +85,42 @@
       position:fixed;
       bottom:160px;
       left:20px;
-      background:#1c0f2e;
-      border:2px solid #ff4da6;
+      background:#11113b;
       border-radius:12px;
       padding:20px;
-      width:280px;
+      width:300px;
       z-index:1002;
-      box-shadow:0 0 20px rgba(0,0,0,.5);
+      box-shadow:0 0 25px rgba(0,0,0,.6);
+      text-align:center;
     }
-    #cardEntrada h3{color:#ff4da6;margin-bottom:10px}
-    #cardEntrada p{margin:5px 0}
+    #cardEntrada h3{
+      color:#fff;
+      font-size:1.2rem;
+      margin-bottom:10px;
+    }
+    #cardEntrada h3::before{
+      content:"⏳ ";
+    }
+    #cardEntrada p{margin:5px 0;font-size:0.95rem}
+    #cardEntrada b{color:#ff4da6}
+    .faixa-gray{
+      background:#333;
+      color:#fff;
+      padding:10px;
+      border-radius:8px;
+      margin:10px 0;
+    }
+    .faixa-red{
+      background:#ff4d4d;
+      color:#fff;
+      font-weight:bold;
+      border-radius:8px;
+      padding:10px;
+      margin-top:5px;
+    }
     #cardEntrada button{
       margin-top:10px;width:100%;
-      background:#ff4da6;color:#fff;border:none;
+      background:#ff4d4d;color:#fff;border:none;
       padding:10px;border-radius:8px;font-weight:bold;cursor:pointer;
     }
 
@@ -194,9 +214,12 @@
 
   <!-- ===== CARD DE ENTRADA ===== -->
   <div id="cardEntrada">
-    <h3>🎯 Próxima Entrada</h3>
+    <h3>Próxima Entrada</h3>
+    <p><b>Horário:</b> <span id="horaEntrada">--:--</span></p>
+    <p><b>Proteção:</b> <span id="protecaoEntrada">2x</span></p>
     <p><b>Probabilidade:</b> <span id="probEntrada">--</span></p>
-    <p><b>Tempo restante:</b> <span id="tempoRestante">60s</span></p>
+    <div class="faixa-gray">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
+    <div class="faixa-red">⚠️ Jogue com responsabilidade!</div>
     <button onclick="fecharCard()">Fechar</button>
   </div>
 
@@ -229,8 +252,8 @@
     const btnEntrada=document.getElementById("btnEntrada");
     const cardEntrada=document.getElementById("cardEntrada");
     const probEntrada=document.getElementById("probEntrada");
-    const tempoRestante=document.getElementById("tempoRestante");
-    const timerText=document.getElementById("timerText");
+    const horaEntrada=document.getElementById("horaEntrada");
+    const tempoRestante=document.getElementById("timerText");
     const gridTipMiner=document.getElementById("gridTipMiner");
 
     btnEntrada.addEventListener("click",()=>cardEntrada.style.display="flex");
@@ -254,19 +277,22 @@
         if(tempo<=0){
           clearInterval(intervalo);
           const multiplicador=parseFloat((Math.random()*99+1).toFixed(2));
-          probEntrada.innerText=`${multiplicador}x`;
           const agora=new Date();
-          const hora=agora.getHours(),minuto=agora.getMinutes();
+          const hora=String(agora.getHours()).padStart(2,"0");
+          const minuto=String(agora.getMinutes()).padStart(2,"0");
+          horaEntrada.innerText=`${hora}:${minuto}`;
+          probEntrada.innerText=`${multiplicador}x`;
           await addDoc(collection(db,"tipminer"),{multiplicador,hora,minuto,criadoEm:serverTimestamp()});
           localStorage.setItem("inicioTimer",Date.now().toString());
           iniciarTimer();
         }
       },1000);
     }
+
     function atualizarUI(tempo){
       tempoRestante.innerText=tempo+"s";
-      timerText.innerText=tempo+"s";
     }
+
     if(!localStorage.getItem("inicioTimer"))localStorage.setItem("inicioTimer",Date.now().toString());
     iniciarTimer();
 
@@ -284,7 +310,6 @@
       });
     });
 
-    // Navegação entre seções
     const links=document.querySelectorAll(".footer-bar a"),secoes=document.querySelectorAll(".secao");
     links.forEach(link=>{
       link.addEventListener("click",e=>{
@@ -297,7 +322,6 @@
       });
     });
 
-    // Login
     document.getElementById("btnLogin").addEventListener("click",e=>{
       e.preventDefault();
       document.getElementById("loginModal").style.display="flex";
