@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tay Aviator 100x</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- =================== CABEÇALHO FIXO =================== -->
+  <header class="topbar">
+    <button class="menu-btn"><i class="fas fa-bars"></i></button>
+    <div class="logo">GoathBet</div>
+    <nav>
+    <nav>
+  <a href="planos.html">Planos</a>
+  <a href="#" id="btnLogin" style="display:inline;">Login</a>
+  <a href="#" id="btnLogout" style="display:none;" onclick="logoutUsuario()">Sair</a>
+</nav>
+  </header>
+
+  <!-- =================== CONTEÚDO CENTRAL =================== -->
+  <main class="conteudo">
+
+    <!-- SEÇÃO INICIAL -->
+    <section id="home" class="secao ativo">
+      <img src="img/foto.png" alt="Tay Aviator" class="foto-principal">
+      <h1>Tay Aviator 100x</h1>
+      <p>Entradas inteligentes</p>
+    </section>
+
+    <!-- SEÇÃO GERENCIAMENTO -->
+<section id="gerenciamento" class="secao">
+  <h2>📊 Gestão Inteligente</h2>
+
+  <!-- Cards de Resumo -->
+  <div class="resumos-grid">
+    <div class="resumo-card saldo">
+      <h4>💰 Saldo Atual</h4>
+      <p id="resumoSaldo">R$ 0,00</p>
+    </div>
+    <div class="resumo-card investido">
+      <h4>📩 Investido</h4>
+      <p id="resumoInvestido">R$ 0,00</p>
+    </div>
+    <div class="resumo-card lucro">
+      <h4>📈 Lucro</h4>
+      <p id="resumoLucro">R$ 0,00</p>
+    </div>
+    <div class="resumo-card perdas">
+      <h4>📉 Prejuízo</h4>
+      <p id="resumoPerdas">R$ 0,00</p>
+    </div>
+  </div>
+
+  <!-- Estatísticas -->
+  <div class="estatisticas-box">
+    <h3>📊 Estatísticas</h3>
+    <p id="taxaAcerto">Taxa de acerto: 0%</p>
+    <p id="roi">ROI: 0%</p>
+  </div>
+
+  <!-- Dicas -->
+  <div class="dicas-box">
+    <h3>🤖 Dicas Inteligentes</h3>
+    <div id="dicasGerenciamento">Carregando...</div>
+  </div>
+
+ <!-- Nova Operação -->
+<div class="form-gerenciamento">
+  <h3>➕ Nova Operação</h3>
+  <div class="form-grid">
+    <input type="number" id="valorEntrada" placeholder="Valor em R$">
+    <select id="tipoEntrada">
+      <option value="investido">💰 Investimento</option>
+      <option value="ganho">✅ Ganho</option>
+      <option value="perda">❌ Perda</option>
+    </select>
+    <button onclick="adicionarEntrada()">Adicionar</button>
+  </div>
+</div>
+
+  <!-- Histórico -->
+  <h3>📜 Histórico</h3>
+  <div class="tabela-wrapper">
+    <table class="tabela-historico">
+      <thead>
+        <tr><th>Data</th><th>Tipo</th><th>Valor</th></tr>
+      </thead>
+      <tbody id="tabelaEntradas"></tbody>
+    </table>
+  </div>
+
+  <!-- Gráfico -->
+  <h3>📉 Evolução do Saldo</h3>
+  <canvas id="graficoSaldo" height="250"></canvas>
+</section>
+
+    <!-- SEÇÃO CALLS -->
+    <section id="calls" class="secao">
+      <h2>Calls</h2>
+      <div class="calls-box">
+        <p id="contador" class="contador">Próxima entrada em: --:--</p>
+        <div class="multiplicador-card">
+          <p id="multiplicador" class="multiplicador">-- x</p>
+        </div>
+        <div class="info-cards">
+          <div class="info-card protecao">🛡 Proteção no 2.0x</div>
+          <div class="info-card probabilidade">🎯 Probabilidade 100.0x</div>
+        </div>
+        <div class="alerta-bar">⚡ Entrar 1 minuto antes e 1 minuto depois</div>
+        <p class="responsabilidade">⚠️ Jogue com responsabilidade</p>
+        <div id="grade-sinais" class="historico">
+          <h3>📜 Últimos sinais</h3>
+          <ul id="lista-historico"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO JOGAR -->
+    <section id="jogar" class="secao">
+      <h2>Jogar</h2>
+      <iframe 
+        src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"
+        class="jogo-frame"
+        title="Aviator"
+        allowfullscreen>
+      </iframe>
+    </section>
+
+    <!-- SEÇÃO HISTÓRICO PREMIUM -->
+    <section id="historicoSec" class="secao">
+      <h2>📊 Histórico Premium</h2>
+      <div class="filtros-historico">
+        <select id="filtro-dia">
+          <option value="all">Todos os dias</option>
+          <option value="segunda">Segunda</option>
+          <option value="terca">Terça</option>
+          <option value="quarta">Quarta</option>
+          <option value="quinta">Quinta</option>
+          <option value="sexta">Sexta</option>
+          <option value="sabado">Sábado</option>
+          <option value="domingo">Domingo</option>
+        </select>
+        <select id="filtro-mes">
+          <option value="all">Todos os meses</option>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+        <select id="filtro-valor">
+          <option value="all">Todos os valores</option>
+          <option value="baixo">Abaixo de 2x</option>
+          <option value="medio">Entre 2x e 10x</option>
+          <option value="alto">Acima de 10x</option>
+        </select>
+      </div>
+      <div id="grade-historico-premium" class="grade-historico"></div>
+    </section>
+
+    <!-- SEÇÃO LIVE -->
+    <section id="live" class="secao">
+      <h2>Live</h2>
+      <p>Transmissões ao vivo e sinais em tempo real.</p>
+    </section>
+  </main>
+
+  <!-- =================== RODAPÉ FIXO =================== -->
+  <footer class="footer-bar">
+    <a href="#gerenciamento"><i class="fas fa-cogs"></i><span>Gerenciamento</span></a>
+    <a href="#calls"><i class="fas fa-signal"></i><span>Calls</span></a>
+    <a href="#jogar" class="btn-jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
+    <a href="#historicoSec"><i class="fas fa-clock"></i><span>Histórico</span></a>
+    <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
+  </footer>
+
+  <!-- =================== LOGIN MODAL =================== -->
+  <div id="loginModal" class="login-modal" style="display:none;">
+    <div class="login-box">
+      <h2>🔐 Acesso ao GoathBet</h2>
+      <p id="loginMsg">Faça login ou registre-se para continuar</p>
+      <div id="loginForm">
+        <input type="email" id="emailLogin" placeholder="Email">
+        <input type="password" id="senhaLogin" placeholder="Senha">
+        <button onclick="loginUsuario()">Entrar</button>
+        <p><a href="#" onclick="mostrarRegistro()">Criar conta</a></p>
+      </div>
+      <div id="registroForm" style="display:none;">
+        <input type="email" id="emailRegistro" placeholder="Email">
+        <input type="password" id="senhaRegistro" placeholder="Senha">
+        <button onclick="registrarUsuario()">Registrar</button>
+        <p><a href="#" onclick="mostrarLogin()">Já tenho conta</a></p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    .login-box { background: #1c0f2e; padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border: 2px solid #ff4da6; }
+    .login-box h2 { color: #ff4da6; margin-bottom: 15px; }
+    .login-box input { display: block; width: 100%; margin: 8px 0; padding: 10px; border: none; border-radius: 6px; }
+    .login-box button { margin-top: 10px; width: 100%; background: #ff4da6; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .login-box a { color: #ffb6e6; font-size: 0.9em; }
+    #loginMsg { margin-bottom: 10px; color: #fff; }
+  </style>
+
+  <!-- =================== SCRIPTS =================== -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="script.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script>
+    const links = document.querySelectorAll('.footer-bar a');
+    const secoes = document.querySelectorAll('.secao');
+
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        secoes.forEach(sec => sec.classList.remove('ativo'));
+        links.forEach(l => l.classList.remove('ativo'));
+        const alvo = link.getAttribute('href').replace('#','');
+        document.getElementById(alvo).classList.add('ativo');
+        link.classList.add('ativo');
+      });
+    });
+
+    // abrir modal no botão login
+    document.getElementById("btnLogin").addEventListener("click", e => {
+      e.preventDefault();
+      document.getElementById("loginModal").style.display = "flex";
+    });
+  </script>
+</body>
+</html>
