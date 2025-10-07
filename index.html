@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <!-- =================== CABEÇALHO FIXO =================== -->
+  <!-- =================== CABEÇALHO =================== -->
   <header class="topbar">
     <button class="menu-btn"><i class="fas fa-bars"></i></button>
     <div class="logo">GoathBet</div>
@@ -20,10 +20,10 @@
     </nav>
   </header>
 
-  <!-- =================== CONTEÚDO CENTRAL =================== -->
+  <!-- =================== CONTEÚDO =================== -->
   <main class="conteudo">
 
-    <!-- SEÇÃO INICIAL -->
+    <!-- SEÇÃO HOME -->
     <section id="home" class="secao ativo">
       <img src="img/foto.png" alt="Tay Aviator" class="foto-principal">
       <h1>Tay Aviator 100x</h1>
@@ -31,143 +31,54 @@
     </section>
 
     <!-- SEÇÃO GERENCIAMENTO -->
-<section id="gerenciamento" class="secao">
-  <h2>📊 Gestão Inteligente</h2>
+    <section id="gerenciamento" class="secao">
+      <h2>📊 Gestão Inteligente</h2>
+      <div class="resumos-grid">
+        <div class="resumo-card saldo"><h4>💰 Saldo Atual</h4><p id="resumoSaldo">R$ 0,00</p></div>
+        <div class="resumo-card investido"><h4>📩 Investido</h4><p id="resumoInvestido">R$ 0,00</p></div>
+        <div class="resumo-card lucro"><h4>📈 Lucro</h4><p id="resumoLucro">R$ 0,00</p></div>
+        <div class="resumo-card perdas"><h4>📉 Prejuízo</h4><p id="resumoPerdas">R$ 0,00</p></div>
+      </div>
+    </section>
 
-  <div class="resumos-grid">
-    <div class="resumo-card saldo"><h4>💰 Saldo Atual</h4><p id="resumoSaldo">R$ 0,00</p></div>
-    <div class="resumo-card investido"><h4>📩 Investido</h4><p id="resumoInvestido">R$ 0,00</p></div>
-    <div class="resumo-card lucro"><h4>📈 Lucro</h4><p id="resumoLucro">R$ 0,00</p></div>
-    <div class="resumo-card perdas"><h4>📉 Prejuízo</h4><p id="resumoPerdas">R$ 0,00</p></div>
-  </div>
+    <!-- SEÇÃO TIP MINER -->
+    <section id="calls" class="secao">
+      <h2>Tip Miner 🔥</h2>
+      <p class="descricao-tip">Análises automáticas em tempo real</p>
+      <div id="gridTipMiner" class="grid-tipminer"></div>
+    </section>
 
-  <div class="estatisticas-box">
-    <h3>📊 Estatísticas</h3>
-    <p id="taxaAcerto">Taxa de acerto: 0%</p>
-    <p id="roi">ROI: 0%</p>
-  </div>
-
-  <div class="dicas-box">
-    <h3>🤖 Dicas Inteligentes</h3>
-    <div id="dicasGerenciamento">Carregando...</div>
-  </div>
-
- <div class="form-gerenciamento">
-  <h3>➕ Nova Operação</h3>
-  <div class="form-grid">
-    <input type="number" id="valorEntrada" placeholder="Valor em R$">
-    <select id="tipoEntrada">
-      <option value="investido">💰 Investimento</option>
-      <option value="ganho">✅ Ganho</option>
-      <option value="perda">❌ Perda</option>
-    </select>
-    <button onclick="adicionarEntrada()">Adicionar</button>
-  </div>
-</div>
-
-  <h3>📜 Histórico</h3>
-  <div class="tabela-wrapper">
-    <table class="tabela-historico">
-      <thead><tr><th>Data</th><th>Tipo</th><th>Valor</th></tr></thead>
-      <tbody id="tabelaEntradas"></tbody>
-    </table>
-  </div>
-
-  <h3>📉 Evolução do Saldo</h3>
-  <canvas id="graficoSaldo" height="250"></canvas>
-</section>
-
-    <!-- =================== TIP MINER =================== -->
-<section id="calls" class="secao">
-  <h2>Tip Miner 🔥</h2>
-  <p class="descricao-tip">Análises em tempo real — veja as últimas probabilidades!</p>
-  <div id="gridTipMiner" class="grid-tipminer"></div>
-</section>
-
-<style>
-  .descricao-tip {
-    text-align: center;
-    color: #bbb;
-    margin-bottom: 15px;
-  }
-  .grid-tipminer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 8px;
-    padding: 15px;
-  }
-  .tip-card {
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    color: white;
-    padding: 10px 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 70px;
-    transition: transform 0.2s, box-shadow 0.4s;
-  }
-  .tip-card:hover { transform: scale(1.05); }
-  .tip-card span {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.7);
-  }
-  .verde { background: #2ecc71; }
-  .cinza { background: #3a3a3a; }
-  .roxo { background: #8e44ad; }
-  .rosa { background: #ff4da6; }
-  .pulse {
-    animation: pulseNew 1.2s ease-in-out;
-  }
-  @keyframes pulseNew {
-    0% { box-shadow: 0 0 0 0 rgba(255,77,166,0.6); transform: scale(1.05);}
-    100% { box-shadow: 0 0 0 10px rgba(255,77,166,0); transform: scale(1);}
-  }
-</style>
+    <style>
+      .descricao-tip { text-align:center;color:#bbb;margin-bottom:10px; }
+      .grid-tipminer {
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+        gap:8px;padding:15px;
+      }
+      .tip-card {
+        border-radius:10px;text-align:center;font-weight:bold;
+        color:#fff;padding:10px 5px;display:flex;
+        flex-direction:column;justify-content:center;
+        height:70px;transition:transform .2s;
+      }
+      .tip-card span{font-size:.8rem;color:rgba(255,255,255,.7);}
+      .tip-card:hover{transform:scale(1.05);}
+      .verde{background:#2ecc71;}
+      .roxo{background:#8e44ad;}
+      .rosa{background:#ff4da6;}
+      .cinza{background:#3a3a3a;}
+      .pulse{animation:pulseNew 1s ease-in-out;}
+      @keyframes pulseNew{
+        0%{box-shadow:0 0 0 0 rgba(255,77,166,0.7);}
+        100%{box-shadow:0 0 0 15px rgba(255,77,166,0);}
+      }
+    </style>
 
     <!-- SEÇÃO JOGAR -->
     <section id="jogar" class="secao">
       <h2>Jogar</h2>
-      <iframe 
-        src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"
-        class="jogo-frame"
-        title="Aviator"
-        allowfullscreen>
-      </iframe>
-    </section>
-
-    <!-- SEÇÃO HISTÓRICO PREMIUM -->
-    <section id="historicoSec" class="secao">
-      <h2>📊 Histórico Premium</h2>
-      <div class="filtros-historico">
-        <select id="filtro-dia">
-          <option value="all">Todos os dias</option>
-          <option value="segunda">Segunda</option>
-          <option value="terca">Terça</option>
-          <option value="quarta">Quarta</option>
-          <option value="quinta">Quinta</option>
-          <option value="sexta">Sexta</option>
-          <option value="sabado">Sábado</option>
-          <option value="domingo">Domingo</option>
-        </select>
-        <select id="filtro-mes">
-          <option value="all">Todos os meses</option>
-          <option value="1">Janeiro</option><option value="2">Fevereiro</option>
-          <option value="3">Março</option><option value="4">Abril</option>
-          <option value="5">Maio</option><option value="6">Junho</option>
-          <option value="7">Julho</option><option value="8">Agosto</option>
-          <option value="9">Setembro</option><option value="10">Outubro</option>
-          <option value="11">Novembro</option><option value="12">Dezembro</option>
-        </select>
-        <select id="filtro-valor">
-          <option value="all">Todos os valores</option>
-          <option value="baixo">Abaixo de 2x</option>
-          <option value="medio">Entre 2x e 10x</option>
-          <option value="alto">Acima de 10x</option>
-        </select>
-      </div>
-      <div id="grade-historico-premium" class="grade-historico"></div>
+      <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"
+        class="jogo-frame" title="Aviator" allowfullscreen></iframe>
     </section>
 
     <!-- SEÇÃO LIVE -->
@@ -177,43 +88,23 @@
     </section>
   </main>
 
-  <!-- =================== RODAPÉ FIXO =================== -->
+  <!-- =================== RODAPÉ =================== -->
   <footer class="footer-bar">
     <a href="#gerenciamento"><i class="fas fa-cogs"></i><span>Gerenciamento</span></a>
     <a href="#calls"><i class="fas fa-signal"></i><span>Tip Miner</span></a>
     <a href="#jogar" class="btn-jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
-    <a href="#historicoSec"><i class="fas fa-clock"></i><span>Histórico</span></a>
     <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
   </footer>
 
-  <!-- =================== LOGIN MODAL =================== -->
-  <div id="loginModal" class="login-modal" style="display:none;">
-    <div class="login-box">
-      <h2>🔐 Acesso ao GoathBet</h2>
-      <p id="loginMsg">Faça login ou registre-se para continuar</p>
-      <div id="loginForm">
-        <input type="email" id="emailLogin" placeholder="Email">
-        <input type="password" id="senhaLogin" placeholder="Senha">
-        <button onclick="loginUsuario()">Entrar</button>
-        <p><a href="#" onclick="mostrarRegistro()">Criar conta</a></p>
-      </div>
-      <div id="registroForm" style="display:none;">
-        <input type="email" id="emailRegistro" placeholder="Email">
-        <input type="password" id="senhaRegistro" placeholder="Senha">
-        <button onclick="registrarUsuario()">Registrar</button>
-        <p><a href="#" onclick="mostrarLogin()">Já tenho conta</a></p>
-      </div>
-    </div>
+  <!-- =================== BOTÃO FLUTUANTE =================== -->
+  <div id="btnEntrada" class="btn-entrada" title="Próxima Entrada">
+    ⏳<span id="timerText" style="font-size:0.8rem;display:block;">60s</span>
   </div>
-
-  <!-- ===== BOTÃO FLUTUANTE DE ENTRADA ===== -->
-  <div id="btnEntrada" class="btn-entrada" title="Próxima Entrada">⏳</div>
 
   <div id="cardEntrada" class="card-entrada" style="display:none;">
     <div class="card-box">
       <h3>⏳ Próxima Entrada</h3>
-      <p><strong>Horário:</strong> <span id="horaEntrada">--:--</span></p>
-      <p><strong>Proteção:</strong> <span id="protecaoEntrada">2x</span></p>
+      <p><strong>Tempo Restante:</strong> <span id="tempoRestante">60s</span></p>
       <p><strong>Probabilidade:</strong> <span id="probEntrada">--x</span></p>
       <div class="alerta-horario">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
       <div class="alerta-responsavel">⚠️ Jogue com responsabilidade!</div>
@@ -222,98 +113,111 @@
   </div>
 
   <style>
-    .btn-entrada { position: fixed; bottom: 90px; right: 20px; width: 65px; height: 65px; background: linear-gradient(135deg,#ff4da6,#8e44ad); color: #fff; border-radius: 50%; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 20px rgba(255,77,166,0.6); z-index: 2000; animation: pulseBtn 2s infinite; }
-    @keyframes pulseBtn { 0%,100%{box-shadow:0 0 15px #ff4da6;} 50%{box-shadow:0 0 30px #ffb6e6;} }
-    .card-entrada { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 3000; }
-    .card-box { background: #161032; border-radius: 16px; padding: 25px; text-align: center; width: 90%; max-width: 350px; border: 2px solid #ff4da6; color: #fff; box-shadow: 0 0 30px rgba(255,77,166,0.4); animation: fadeIn 0.4s ease-in; }
-    .card-box h3 { font-size: 1.3rem; color: #fff; margin-bottom: 10px; }
-    .card-box p { margin: 8px 0; font-size: 1rem; }
-    .alerta-horario { background: #1e1b2e; color: #fff; padding: 8px; border-radius: 8px; margin-top: 12px; border: 1px solid #555; }
-    .alerta-responsavel { background: #ff4d4d; color: #fff; padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 10px; }
-    .card-box button { background: #ff4d4d; color: #fff; border: none; padding: 10px 25px; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-    .card-box button:hover { background: #ff1a1a; }
-    @keyframes fadeIn { from {opacity:0;transform:translateY(10px);} to {opacity:1;transform:translateY(0);} }
+    .btn-entrada {
+      position: fixed; bottom: 90px; left: 20px;
+      width: 70px; height: 70px; background: linear-gradient(135deg,#ff4da6,#8e44ad);
+      color: #fff; border-radius: 50%; font-size: 1.5rem;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 0 15px rgba(255,77,166,0.6);
+      z-index: 2000; animation: pulseBtn 2s infinite;
+    }
+    @keyframes pulseBtn{0%,100%{box-shadow:0 0 10px #ff4da6;}50%{box-shadow:0 0 25px #ffb6e6;}}
+    .card-entrada {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      display: flex; align-items: center; justify-content: center; z-index: 3000;
+    }
+    .card-box {
+      background:#161032;border-radius:16px;padding:25px;text-align:center;
+      width:90%;max-width:350px;border:2px solid #ff4da6;color:#fff;
+      box-shadow:0 0 30px rgba(255,77,166,0.4);
+      animation: fadeIn .4s ease-in;
+    }
+    .card-box button {
+      background:#ff4d4d;color:#fff;border:none;padding:10px 25px;border-radius:8px;
+      margin-top:15px;cursor:pointer;font-weight:bold;
+    }
+    .alerta-horario{background:#1e1b2e;padding:8px;margin-top:12px;border-radius:8px;}
+    .alerta-responsavel{background:#ff4d4d;color:#fff;padding:10px;margin-top:10px;border-radius:8px;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
   </style>
 
+  <!-- =================== SCRIPT TIMER + FIREBASE =================== -->
   <script type="module">
     import { db } from "./firebase.js";
-    import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // === TIP MINER ===
-    const gridTipMiner = document.getElementById("gridTipMiner");
-    const q = query(collection(db, "tipminer"), orderBy("criadoEm", "desc"), limit(60));
-
-    onSnapshot(q, (snapshot) => {
-      gridTipMiner.innerHTML = "";
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        const cor = d.multiplicador >= 10 ? "rosa" : d.multiplicador >= 5 ? "roxo" : d.multiplicador >= 2 ? "verde" : "cinza";
-        const card = document.createElement("div");
-        card.className = `tip-card ${cor} pulse`;
-        card.innerHTML = `
-          <div>${d.multiplicador.toFixed(2)}x</div>
-          <span>${d.hora}:${String(d.minuto).padStart(2,"0")}</span>
-        `;
-        gridTipMiner.appendChild(card);
-      });
-    });
-
-    // === SINCRONIZA COM SINAIS ===
-    const sinaisQuery = query(collection(db, "sinais"), orderBy("criadoEm", "desc"), limit(1));
-    onSnapshot(sinaisQuery, async (snap) => {
-      snap.forEach(async docSnap => {
-        const d = docSnap.data();
-        await addDoc(collection(db, "tipminer"), {
-          multiplicador: d.multiplicador,
-          hora: d.hora,
-          minuto: d.minuto,
-          criadoEm: serverTimestamp()
-        });
-      });
-    });
-
-    // === BOTÃO FLUTUANTE / CARD ENTRADA ===
     const btnEntrada = document.getElementById("btnEntrada");
     const cardEntrada = document.getElementById("cardEntrada");
-    const horaEntrada = document.getElementById("horaEntrada");
     const probEntrada = document.getElementById("probEntrada");
+    const tempoRestante = document.getElementById("tempoRestante");
+    const timerText = document.getElementById("timerText");
+    const gridTipMiner = document.getElementById("gridTipMiner");
 
-    btnEntrada.addEventListener("click", () => { cardEntrada.style.display = "flex"; });
-    window.fecharCard = () => { cardEntrada.style.display = "none"; };
+    btnEntrada.addEventListener("click", ()=> cardEntrada.style.display = "flex");
+    window.fecharCard = ()=> cardEntrada.style.display = "none";
 
-    const jogarSecao = document.getElementById("jogar");
-    const observer = new MutationObserver(() => {
-      btnEntrada.style.display = jogarSecao.classList.contains("ativo") ? "flex" : "none";
-    });
-    observer.observe(jogarSecao, { attributes: true, attributeFilter: ["class"] });
+    let tempo = 60;
+    let intervalo;
 
-    const q2 = query(collection(db, "sinais"), orderBy("criadoEm", "desc"), limit(1));
-    onSnapshot(q2, (snapshot) => {
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        horaEntrada.innerText = `${String(d.hora).padStart(2,"0")}:${String(d.minuto).padStart(2,"0")}`;
-        probEntrada.innerText = `${d.multiplicador}x`;
+    function iniciarTimer(){
+      intervalo = setInterval(async ()=>{
+        tempo--;
+        tempoRestante.innerText = tempo+"s";
+        timerText.innerText = tempo+"s";
+
+        if(tempo <= 0){
+          clearInterval(intervalo);
+          const multiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
+          probEntrada.innerText = `${multiplicador}x`;
+
+          const agora = new Date();
+          const hora = agora.getHours();
+          const minuto = agora.getMinutes();
+
+          await addDoc(collection(db,"tipminer"),{
+            multiplicador,
+            hora,
+            minuto,
+            criadoEm: serverTimestamp()
+          });
+
+          // Reinicia
+          tempo = 60;
+          iniciarTimer();
+        }
+      },1000);
+    }
+    iniciarTimer();
+
+    // Mostrar TipMiner salvo
+    const q = query(collection(db,"tipminer"),orderBy("criadoEm","desc"),limit(60));
+    onSnapshot(q,(snap)=>{
+      gridTipMiner.innerHTML="";
+      snap.forEach(doc=>{
+        const d=doc.data();
+        const cor = d.multiplicador>=10?"rosa":d.multiplicador>=5?"roxo":d.multiplicador>=2?"verde":"cinza";
+        const card=document.createElement("div");
+        card.className=`tip-card ${cor} pulse`;
+        card.innerHTML=`<div>${d.multiplicador.toFixed(2)}x</div><span>${String(d.hora).padStart(2,"0")}:${String(d.minuto).padStart(2,"0")}</span>`;
+        gridTipMiner.appendChild(card);
       });
     });
   </script>
 
   <script>
-    const links = document.querySelectorAll('.footer-bar a');
-    const secoes = document.querySelectorAll('.secao');
-    links.forEach(link => {
-      link.addEventListener('click', e => {
+    const links=document.querySelectorAll('.footer-bar a');
+    const secoes=document.querySelectorAll('.secao');
+    links.forEach(link=>{
+      link.addEventListener('click',e=>{
         e.preventDefault();
-        secoes.forEach(sec => sec.classList.remove('ativo'));
-        links.forEach(l => l.classList.remove('ativo'));
-        const alvo = link.getAttribute('href').replace('#','');
+        secoes.forEach(sec=>sec.classList.remove('ativo'));
+        links.forEach(l=>l.classList.remove('ativo'));
+        const alvo=link.getAttribute('href').replace('#','');
         document.getElementById(alvo).classList.add('ativo');
         link.classList.add('ativo');
       });
     });
-    document.getElementById("btnLogin").addEventListener("click", e => {
-      e.preventDefault(); document.getElementById("loginModal").style.display = "flex";
-    });
   </script>
-
 </body>
 </html>
