@@ -68,11 +68,40 @@
   <button class="fechar-card" onclick="fecharCard()">Fechar</button>
 </div>
 
-<!-- ===== SCRIPT FIREBASE / TIMER / HISTÓRICO ===== -->
+<!-- ===== MODAL LOGIN / CADASTRO ===== -->
+<div id="modalLogin" class="modal">
+  <div class="modal-content">
+    <span class="fechar" id="fecharLogin">&times;</span>
+    <h2 id="tituloLogin">Entrar</h2>
+
+    <div id="areaLogin">
+      <input type="email" id="emailLogin" placeholder="E-mail">
+      <input type="password" id="senhaLogin" placeholder="Senha">
+      <button id="btnEntrar">Acessar</button>
+      <p class="trocar" id="linkCadastro">Criar nova conta</p>
+    </div>
+
+    <div id="areaCadastro" style="display:none;">
+      <input type="text" id="nomeCadastro" placeholder="Nome completo">
+      <input type="email" id="emailCadastro" placeholder="E-mail">
+      <input type="password" id="senhaCadastro" placeholder="Senha">
+      <button id="btnCadastrar">Cadastrar</button>
+      <p class="trocar" id="linkLogin">Já tenho conta</p>
+    </div>
+
+    <p class="msg" id="msgLogin"></p>
+  </div>
+</div>
+
+<!-- ===== SCRIPT PRINCIPAL ===== -->
 <script type="module">
-import { db } from "./firebase.js";
-import { collection, addDoc, onSnapshot, serverTimestamp } 
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { db, auth } from "./firebase.js";
+import { 
+  collection, addDoc, onSnapshot, serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { 
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 /* ===============================
    NAVEGAÇÃO ENTRE SEÇÕES
@@ -94,7 +123,7 @@ document.getElementById("voltarMenu").onclick = () => {
 };
 
 /* ===============================
-   TIMER PERSISTENTE + CARD INFO
+   TIMER + CARD INFO
 =============================== */
 const btnEntrada = document.getElementById("btnEntrada");
 const cardEntrada = document.getElementById("cardEntrada");
@@ -163,7 +192,7 @@ if (!localStorage.getItem("inicioTimer")) {
 iniciarTimer();
 
 /* ===============================
-   HISTÓRICO — ESTILO TIPMINER GRID
+   HISTÓRICO — TIPMINER GRID
 =============================== */
 const historicoTip = document.getElementById("historicoTip");
 
@@ -184,6 +213,74 @@ onSnapshot(collection(db, "tipminer"), (snapshot) => {
   });
 
   historicoTip.innerHTML = html;
+});
+
+/* ===============================
+   LOGIN / CADASTRO MODAL
+=============================== */
+const modal = document.getElementById("modalLogin");
+const btnLogin = document.getElementById("btnLogin");
+const fechar = document.getElementById("fecharLogin");
+const areaLogin = document.getElementById("areaLogin");
+const areaCadastro = document.getElementById("areaCadastro");
+const titulo = document.getElementById("tituloLogin");
+const msg = document.getElementById("msgLogin");
+
+btnLogin.addEventListener("click", () => {
+  modal.classList.add("ativo");
+  mostrarLogin();
+});
+fechar.addEventListener("click", () => modal.classList.remove("ativo"));
+window.addEventListener("click", e => {
+  if (e.target === modal) modal.classList.remove("ativo");
+});
+
+document.getElementById("linkCadastro").onclick = () => mostrarCadastro();
+document.getElementById("linkLogin").onclick = () => mostrarLogin();
+
+function mostrarCadastro() {
+  areaLogin.style.display = "none";
+  areaCadastro.style.display = "block";
+  titulo.innerText = "Criar Conta";
+  msg.innerText = "";
+}
+function mostrarLogin() {
+  areaLogin.style.display = "block";
+  areaCadastro.style.display = "none";
+  titulo.innerText = "Entrar";
+  msg.innerText = "";
+}
+
+// Login
+document.getElementById("btnEntrar").addEventListener("click", async () => {
+  const email = document.getElementById("emailLogin").value;
+  const senha = document.getElementById("senhaLogin").value;
+  try {
+    await signInWithEmailAndPassword(auth, email, senha);
+    msg.innerText = "✅ Login realizado com sucesso!";
+    msg.style.color = "#4caf50";
+    setTimeout(() => modal.classList.remove("ativo"), 1500);
+  } catch (error) {
+    msg.innerText = "❌ E-mail ou senha incorretos.";
+    msg.style.color = "#ff4d4d";
+  }
+});
+
+// Cadastro
+document.getElementById("btnCadastrar").addEventListener("click", async () => {
+  const nome = document.getElementById("nomeCadastro").value;
+  const email = document.getElementById("emailCadastro").value;
+  const senha = document.getElementById("senhaCadastro").value;
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+    await updateProfile(userCredential.user, { displayName: nome });
+    msg.innerText = "✅ Conta criada com sucesso!";
+    msg.style.color = "#4caf50";
+    setTimeout(() => mostrarLogin(), 1500);
+  } catch (error) {
+    msg.innerText = "❌ Erro: " + error.message;
+    msg.style.color = "#ff4d4d";
+  }
 });
 </script>
 
