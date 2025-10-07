@@ -68,82 +68,159 @@ h1, h2, h3 { font-weight: bold; }
 #home p { color: #f8bbd0; }
 
 /* ==========================
-   BOTÃO FLUTUANTE MINIMALISTA
+   BOTÃO FLUTUANTE
 ========================== */
 #btnEntrada {
   position: fixed;
-  bottom: 90px;
+  bottom: 85px;
   left: 20px;
-  width: 64px;
-  height: 64px;
+  width: 65px;
+  height: 65px;
   border-radius: 50%;
   background: #ff4da6;
   color: #fff;
+  border: none;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
   font-weight: bold;
-  border: none;
+  font-size: 0.9rem;
+  box-shadow: 0 0 20px rgba(255,77,166,0.8);
   cursor: pointer;
-  z-index: 99999;
-  box-shadow: 0 0 25px rgba(255,77,166,0.8);
-  transition: all 0.3s ease;
+  z-index: 9999;
+  transition: 0.3s;
 }
-
+#btnEntrada i {
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
 #btnEntrada:hover {
   transform: scale(1.1);
   box-shadow: 0 0 35px rgba(255,77,166,1);
 }
-
-#btnEntrada i {
-  margin-right: 4px;
-}
-
 #btnEntrada.ativo {
   background: #ff008c;
-  animation: pulseBtn 1.2s infinite alternate;
+  animation: pulseBtn 1.5s infinite alternate;
 }
-
 @keyframes pulseBtn {
-  from { box-shadow: 0 0 20px rgba(255,77,166,0.6); }
-  to   { box-shadow: 0 0 40px rgba(255,77,166,1); }
+  from { box-shadow: 0 0 15px rgba(255,77,166,0.5); }
+  to { box-shadow: 0 0 35px rgba(255,77,166,1); }
 }
 
 /* ==========================
-   HISTÓRICO TIP MINER (CARDS LADO A LADO)
+   CARD DE INFORMAÇÕES
 ========================== */
-#historicoTip {
+#cardEntrada {
+  position: fixed;
+  bottom: 160px;
+  left: 20px;
+  background: #1c0f2e;
+  border: 2px solid #ff4da6;
+  border-radius: 15px;
+  width: 240px;
+  color: #fff;
+  padding: 15px;
+  z-index: 9998;
+  box-shadow: 0 0 25px rgba(255,77,166,0.6);
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+#cardEntrada.ativo { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#cardEntrada h3 {
+  color: #ff4da6;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+#cardEntrada .info {
+  text-align: left;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+#cardEntrada .info p {
   display: flex;
-  overflow-x: auto;
-  gap: 10px;
-  padding: 10px 5px;
-  scroll-behavior: smooth;
+  justify-content: space-between;
+  padding: 2px 0;
 }
-#historicoTip::-webkit-scrollbar {
-  height: 6px;
+#cardEntrada .info b {
+  color: #ff85c1;
 }
-#historicoTip::-webkit-scrollbar-thumb {
-  background: #ff4da6;
-  border-radius: 10px;
+
+.faixa-gray {
+  background: #2b2b3f;
+  color: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  text-align: center;
 }
-.card-historico {
-  min-width: 80px;
-  background: #ff4da6;
-  border-radius: 12px;
-  padding: 10px 6px;
+.faixa-red {
+  background: #ff3b3b;
+  color: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  margin-top: 6px;
+  font-size: 0.75rem;
   text-align: center;
   font-weight: bold;
-  color: #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  flex-shrink: 0;
-  transition: transform 0.2s;
 }
-.card-historico:hover { transform: scale(1.08); }
+#cardEntrada .fechar-card {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #ff4da6;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  width: 100%;
+}
+#cardEntrada .fechar-card:hover {
+  background: #ff74c6;
+}
 
-.card-historico.azul { background: #0077cc; }   /* <2x */
-.card-historico.roxo { background: #7a00cc; }   /* 2–10x */
-.card-historico.rosa { background: #ff4da6; }   /* >10x */
+/* ==========================
+   HISTÓRICO (TIPMINER GRID)
+========================== */
+#historicoTip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+.card-historico {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s, background 0.3s;
+}
+.card-historico:hover {
+  transform: scale(1.05);
+}
+
+/* CORES AUTOMÁTICAS */
+.card-historico.verde { background: #2ecc71; }   /* bons ganhos */
+.card-historico.cinza { background: #3b3b3b; }   /* neutros */
+.card-historico.ouro  { background: #f1c40f; }   /* multiplicadores altos */
 
 /* ==========================
    FULLSCREEN JOGAR
@@ -216,13 +293,13 @@ h1, h2, h3 { font-weight: bold; }
 .footer-bar a.ativo {
   color: #ff4da6;
 }
-.btn-jogar {
-  font-weight: bold;
-  color: #fff !important;
-}
-.btn-jogar i {
-  font-size: 1.6rem !important;
-  color: #ff4da6;
+
+/* ==========================
+   ANIMAÇÕES GERAIS
+========================== */
+@keyframes glowPulse {
+  from { text-shadow: 0 0 15px #fff, 0 0 30px #ff4da6; }
+  to   { text-shadow: 0 0 25px #ff85c1, 0 0 40px #ffb6e6; }
 }
 
 /* ==========================
