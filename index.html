@@ -4,219 +4,303 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tay Aviator 100x</title>
-  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ===== RESET ===== */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#1a0f1f,#2a0939,#1a0f1f);
+      color:#fff;
+      padding-top:60px;
+      padding-bottom:70px;
+    }
+    h1,h2,h3{font-weight:bold}
+
+    /* ===== CABEÇALHO ===== */
+    .topbar{
+      position:fixed;top:0;left:0;width:100%;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:12px 20px;background:#2a0939;
+      border-bottom:2px solid #ff4da6;z-index:1000;
+    }
+    .logo{font-size:1.4rem;font-weight:700;color:#ff4da6}
+    .topbar nav a{
+      margin-left:15px;text-decoration:none;color:#f8bbd0;font-weight:500;
+    }
+    .topbar nav a:hover{color:#ff4da6}
+    .menu-btn{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer}
+
+    /* ===== CONTEÚDO ===== */
+    .conteudo{text-align:center;padding:20px}
+    .secao{display:none}
+    .secao.ativo{display:block}
+
+    /* ===== HOME ===== */
+    .foto-principal{width:180px;margin:20px 0;border-radius:15px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+    #home h1{color:#ff4da6}#home p{color:#f8bbd0}
+
+    /* ===== TIP MINER ===== */
+    .tip-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
+      gap:10px;margin-top:20px;
+    }
+    .tip-card{
+      border-radius:10px;
+      padding:10px 5px;
+      text-align:center;
+      font-weight:bold;
+      font-size:1rem;
+      color:#fff;
+      box-shadow:0 4px 12px rgba(0,0,0,.4);
+    }
+    .tip-card.rosa{background:#cc0066}
+    .tip-card.roxo{background:#7a00cc}
+    .tip-card.verde{background:#00b894}
+    .tip-card.cinza{background:#555}
+    .pulse{animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+    /* ===== BOTÃO FLUTUANTE ===== */
+    #btnEntrada{
+      position:fixed;
+      bottom:90px;
+      left:20px;
+      background:#ff4da6;
+      color:#fff;
+      border:none;
+      padding:15px 20px;
+      border-radius:50px;
+      font-weight:bold;
+      cursor:pointer;
+      box-shadow:0 0 10px rgba(255,77,166,.6);
+      z-index:1001;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    #btnEntrada i{font-size:1.3rem}
+
+    /* ===== CARD FLUTUANTE ===== */
+    #cardEntrada{
+      display:none;
+      position:fixed;
+      bottom:160px;
+      left:20px;
+      background:#1c0f2e;
+      border:2px solid #ff4da6;
+      border-radius:12px;
+      padding:20px;
+      width:280px;
+      z-index:1002;
+      box-shadow:0 0 20px rgba(0,0,0,.5);
+    }
+    #cardEntrada h3{color:#ff4da6;margin-bottom:10px}
+    #cardEntrada p{margin:5px 0}
+    #cardEntrada button{
+      margin-top:10px;width:100%;
+      background:#ff4da6;color:#fff;border:none;
+      padding:10px;border-radius:8px;font-weight:bold;cursor:pointer;
+    }
+
+    /* ===== RODAPÉ ===== */
+    .footer-bar{
+      position:fixed;bottom:0;left:0;width:100%;
+      display:flex;justify-content:space-around;align-items:center;
+      background:#2a0939;border-top:2px solid #ff4da6;
+      padding:8px 0;z-index:1000;
+    }
+    .footer-bar a{
+      flex:1;text-align:center;color:#f8bbd0;
+      text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;
+    }
+    .footer-bar a:hover,.footer-bar a.ativo{color:#ff4da6}
+    .footer-bar a i{font-size:1.2rem}
+
+    /* ===== LOGIN MODAL ===== */
+    .login-modal{
+      position:fixed;inset:0;background:rgba(0,0,0,.85);
+      display:none;align-items:center;justify-content:center;z-index:9999;
+    }
+    .login-box{
+      background:#1c0f2e;padding:25px;border-radius:12px;
+      width:90%;max-width:350px;text-align:center;border:2px solid #ff4da6;
+    }
+    .login-box h2{color:#ff4da6;margin-bottom:15px}
+    .login-box input{
+      display:block;width:100%;margin:8px 0;padding:10px;border:none;border-radius:6px;
+    }
+    .login-box button{
+      margin-top:10px;width:100%;background:#ff4da6;color:#fff;border:none;
+      padding:10px;border-radius:6px;cursor:pointer;font-weight:bold;
+    }
+    .login-box a{color:#ffb6e6;font-size:.9em}
+  </style>
 </head>
 <body>
 
-  <!-- =================== CABEÇALHO =================== -->
+  <!-- ===== CABEÇALHO ===== -->
   <header class="topbar">
     <button class="menu-btn"><i class="fas fa-bars"></i></button>
     <div class="logo">GoathBet</div>
     <nav>
       <a href="planos.html">Planos</a>
-      <a href="#" id="btnLogin" style="display:inline;">Login</a>
+      <a href="#" id="btnLogin">Login</a>
       <a href="#" id="btnLogout" style="display:none;" onclick="logoutUsuario()">Sair</a>
     </nav>
   </header>
 
-  <!-- =================== CONTEÚDO =================== -->
+  <!-- ===== CONTEÚDO ===== -->
   <main class="conteudo">
-
-    <!-- SEÇÃO HOME -->
     <section id="home" class="secao ativo">
       <img src="img/foto.png" alt="Tay Aviator" class="foto-principal">
       <h1>Tay Aviator 100x</h1>
       <p>Entradas inteligentes</p>
     </section>
 
-    <!-- SEÇÃO GERENCIAMENTO -->
-    <section id="gerenciamento" class="secao">
-      <h2>📊 Gestão Inteligente</h2>
-      <div class="resumos-grid">
-        <div class="resumo-card saldo"><h4>💰 Saldo Atual</h4><p id="resumoSaldo">R$ 0,00</p></div>
-        <div class="resumo-card investido"><h4>📩 Investido</h4><p id="resumoInvestido">R$ 0,00</p></div>
-        <div class="resumo-card lucro"><h4>📈 Lucro</h4><p id="resumoLucro">R$ 0,00</p></div>
-        <div class="resumo-card perdas"><h4>📉 Prejuízo</h4><p id="resumoPerdas">R$ 0,00</p></div>
-      </div>
-    </section>
-
-    <!-- SEÇÃO TIP MINER -->
     <section id="calls" class="secao">
-      <h2>Tip Miner 🔥</h2>
-      <p class="descricao-tip">Análises automáticas em tempo real</p>
-      <div id="gridTipMiner" class="grid-tipminer"></div>
+      <h2>💎 Tip Miner</h2>
+      <div class="tip-grid" id="gridTipMiner"></div>
     </section>
 
-    <style>
-      .descricao-tip { text-align:center;color:#bbb;margin-bottom:10px; }
-      .grid-tipminer {
-        display:grid;
-        grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
-        gap:8px;padding:15px;
-      }
-      .tip-card {
-        border-radius:10px;text-align:center;font-weight:bold;
-        color:#fff;padding:10px 5px;display:flex;
-        flex-direction:column;justify-content:center;
-        height:70px;transition:transform .2s;
-      }
-      .tip-card span{font-size:.8rem;color:rgba(255,255,255,.7);}
-      .tip-card:hover{transform:scale(1.05);}
-      .verde{background:#2ecc71;}
-      .roxo{background:#8e44ad;}
-      .rosa{background:#ff4da6;}
-      .cinza{background:#3a3a3a;}
-      .pulse{animation:pulseNew 1s ease-in-out;}
-      @keyframes pulseNew{
-        0%{box-shadow:0 0 0 0 rgba(255,77,166,0.7);}
-        100%{box-shadow:0 0 0 15px rgba(255,77,166,0);}
-      }
-    </style>
-
-    <!-- SEÇÃO JOGAR -->
     <section id="jogar" class="secao">
       <h2>Jogar</h2>
-      <iframe src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"
-        class="jogo-frame" title="Aviator" allowfullscreen></iframe>
+      <iframe 
+        src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"
+        class="jogo-frame"
+        title="Aviator"
+        allowfullscreen
+        style="width:100%;height:calc(100vh - 160px);border:none;border-radius:12px;">
+      </iframe>
     </section>
 
-    <!-- SEÇÃO LIVE -->
     <section id="live" class="secao">
       <h2>Live</h2>
       <p>Transmissões ao vivo e sinais em tempo real.</p>
     </section>
   </main>
 
-  <!-- =================== RODAPÉ =================== -->
+  <!-- ===== RODAPÉ ===== -->
   <footer class="footer-bar">
-    <a href="#gerenciamento"><i class="fas fa-cogs"></i><span>Gerenciamento</span></a>
+    <a href="#home" class="ativo"><i class="fas fa-home"></i><span>Home</span></a>
     <a href="#calls"><i class="fas fa-signal"></i><span>Tip Miner</span></a>
-    <a href="#jogar" class="btn-jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
+    <a href="#jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
     <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
   </footer>
 
-  <!-- =================== BOTÃO FLUTUANTE =================== -->
-  <div id="btnEntrada" class="btn-entrada" title="Próxima Entrada">
-    ⏳<span id="timerText" style="font-size:0.8rem;display:block;">60s</span>
+  <!-- ===== BOTÃO FLUTUANTE ===== -->
+  <button id="btnEntrada"><i class="fas fa-bolt"></i> <span id="timerText">60s</span></button>
+
+  <!-- ===== CARD DE ENTRADA ===== -->
+  <div id="cardEntrada">
+    <h3>🎯 Próxima Entrada</h3>
+    <p><b>Probabilidade:</b> <span id="probEntrada">--</span></p>
+    <p><b>Tempo restante:</b> <span id="tempoRestante">60s</span></p>
+    <button onclick="fecharCard()">Fechar</button>
   </div>
 
-  <div id="cardEntrada" class="card-entrada" style="display:none;">
-    <div class="card-box">
-      <h3>⏳ Próxima Entrada</h3>
-      <p><strong>Tempo Restante:</strong> <span id="tempoRestante">60s</span></p>
-      <p><strong>Probabilidade:</strong> <span id="probEntrada">--x</span></p>
-      <div class="alerta-horario">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
-      <div class="alerta-responsavel">⚠️ Jogue com responsabilidade!</div>
-      <button onclick="fecharCard()">Fechar</button>
+  <!-- ===== LOGIN MODAL ===== -->
+  <div id="loginModal" class="login-modal">
+    <div class="login-box">
+      <h2>🔐 Acesso ao GoathBet</h2>
+      <p id="loginMsg">Faça login ou registre-se para continuar</p>
+      <div id="loginForm">
+        <input type="email" id="emailLogin" placeholder="Email">
+        <input type="password" id="senhaLogin" placeholder="Senha">
+        <button onclick="loginUsuario()">Entrar</button>
+        <p><a href="#" onclick="mostrarRegistro()">Criar conta</a></p>
+      </div>
+      <div id="registroForm" style="display:none;">
+        <input type="email" id="emailRegistro" placeholder="Email">
+        <input type="password" id="senhaRegistro" placeholder="Senha">
+        <button onclick="registrarUsuario()">Registrar</button>
+        <p><a href="#" onclick="mostrarLogin()">Já tenho conta</a></p>
+      </div>
     </div>
   </div>
 
-  <style>
-    .btn-entrada {
-      position: fixed; bottom: 90px; left: 20px;
-      width: 70px; height: 70px; background: linear-gradient(135deg,#ff4da6,#8e44ad);
-      color: #fff; border-radius: 50%; font-size: 1.5rem;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 0 15px rgba(255,77,166,0.6);
-      z-index: 2000; animation: pulseBtn 2s infinite;
-    }
-    @keyframes pulseBtn{0%,100%{box-shadow:0 0 10px #ff4da6;}50%{box-shadow:0 0 25px #ffb6e6;}}
-    .card-entrada {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-      display: flex; align-items: center; justify-content: center; z-index: 3000;
-    }
-    .card-box {
-      background:#161032;border-radius:16px;padding:25px;text-align:center;
-      width:90%;max-width:350px;border:2px solid #ff4da6;color:#fff;
-      box-shadow:0 0 30px rgba(255,77,166,0.4);
-      animation: fadeIn .4s ease-in;
-    }
-    .card-box button {
-      background:#ff4d4d;color:#fff;border:none;padding:10px 25px;border-radius:8px;
-      margin-top:15px;cursor:pointer;font-weight:bold;
-    }
-    .alerta-horario{background:#1e1b2e;padding:8px;margin-top:12px;border-radius:8px;}
-    .alerta-responsavel{background:#ff4d4d;color:#fff;padding:10px;margin-top:10px;border-radius:8px;}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-  </style>
-
-  <!-- =================== SCRIPT TIMER + FIREBASE =================== -->
+  <!-- ===== SCRIPTS ===== -->
   <script type="module">
     import { db } from "./firebase.js";
     import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } 
       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const btnEntrada = document.getElementById("btnEntrada");
-    const cardEntrada = document.getElementById("cardEntrada");
-    const probEntrada = document.getElementById("probEntrada");
-    const tempoRestante = document.getElementById("tempoRestante");
-    const timerText = document.getElementById("timerText");
-    const gridTipMiner = document.getElementById("gridTipMiner");
+    const btnEntrada=document.getElementById("btnEntrada");
+    const cardEntrada=document.getElementById("cardEntrada");
+    const probEntrada=document.getElementById("probEntrada");
+    const tempoRestante=document.getElementById("tempoRestante");
+    const timerText=document.getElementById("timerText");
+    const gridTipMiner=document.getElementById("gridTipMiner");
 
-    btnEntrada.addEventListener("click", ()=> cardEntrada.style.display = "flex");
-    window.fecharCard = ()=> cardEntrada.style.display = "none";
+    btnEntrada.addEventListener("click",()=>cardEntrada.style.display="flex");
+    window.fecharCard=()=>cardEntrada.style.display="none";
 
-    let tempo = 60;
-    let intervalo;
+    let tempoTotal=60,intervalo;
 
-    function iniciarTimer(){
-      intervalo = setInterval(async ()=>{
-        tempo--;
-        tempoRestante.innerText = tempo+"s";
-        timerText.innerText = tempo+"s";
+    function getTempoRestante(){
+      const inicioSalvo=localStorage.getItem("inicioTimer");
+      if(!inicioSalvo)return tempoTotal;
+      const diff=Math.floor((Date.now()-parseInt(inicioSalvo))/1000);
+      const restante=tempoTotal-diff;
+      return restante>0?restante:0;
+    }
 
-        if(tempo <= 0){
+    async function iniciarTimer(){
+      let tempo=getTempoRestante();
+      atualizarUI(tempo);
+      intervalo=setInterval(async()=>{
+        tempo--;atualizarUI(tempo);
+        if(tempo<=0){
           clearInterval(intervalo);
-          const multiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
-          probEntrada.innerText = `${multiplicador}x`;
-
-          const agora = new Date();
-          const hora = agora.getHours();
-          const minuto = agora.getMinutes();
-
-          await addDoc(collection(db,"tipminer"),{
-            multiplicador,
-            hora,
-            minuto,
-            criadoEm: serverTimestamp()
-          });
-
-          // Reinicia
-          tempo = 60;
+          const multiplicador=parseFloat((Math.random()*99+1).toFixed(2));
+          probEntrada.innerText=`${multiplicador}x`;
+          const agora=new Date();
+          const hora=agora.getHours(),minuto=agora.getMinutes();
+          await addDoc(collection(db,"tipminer"),{multiplicador,hora,minuto,criadoEm:serverTimestamp()});
+          localStorage.setItem("inicioTimer",Date.now().toString());
           iniciarTimer();
         }
       },1000);
     }
+    function atualizarUI(tempo){
+      tempoRestante.innerText=tempo+"s";
+      timerText.innerText=tempo+"s";
+    }
+    if(!localStorage.getItem("inicioTimer"))localStorage.setItem("inicioTimer",Date.now().toString());
     iniciarTimer();
 
-    // Mostrar TipMiner salvo
-    const q = query(collection(db,"tipminer"),orderBy("criadoEm","desc"),limit(60));
+    const q=query(collection(db,"tipminer"),orderBy("criadoEm","desc"),limit(60));
     onSnapshot(q,(snap)=>{
       gridTipMiner.innerHTML="";
       snap.forEach(doc=>{
         const d=doc.data();
-        const cor = d.multiplicador>=10?"rosa":d.multiplicador>=5?"roxo":d.multiplicador>=2?"verde":"cinza";
+        const cor=d.multiplicador>=10?"rosa":d.multiplicador>=5?"roxo":d.multiplicador>=2?"verde":"cinza";
         const card=document.createElement("div");
         card.className=`tip-card ${cor} pulse`;
-        card.innerHTML=`<div>${d.multiplicador.toFixed(2)}x</div><span>${String(d.hora).padStart(2,"0")}:${String(d.minuto).padStart(2,"0")}</span>`;
+        card.innerHTML=`<div>${d.multiplicador.toFixed(2)}x</div>
+        <span>${String(d.hora).padStart(2,"0")}:${String(d.minuto).padStart(2,"0")}</span>`;
         gridTipMiner.appendChild(card);
       });
     });
-  </script>
 
-  <script>
-    const links=document.querySelectorAll('.footer-bar a');
-    const secoes=document.querySelectorAll('.secao');
+    // Navegação entre seções
+    const links=document.querySelectorAll(".footer-bar a"),secoes=document.querySelectorAll(".secao");
     links.forEach(link=>{
-      link.addEventListener('click',e=>{
+      link.addEventListener("click",e=>{
         e.preventDefault();
-        secoes.forEach(sec=>sec.classList.remove('ativo'));
-        links.forEach(l=>l.classList.remove('ativo'));
-        const alvo=link.getAttribute('href').replace('#','');
-        document.getElementById(alvo).classList.add('ativo');
-        link.classList.add('ativo');
+        secoes.forEach(sec=>sec.classList.remove("ativo"));
+        links.forEach(l=>l.classList.remove("ativo"));
+        const alvo=link.getAttribute("href").replace("#","");
+        document.getElementById(alvo).classList.add("ativo");
+        link.classList.add("ativo");
       });
+    });
+
+    // Login
+    document.getElementById("btnLogin").addEventListener("click",e=>{
+      e.preventDefault();
+      document.getElementById("loginModal").style.display="flex";
     });
   </script>
 </body>
