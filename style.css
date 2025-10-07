@@ -75,223 +75,88 @@ h1, h2, h3 { font-weight: bold; }
 #home p { color: #f8bbd0; }
 
 /* ==========================
-   CALLS
+   BOTÃO FLUTUANTE UNIFICADO
 ========================== */
-.calls-box {
-  background: #1c0f2e;
-  padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-  text-align: center;
-  max-width: 500px;
-  margin: auto;
-  border: 2px solid #ff4da6;
-}
-.contador {
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-  color: #ffd700;
-  font-weight: bold;
-}
-.multiplicador-card {
-  background: linear-gradient(135deg, #ff4da6, #8e44ad);
-  padding: 20px;
-  border-radius: 12px;
-  margin: 15px auto;
-  box-shadow: 0 0 25px rgba(255,77,166,0.6);
-}
-.multiplicador {
-  font-size: 2.8rem;
-  font-weight: bold;
-  color: #fff;
-  text-shadow: 0 0 15px #fff;
-}
-.multiplicador.ativo {
-  animation: glowPulse 1.5s infinite alternate;
-}
-.info-cards {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 15px 0;
-}
-.info-card {
-  flex: 1;
-  background: #2a0939;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 0.95rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-}
-.protecao { color: #00ffcc; }
-.probabilidade { color: #ffd700; }
-.alerta-bar {
-  margin: 15px 0;
-  padding: 10px;
-  background: linear-gradient(135deg, #ff85c1, #ff4da6);
-  border-radius: 8px;
-  font-weight: bold;
-  animation: pulse 2s infinite;
-}
-.responsabilidade {
-  margin-top: 10px;
-  font-size: 0.9rem;
-  color: #ff4d4d;
-  font-style: italic;
-}
-.historico {
-  margin-top: 20px;
-  text-align: left;
-}
-.historico h3 {
-  font-size: 1rem;
-  margin-bottom: 8px;
-  color: #ffb6e6;
-}
-.historico ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.historico li {
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: #3b0a4e;
-  font-weight: bold;
-  font-size: 0.9rem;
-  color: #fff;
-  transition: all 0.3s ease;
-}
-.historico li.baixo { background: #ff4da6; }
-.historico li.medio { background: #00b894; }
-.historico li.alto { background: #e74c3c; }
-
-/* ==============================
-   Gerenciamento Financeiro
-============================== */
-.resumos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  margin: 15px 0;
-}
-
-.resumo-card {
-  background: #2a0939;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
-  font-weight: bold;
-  color: #fff;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-.resumo-card h4 {
-  font-size: 0.9rem;
-  margin-bottom: 5px;
-  color: #ffb6e6;
-}
-.resumo-card p {
-  font-size: 1.2rem;
-}
-
-.resumo-card.saldo { border-left: 4px solid #ffd700; }
-.resumo-card.investido { border-left: 4px solid #3498db; }
-.resumo-card.lucro { border-left: 4px solid #2ecc71; }
-.resumo-card.perdas { border-left: 4px solid #e74c3c; }
-
-.estatisticas-box,
-.dicas-box {
-  background: #1c0f2e;
-  padding: 15px;
-  border-radius: 10px;
-  margin: 15px 0;
-  border: 1px solid #ff4da6;
-}
-
-.form-gerenciamento {
-  margin: 20px 0;
-  background: #1c0f2e;
-  padding: 15px;
-  border-radius: 10px;
-  border: 1px solid #ff4da6;
-}
-.form-grid {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.form-gerenciamento input,
-.form-gerenciamento select,
-.form-gerenciamento button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  font-family: inherit;
-}
-.form-gerenciamento button {
+#btnEntrada {
+  position: fixed;
+  bottom: 90px;
+  left: 20px;
   background: #ff4da6;
   color: #fff;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(255,77,166,0.6);
+  padding: 12px 20px;
   cursor: pointer;
-  font-weight: bold;
-}
-
-.tabela-wrapper {
-  overflow-x: auto;
-}
-.tabela-historico {
-  width: 100%;
-  border-collapse: collapse;
-  background: #1c0f2e;
-  border-radius: 10px;
+  z-index: 99999;
+  width: 220px;
+  transition: all 0.3s ease;
   overflow: hidden;
 }
-.tabela-historico th, .tabela-historico td {
-  padding: 10px;
+
+#btnEntrada .botao-topo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+#btnEntrada .info-oculta {
+  display: none;
+  margin-top: 10px;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+#btnEntrada.ativo {
+  background: #2a0939;
+  border: 2px solid #ff4da6;
+  width: 250px;
+  height: auto;
+  padding: 15px;
+}
+
+#btnEntrada.ativo .info-oculta {
+  display: block;
+}
+
+.faixa-gray {
+  background: #2b2b3f;
+  color: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  margin-top: 5px;
+  font-size: 0.75rem;
   text-align: center;
 }
-.tabela-historico th {
-  background: #2a0939;
-  color: #ff4da6;
-}
-.tabela-historico tr:nth-child(even) {
-  background: #2a0939;
-}
-/* ==========================
-   HISTÓRICO PREMIUM
-========================== */
-.filtros-historico {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.filtros-historico select {
-  padding: 8px 15px;
-  border-radius: 8px;
-  border: none;
-  background: #2a0939;
+.faixa-red {
+  background: #ff3b3b;
   color: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  text-align: center;
   font-weight: bold;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-  transition: 0.3s;
-}
-.filtros-historico select:hover {
-  background: #3b0a4e;
 }
 
+/* ==========================
+   HISTÓRICO TIP MINER
+========================== */
+#historicoTip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
 #grade-historico-premium {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: 12px;
   margin-top: 15px;
 }
-
 .card-historico {
   border-radius: 10px;
   padding: 12px 8px;
@@ -303,11 +168,10 @@ h1, h2, h3 { font-weight: bold; }
   transition: transform 0.2s;
 }
 .card-historico:hover { transform: scale(1.1); }
-
-/* Cores dos multiplicadores */
 .card-historico.azul { background: #0077cc; }   /* < 2 */
 .card-historico.roxo { background: #7a00cc; }  /* 2 a 10 */
 .card-historico.rosa { background: #cc0066; }  /* > 10 */
+
 /* ==========================
    FULLSCREEN JOGAR
 ========================== */
@@ -315,15 +179,36 @@ h1, h2, h3 { font-weight: bold; }
   padding: 0;
   margin: 0;
 }
-
-#jogar.ativo .jogo-frame {
+.jogar-fullscreen {
   position: fixed;
   top: 0; left: 0;
   width: 100vw;
   height: 100vh;
+  background: #000;
+  z-index: 1005;
+  display: flex;
+  flex-direction: column;
+}
+#voltarMenu {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: rgba(255,77,166,0.9);
+  color: #fff;
   border: none;
-  border-radius: 0;
-  z-index: 999;
+  padding: 10px 16px;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1006;
+  transition: 0.3s;
+}
+#voltarMenu:hover { background: #ff6fcf; }
+.jogo-frame {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 /* ==========================
@@ -386,12 +271,9 @@ h1, h2, h3 { font-weight: bold; }
   .topbar { flex-direction: row; padding: 10px 15px; }
   .logo { font-size: 1.2rem; }
   .conteudo { padding: 10px; }
-  .multiplicador { font-size: 2.2rem; }
-  .info-cards { flex-direction: column; }
   .jogo-frame { height: 400px; }
 }
 @media (max-width: 480px) {
   .footer-bar a span { display: none; }
   .footer-bar a i { font-size: 1.4rem; }
-  .multiplicador { font-size: 2rem; }
 }
