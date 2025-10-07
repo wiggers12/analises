@@ -56,6 +56,88 @@ h1, h2, h3 { font-weight: bold; }
 .secao.ativo { display: block; }
 
 /* ==========================
+   MODAL LOGIN / CADASTRO
+========================== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  align-items: center;
+  justify-content: center;
+}
+.modal.ativo { display: flex; }
+
+.modal-content {
+  background: #1c0f2e;
+  border: 2px solid #ff4da6;
+  border-radius: 15px;
+  padding: 25px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(255,77,166,0.6);
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+.modal-content h2 {
+  margin-bottom: 15px;
+  color: #ff4da6;
+}
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #ff85c1;
+  background: #2b1b3f;
+  color: #fff;
+}
+.modal-content input::placeholder {
+  color: #bbb;
+}
+.modal-content button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  background: #ff4da6;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.modal-content button:hover {
+  background: #ff74c6;
+}
+.modal-content .msg {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+.modal-content .trocar {
+  color: #f8bbd0;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.modal-content .trocar:hover {
+  color: #ff4da6;
+}
+.fechar {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  color: #ff4da6;
+  font-size: 1.6rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+.fechar:hover { color: #fff; }
+
+/* ==========================
    HOME
 ========================== */
 .foto-principal {
