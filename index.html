@@ -54,20 +54,18 @@
   <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
 </footer>
 
-<!-- ===== BOTÃO FLUTUANTE ===== -->
-<button id="btnEntrada"><i class="fas fa-bolt"></i><span id="timerText">60s</span></button>
-
-<!-- ===== CARD DE ENTRADA ===== -->
-<div id="cardEntrada">
-  <h3>Próxima Entrada</h3>
-  <div class="info">
-    <p><b>Horário:</b><span id="horaEntrada">--:--</span></p>
-    <p><b>Proteção:</b><span>2x</span></p>
-    <p><b>Probabilidade:</b><span id="probEntrada">--</span></p>
+<!-- ===== BOTÃO FLUTUANTE UNIFICADO ===== -->
+<div id="btnEntrada" class="btn-expandido">
+  <div class="botao-topo">
+    <i class="fas fa-bolt"></i> <span id="timerText">60s</span>
   </div>
-  <div class="faixa-gray">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
-  <div class="faixa-red">⚠️ Jogue com responsabilidade!</div>
-  <button class="fechar-card" onclick="fecharCard()">Fechar</button>
+  <div class="info-oculta">
+    <p><b>Horário:</b> <span id="horaEntrada">--:--</span></p>
+    <p><b>Proteção:</b> <span>2x</span></p>
+    <p><b>Probabilidade:</b> <span id="probEntrada">--</span></p>
+    <div class="faixa-gray">⏰ Entrar 30 segundos antes e 30 depois</div>
+    <div class="faixa-red">⚠️ Jogue com responsabilidade!</div>
+  </div>
 </div>
 
 <!-- ===== SCRIPT PRINCIPAL ===== -->
@@ -77,7 +75,7 @@ import { collection, addDoc, onSnapshot, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ===============================
-   SEÇÕES DE NAVEGAÇÃO
+   NAVEGAÇÃO ENTRE SEÇÕES
 =============================== */
 const secoes = document.querySelectorAll('.secao');
 function mostrarSecao(id) {
@@ -89,7 +87,7 @@ document.getElementById("btnHome").onclick = () => mostrarSecao("#home");
 document.getElementById("btnCalls").onclick = () => mostrarSecao("#calls");
 document.getElementById("btnJogar").onclick = () => {
   mostrarSecao("#jogar");
-  document.body.requestFullscreen?.(); // entra em tela cheia automática
+  document.body.requestFullscreen?.();
 };
 
 document.getElementById("voltarMenu").onclick = () => {
@@ -101,13 +99,13 @@ document.getElementById("voltarMenu").onclick = () => {
    TIMER PERSISTENTE + FIRESTORE
 =============================== */
 const btnEntrada = document.getElementById("btnEntrada");
-const cardEntrada = document.getElementById("cardEntrada");
 const probEntrada = document.getElementById("probEntrada");
 const horaEntrada = document.getElementById("horaEntrada");
 const timerText = document.getElementById("timerText");
 
-btnEntrada.addEventListener("click", () => cardEntrada.classList.toggle("ativo"));
-window.fecharCard = () => cardEntrada.classList.remove("ativo");
+btnEntrada.addEventListener("click", () => {
+  btnEntrada.classList.toggle("ativo");
+});
 
 let tempoTotal = 60;
 let intervalo = null;
