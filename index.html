@@ -1,237 +1,227 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tay Aviator 100x</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{
-      font-family:'Poppins',sans-serif;
-      background:linear-gradient(135deg,#1a0f1f,#2a0939,#1a0f1f);
-      color:#fff;
-      padding-top:60px;
-      padding-bottom:70px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tay Aviator 100x</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    /* ===== CABEÇALHO ===== */
-    .topbar{
-      position:fixed;top:0;left:0;width:100%;
-      display:flex;justify-content:space-between;align-items:center;
-      padding:12px 20px;background:#2a0939;
-      border-bottom:2px solid #ff4da6;z-index:1000;
-    }
-    .logo{font-size:1.4rem;font-weight:700;color:#ff4da6}
-    .topbar nav a{
-      margin-left:15px;text-decoration:none;color:#f8bbd0;font-weight:500;
-    }
-    .topbar nav a:hover{color:#ff4da6}
-    .menu-btn{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer}
+<style>
+/* ======== BASE ======== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#1a0f1f,#2a0939,#1a0f1f);
+  color:#fff;
+  padding-top:60px;
+  padding-bottom:70px;
+}
 
-    /* ===== CONTEÚDO ===== */
-    .conteudo{text-align:center;padding:20px}
-    .secao{display:none}
-    .secao.ativo{display:block}
-    .foto-principal{width:180px;margin:20px 0;border-radius:15px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
-    #home h1{color:#ff4da6}#home p{color:#f8bbd0}
+/* ======== CABEÇALHO ======== */
+.topbar{
+  position:fixed;top:0;left:0;width:100%;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 20px;
+  background:#2a0939;border-bottom:2px solid #ff4da6;
+  z-index:1000;
+}
+.logo{font-size:1.4rem;font-weight:700;color:#ff4da6}
+.topbar nav a{
+  margin-left:15px;text-decoration:none;color:#f8bbd0;font-weight:500;
+}
+.topbar nav a:hover{color:#ff4da6}
 
-    /* ===== BOTÃO FLUTUANTE ===== */
-    #btnEntrada{
-      position:fixed;
-      bottom:90px;
-      left:20px;
-      background:#ff4da6;
-      color:#fff;
-      border:none;
-      padding:15px 20px;
-      border-radius:50px;
-      font-weight:bold;
-      cursor:pointer;
-      box-shadow:0 0 10px rgba(255,77,166,.6);
-      z-index:1001;
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    #btnEntrada i{font-size:1.3rem}
+/* ======== CONTEÚDO ======== */
+.conteudo{text-align:center;padding:20px}
+.secao{display:none}
+.secao.ativo{display:block}
+.foto-principal{width:180px;margin:20px 0;border-radius:15px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+#home h1{color:#ff4da6}
+#home p{color:#f8bbd0}
 
-    /* ===== CARD FLUTUANTE (CORRIGIDO) ===== */
-    #cardEntrada{
-      display:none;
-      position:fixed;
-      bottom:160px;
-      left:20px;
-      background:#0b0b3d;
-      border-radius:15px;
-      padding:20px;
-      width:300px;
-      box-shadow:0 0 25px rgba(0,0,0,.6);
-      z-index:1002;
-      text-align:center;
-      animation:fadeIn .3s ease;
-    }
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* ======== BOTÃO FLUTUANTE ======== */
+#btnEntrada{
+  position:fixed;
+  bottom:90px;left:20px;
+  background:#ff4da6;
+  color:#fff;border:none;
+  padding:15px 20px;
+  border-radius:50px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(255,77,166,.6);
+  z-index:1001;
+  display:flex;align-items:center;gap:10px;
+}
+#btnEntrada i{font-size:1.3rem}
 
-    #cardEntrada h3{
-      font-size:1.3rem;
-      font-weight:700;
-      color:#fff;
-      margin-bottom:10px;
-    }
-    #cardEntrada h3::before{
-      content:"⏳ ";
-    }
+/* ======== CARD UNIFICADO ======== */
+#cardEntrada{
+  display:none;
+  position:fixed;
+  bottom:160px;left:20px;
+  width:310px;
+  background:#1c0f2e;
+  border:2px solid #ff4da6;
+  border-radius:16px;
+  box-shadow:0 0 25px rgba(0,0,0,.6);
+  padding:20px;
+  text-align:center;
+  z-index:1002;
+  animation:fadeIn .3s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-    .dados-entrada{
-      text-align:left;
-      margin-top:10px;
-    }
-    .dados-entrada p{
-      margin:6px 0;
-      font-size:1rem;
-      display:flex;
-      justify-content:space-between;
-      color:#fff;
-    }
-    .dados-entrada b{color:#ff4da6}
+/* Título */
+#cardEntrada h3{
+  font-size:1.3rem;
+  font-weight:700;
+  margin-bottom:15px;
+}
+#cardEntrada h3::before{content:"⏳ ";}
 
-    .faixa-gray{
-      background:#222;
-      color:#fff;
-      padding:10px;
-      border-radius:8px;
-      margin-top:12px;
-      font-size:0.9rem;
-      text-align:center;
-    }
-    .faixa-red{
-      background:#ff3b3b;
-      color:#fff;
-      font-weight:bold;
-      border-radius:8px;
-      padding:10px;
-      margin-top:10px;
-      font-size:0.9rem;
-      text-align:center;
-    }
-    #cardEntrada button{
-      margin-top:12px;
-      width:100%;
-      background:#ff3b3b;
-      color:#fff;
-      border:none;
-      padding:10px;
-      border-radius:8px;
-      font-weight:bold;
-      cursor:pointer;
-    }
+/* Informações */
+#cardEntrada .info p{
+  font-size:1rem;
+  margin:6px 0;
+  display:flex;
+  justify-content:space-between;
+  padding:0 10px;
+}
+#cardEntrada .info b{color:#ff4da6}
 
-    /* ===== RODAPÉ ===== */
-    .footer-bar{
-      position:fixed;bottom:0;left:0;width:100%;
-      display:flex;justify-content:space-around;align-items:center;
-      background:#2a0939;border-top:2px solid #ff4da6;
-      padding:8px 0;z-index:1000;
-    }
-    .footer-bar a{
-      flex:1;text-align:center;color:#f8bbd0;
-      text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;
-    }
-    .footer-bar a:hover,.footer-bar a.ativo{color:#ff4da6}
-    .footer-bar a i{font-size:1.2rem}
-  </style>
+/* Faixas internas */
+.faixa-gray{
+  background:#2b2b3f;
+  color:#fff;
+  padding:10px;
+  border-radius:8px;
+  margin-top:15px;
+  font-size:0.9rem;
+}
+.faixa-red{
+  background:#ff3b3b;
+  color:#fff;
+  padding:10px;
+  border-radius:8px;
+  margin-top:10px;
+  font-size:0.9rem;
+  font-weight:bold;
+}
+#cardEntrada button{
+  width:100%;
+  margin-top:12px;
+  background:#ff4da6;
+  color:#fff;
+  border:none;
+  padding:10px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* ======== RODAPÉ ======== */
+.footer-bar{
+  position:fixed;bottom:0;left:0;width:100%;
+  display:flex;justify-content:space-around;align-items:center;
+  background:#2a0939;border-top:2px solid #ff4da6;
+  padding:8px 0;z-index:1000;
+}
+.footer-bar a{
+  flex:1;text-align:center;color:#f8bbd0;
+  text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.footer-bar a:hover,.footer-bar a.ativo{color:#ff4da6}
+.footer-bar a i{font-size:1.2rem}
+</style>
 </head>
 <body>
 
-  <header class="topbar">
-    <button class="menu-btn"><i class="fas fa-bars"></i></button>
-    <div class="logo">GoathBet</div>
-    <nav>
-      <a href="planos.html">Planos</a>
-      <a href="#" id="btnLogin">Login</a>
-    </nav>
-  </header>
+<header class="topbar">
+  <div class="logo">GoathBet</div>
+  <nav>
+    <a href="planos.html">Planos</a>
+    <a href="#" id="btnLogin">Login</a>
+  </nav>
+</header>
 
-  <main class="conteudo">
-    <section id="home" class="secao ativo">
-      <img src="img/foto.png" alt="Tay Aviator" class="foto-principal">
-      <h1>Tay Aviator 100x</h1>
-      <p>Entradas inteligentes</p>
-    </section>
-  </main>
+<main class="conteudo">
+  <section id="home" class="secao ativo">
+    <img src="img/foto.png" alt="Tay Aviator" class="foto-principal">
+    <h1>Tay Aviator 100x</h1>
+    <p>Entradas inteligentes</p>
+  </section>
+</main>
 
-  <footer class="footer-bar">
-    <a href="#home" class="ativo"><i class="fas fa-home"></i><span>Home</span></a>
-    <a href="#calls"><i class="fas fa-signal"></i><span>Tip Miner</span></a>
-    <a href="#jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
-    <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
-  </footer>
+<footer class="footer-bar">
+  <a href="#home" class="ativo"><i class="fas fa-home"></i><span>Home</span></a>
+  <a href="#calls"><i class="fas fa-signal"></i><span>Tip Miner</span></a>
+  <a href="#jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
+  <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
+</footer>
 
-  <button id="btnEntrada"><i class="fas fa-bolt"></i> <span id="timerText">60s</span></button>
+<!-- BOTÃO FLUTUANTE -->
+<button id="btnEntrada"><i class="fas fa-bolt"></i><span id="timerText">60s</span></button>
 
-  <!-- CARD AJUSTADO -->
-  <div id="cardEntrada">
-    <h3>Próxima Entrada</h3>
-    <div class="dados-entrada">
-      <p><span><b>Horário:</b></span><span id="horaEntrada">--:--</span></p>
-      <p><span><b>Proteção:</b></span><span>2x</span></p>
-      <p><span><b>Probabilidade:</b></span><span id="probEntrada">--</span></p>
-    </div>
-    <div class="faixa-gray">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
-    <div class="faixa-red">⚠️ Jogue com responsabilidade!</div>
-    <button onclick="fecharCard()">Fechar</button>
+<!-- CARD CORRIGIDO -->
+<div id="cardEntrada">
+  <h3>Próxima Entrada</h3>
+  <div class="info">
+    <p><b>Horário:</b><span id="horaEntrada">--:--</span></p>
+    <p><b>Proteção:</b><span>2x</span></p>
+    <p><b>Probabilidade:</b><span id="probEntrada">--</span></p>
   </div>
+  <div class="faixa-gray">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
+  <div class="faixa-red">⚠️ Jogue com responsabilidade!</div>
+  <button onclick="fecharCard()">Fechar</button>
+</div>
 
-  <script type="module">
-    import { db } from "./firebase.js";
-    import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<script type="module">
+import { db } from "./firebase.js";
+import { collection, addDoc, serverTimestamp } 
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const btnEntrada=document.getElementById("btnEntrada");
-    const cardEntrada=document.getElementById("cardEntrada");
-    const probEntrada=document.getElementById("probEntrada");
-    const horaEntrada=document.getElementById("horaEntrada");
-    const tempoRestante=document.getElementById("timerText");
+const btnEntrada=document.getElementById("btnEntrada");
+const cardEntrada=document.getElementById("cardEntrada");
+const probEntrada=document.getElementById("probEntrada");
+const horaEntrada=document.getElementById("horaEntrada");
+const timerText=document.getElementById("timerText");
 
-    btnEntrada.addEventListener("click",()=>cardEntrada.style.display="flex");
-    window.fecharCard=()=>cardEntrada.style.display="none";
+btnEntrada.addEventListener("click",()=>cardEntrada.style.display="block");
+window.fecharCard=()=>cardEntrada.style.display="none";
 
-    let tempoTotal=60,intervalo;
-    function getTempoRestante(){
-      const inicioSalvo=localStorage.getItem("inicioTimer");
-      if(!inicioSalvo)return tempoTotal;
-      const diff=Math.floor((Date.now()-parseInt(inicioSalvo))/1000);
-      const restante=tempoTotal-diff;
-      return restante>0?restante:0;
+let tempoTotal=60,intervalo;
+function getTempoRestante(){
+  const inicioSalvo=localStorage.getItem("inicioTimer");
+  if(!inicioSalvo)return tempoTotal;
+  const diff=Math.floor((Date.now()-parseInt(inicioSalvo))/1000);
+  const restante=tempoTotal-diff;
+  return restante>0?restante:0;
+}
+
+async function iniciarTimer(){
+  let tempo=getTempoRestante();
+  atualizarUI(tempo);
+  intervalo=setInterval(async()=>{
+    tempo--;atualizarUI(tempo);
+    if(tempo<=0){
+      clearInterval(intervalo);
+      const multiplicador=parseFloat((Math.random()*99+1).toFixed(2));
+      const agora=new Date();
+      const hora=String(agora.getHours()).padStart(2,"0");
+      const minuto=String(agora.getMinutes()).padStart(2,"0");
+      horaEntrada.innerText=`${hora}:${minuto}`;
+      probEntrada.innerText=`${multiplicador}x`;
+      await addDoc(collection(db,"tipminer"),{multiplicador,hora,minuto,criadoEm:serverTimestamp()});
+      localStorage.setItem("inicioTimer",Date.now().toString());
+      iniciarTimer();
     }
+  },1000);
+}
+function atualizarUI(tempo){timerText.innerText=tempo+"s";}
+if(!localStorage.getItem("inicioTimer"))localStorage.setItem("inicioTimer",Date.now().toString());
+iniciarTimer();
+</script>
 
-    async function iniciarTimer(){
-      let tempo=getTempoRestante();
-      atualizarUI(tempo);
-      intervalo=setInterval(async()=>{
-        tempo--;atualizarUI(tempo);
-        if(tempo<=0){
-          clearInterval(intervalo);
-          const multiplicador=parseFloat((Math.random()*99+1).toFixed(2));
-          const agora=new Date();
-          const hora=String(agora.getHours()).padStart(2,"0");
-          const minuto=String(agora.getMinutes()).padStart(2,"0");
-          horaEntrada.innerText=`${hora}:${minuto}`;
-          probEntrada.innerText=`${multiplicador}x`;
-          await addDoc(collection(db,"tipminer"),{multiplicador,hora,minuto,criadoEm:serverTimestamp()});
-          localStorage.setItem("inicioTimer",Date.now().toString());
-          iniciarTimer();
-        }
-      },1000);
-    }
-
-    function atualizarUI(tempo){
-      tempoRestante.innerText=tempo+"s";
-    }
-
-    if(!localStorage.getItem("inicioTimer"))localStorage.setItem("inicioTimer",Date.now().toString());
-    iniciarTimer();
-  </script>
 </body>
 </html>
