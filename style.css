@@ -11,8 +11,8 @@ body {
   background: linear-gradient(135deg, #1a0f1f, #2a0939, #1a0f1f);
   color: #fff;
   line-height: 1.6;
-  padding-top: 60px;   /* espaço para cabeçalho fixo */
-  padding-bottom: 70px;/* espaço para rodapé fixo */
+  padding-top: 60px;
+  padding-bottom: 70px;
 }
 h1, h2, h3 { font-weight: bold; }
 
@@ -44,13 +44,6 @@ h1, h2, h3 { font-weight: bold; }
   transition: 0.3s;
 }
 .topbar nav a:hover { color: #ff4da6; }
-.menu-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.3rem;
-  cursor: pointer;
-}
 
 /* ==========================
    CONTEÚDO CENTRAL
@@ -75,102 +68,82 @@ h1, h2, h3 { font-weight: bold; }
 #home p { color: #f8bbd0; }
 
 /* ==========================
-   BOTÃO FLUTUANTE UNIFICADO
+   BOTÃO FLUTUANTE MINIMALISTA
 ========================== */
 #btnEntrada {
   position: fixed;
   bottom: 90px;
   left: 20px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
   background: #ff4da6;
   color: #fff;
-  border: none;
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(255,77,166,0.6);
-  padding: 12px 20px;
-  cursor: pointer;
-  z-index: 99999;
-  width: 220px;
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-#btnEntrada .botao-topo {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-weight: bold;
   font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  z-index: 99999;
+  box-shadow: 0 0 25px rgba(255,77,166,0.8);
+  transition: all 0.3s ease;
 }
 
-#btnEntrada .info-oculta {
-  display: none;
-  margin-top: 10px;
-  font-size: 0.85rem;
-  text-align: left;
+#btnEntrada:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 35px rgba(255,77,166,1);
+}
+
+#btnEntrada i {
+  margin-right: 4px;
 }
 
 #btnEntrada.ativo {
-  background: #2a0939;
-  border: 2px solid #ff4da6;
-  width: 250px;
-  height: auto;
-  padding: 15px;
+  background: #ff008c;
+  animation: pulseBtn 1.2s infinite alternate;
 }
 
-#btnEntrada.ativo .info-oculta {
-  display: block;
-}
-
-.faixa-gray {
-  background: #2b2b3f;
-  color: #fff;
-  padding: 6px;
-  border-radius: 6px;
-  margin-top: 5px;
-  font-size: 0.75rem;
-  text-align: center;
-}
-.faixa-red {
-  background: #ff3b3b;
-  color: #fff;
-  padding: 6px;
-  border-radius: 6px;
-  margin-top: 5px;
-  font-size: 0.75rem;
-  text-align: center;
-  font-weight: bold;
+@keyframes pulseBtn {
+  from { box-shadow: 0 0 20px rgba(255,77,166,0.6); }
+  to   { box-shadow: 0 0 40px rgba(255,77,166,1); }
 }
 
 /* ==========================
-   HISTÓRICO TIP MINER
+   HISTÓRICO TIP MINER (CARDS LADO A LADO)
 ========================== */
 #historicoTip {
   display: flex;
-  flex-wrap: wrap;
+  overflow-x: auto;
   gap: 10px;
-  justify-content: center;
+  padding: 10px 5px;
+  scroll-behavior: smooth;
 }
-#grade-historico-premium {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 12px;
-  margin-top: 15px;
+#historicoTip::-webkit-scrollbar {
+  height: 6px;
+}
+#historicoTip::-webkit-scrollbar-thumb {
+  background: #ff4da6;
+  border-radius: 10px;
 }
 .card-historico {
-  border-radius: 10px;
-  padding: 12px 8px;
+  min-width: 80px;
+  background: #ff4da6;
+  border-radius: 12px;
+  padding: 10px 6px;
   text-align: center;
   font-weight: bold;
-  font-size: 1rem;
   color: #fff;
-  box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  flex-shrink: 0;
   transition: transform 0.2s;
 }
-.card-historico:hover { transform: scale(1.1); }
-.card-historico.azul { background: #0077cc; }   /* < 2 */
-.card-historico.roxo { background: #7a00cc; }  /* 2 a 10 */
-.card-historico.rosa { background: #cc0066; }  /* > 10 */
+.card-historico:hover { transform: scale(1.08); }
+
+.card-historico.azul { background: #0077cc; }   /* <2x */
+.card-historico.roxo { background: #7a00cc; }   /* 2–10x */
+.card-historico.rosa { background: #ff4da6; }   /* >10x */
 
 /* ==========================
    FULLSCREEN JOGAR
@@ -250,18 +223,6 @@ h1, h2, h3 { font-weight: bold; }
 .btn-jogar i {
   font-size: 1.6rem !important;
   color: #ff4da6;
-}
-
-/* ==========================
-   ANIMAÇÕES
-========================== */
-@keyframes glowPulse {
-  from { text-shadow: 0 0 15px #fff, 0 0 30px #ff4da6; }
-  to   { text-shadow: 0 0 25px #ff85c1, 0 0 40px #ffb6e6; }
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
 }
 
 /* ==========================
