@@ -14,7 +14,6 @@
       padding-top:60px;
       padding-bottom:70px;
     }
-    h1,h2,h3{font-weight:bold}
 
     /* ===== CABEÇALHO ===== */
     .topbar{
@@ -37,28 +36,6 @@
     .foto-principal{width:180px;margin:20px 0;border-radius:15px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
     #home h1{color:#ff4da6}#home p{color:#f8bbd0}
 
-    /* ===== TIP MINER ===== */
-    .tip-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
-      gap:10px;margin-top:20px;
-    }
-    .tip-card{
-      border-radius:10px;
-      padding:10px 5px;
-      text-align:center;
-      font-weight:bold;
-      font-size:1rem;
-      color:#fff;
-      box-shadow:0 4px 12px rgba(0,0,0,.4);
-    }
-    .tip-card.rosa{background:#cc0066}
-    .tip-card.roxo{background:#7a00cc}
-    .tip-card.verde{background:#00b894}
-    .tip-card.cinza{background:#555}
-    .pulse{animation:pulse 2s infinite}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-
     /* ===== BOTÃO FLUTUANTE ===== */
     #btnEntrada{
       position:fixed;
@@ -79,7 +56,7 @@
     }
     #btnEntrada i{font-size:1.3rem}
 
-    /* ===== CARD FLUTUANTE (idêntico à imagem) ===== */
+    /* ===== CARD FLUTUANTE (CORRIGIDO) ===== */
     #cardEntrada{
       display:none;
       position:fixed;
@@ -105,13 +82,20 @@
     #cardEntrada h3::before{
       content:"⏳ ";
     }
-    #cardEntrada p{
-      font-size:1rem;
+
+    .dados-entrada{
+      text-align:left;
+      margin-top:10px;
+    }
+    .dados-entrada p{
       margin:6px 0;
+      font-size:1rem;
+      display:flex;
+      justify-content:space-between;
+      color:#fff;
     }
-    #cardEntrada b{
-      color:#ff4da6;
-    }
+    .dados-entrada b{color:#ff4da6}
+
     .faixa-gray{
       background:#222;
       color:#fff;
@@ -119,6 +103,7 @@
       border-radius:8px;
       margin-top:12px;
       font-size:0.9rem;
+      text-align:center;
     }
     .faixa-red{
       background:#ff3b3b;
@@ -128,6 +113,7 @@
       padding:10px;
       margin-top:10px;
       font-size:0.9rem;
+      text-align:center;
     }
     #cardEntrada button{
       margin-top:12px;
@@ -154,71 +140,27 @@
     }
     .footer-bar a:hover,.footer-bar a.ativo{color:#ff4da6}
     .footer-bar a i{font-size:1.2rem}
-
-    /* ===== LOGIN MODAL ===== */
-    .login-modal{
-      position:fixed;inset:0;background:rgba(0,0,0,.85);
-      display:none;align-items:center;justify-content:center;z-index:9999;
-    }
-    .login-box{
-      background:#1c0f2e;padding:25px;border-radius:12px;
-      width:90%;max-width:350px;text-align:center;border:2px solid #ff4da6;
-    }
-    .login-box h2{color:#ff4da6;margin-bottom:15px}
-    .login-box input{
-      display:block;width:100%;margin:8px 0;padding:10px;border:none;border-radius:6px;
-    }
-    .login-box button{
-      margin-top:10px;width:100%;background:#ff4da6;color:#fff;border:none;
-      padding:10px;border-radius:6px;cursor:pointer;font-weight:bold;
-    }
-    .login-box a{color:#ffb6e6;font-size:.9em}
   </style>
 </head>
 <body>
 
-  <!-- ===== CABEÇALHO ===== -->
   <header class="topbar">
     <button class="menu-btn"><i class="fas fa-bars"></i></button>
     <div class="logo">GoathBet</div>
     <nav>
       <a href="planos.html">Planos</a>
       <a href="#" id="btnLogin">Login</a>
-      <a href="#" id="btnLogout" style="display:none;" onclick="logoutUsuario()">Sair</a>
     </nav>
   </header>
 
-  <!-- ===== CONTEÚDO ===== -->
   <main class="conteudo">
     <section id="home" class="secao ativo">
       <img src="img/foto.png" alt="Tay Aviator" class="foto-principal">
       <h1>Tay Aviator 100x</h1>
       <p>Entradas inteligentes</p>
     </section>
-
-    <section id="calls" class="secao">
-      <h2>💎 Tip Miner</h2>
-      <div class="tip-grid" id="gridTipMiner"></div>
-    </section>
-
-    <section id="jogar" class="secao">
-      <h2>Jogar</h2>
-      <iframe 
-        src="https://www.goathbet.com/game/spribe-aviator?r=zktgmbwl"
-        class="jogo-frame"
-        title="Aviator"
-        allowfullscreen
-        style="width:100%;height:calc(100vh - 160px);border:none;border-radius:12px;">
-      </iframe>
-    </section>
-
-    <section id="live" class="secao">
-      <h2>Live</h2>
-      <p>Transmissões ao vivo e sinais em tempo real.</p>
-    </section>
   </main>
 
-  <!-- ===== RODAPÉ ===== -->
   <footer class="footer-bar">
     <a href="#home" class="ativo"><i class="fas fa-home"></i><span>Home</span></a>
     <a href="#calls"><i class="fas fa-signal"></i><span>Tip Miner</span></a>
@@ -226,41 +168,21 @@
     <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
   </footer>
 
-  <!-- ===== BOTÃO FLUTUANTE ===== -->
   <button id="btnEntrada"><i class="fas fa-bolt"></i> <span id="timerText">60s</span></button>
 
-  <!-- ===== CARD DE ENTRADA (atualizado igual à imagem) ===== -->
+  <!-- CARD AJUSTADO -->
   <div id="cardEntrada">
     <h3>Próxima Entrada</h3>
-    <p><b>Horário:</b> <span id="horaEntrada">--:--</span></p>
-    <p><b>Proteção:</b> <span id="protecaoEntrada">2x</span></p>
-    <p><b>Probabilidade:</b> <span id="probEntrada">--</span></p>
+    <div class="dados-entrada">
+      <p><span><b>Horário:</b></span><span id="horaEntrada">--:--</span></p>
+      <p><span><b>Proteção:</b></span><span>2x</span></p>
+      <p><span><b>Probabilidade:</b></span><span id="probEntrada">--</span></p>
+    </div>
     <div class="faixa-gray">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
     <div class="faixa-red">⚠️ Jogue com responsabilidade!</div>
     <button onclick="fecharCard()">Fechar</button>
   </div>
 
-  <!-- ===== LOGIN MODAL ===== -->
-  <div id="loginModal" class="login-modal">
-    <div class="login-box">
-      <h2>🔐 Acesso ao GoathBet</h2>
-      <p id="loginMsg">Faça login ou registre-se para continuar</p>
-      <div id="loginForm">
-        <input type="email" id="emailLogin" placeholder="Email">
-        <input type="password" id="senhaLogin" placeholder="Senha">
-        <button onclick="loginUsuario()">Entrar</button>
-        <p><a href="#" onclick="mostrarRegistro()">Criar conta</a></p>
-      </div>
-      <div id="registroForm" style="display:none;">
-        <input type="email" id="emailRegistro" placeholder="Email">
-        <input type="password" id="senhaRegistro" placeholder="Senha">
-        <button onclick="registrarUsuario()">Registrar</button>
-        <p><a href="#" onclick="mostrarLogin()">Já tenho conta</a></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== SCRIPTS ===== -->
   <script type="module">
     import { db } from "./firebase.js";
     import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } 
@@ -271,13 +193,11 @@
     const probEntrada=document.getElementById("probEntrada");
     const horaEntrada=document.getElementById("horaEntrada");
     const tempoRestante=document.getElementById("timerText");
-    const gridTipMiner=document.getElementById("gridTipMiner");
 
     btnEntrada.addEventListener("click",()=>cardEntrada.style.display="flex");
     window.fecharCard=()=>cardEntrada.style.display="none";
 
     let tempoTotal=60,intervalo;
-
     function getTempoRestante(){
       const inicioSalvo=localStorage.getItem("inicioTimer");
       if(!inicioSalvo)return tempoTotal;
@@ -312,37 +232,6 @@
 
     if(!localStorage.getItem("inicioTimer"))localStorage.setItem("inicioTimer",Date.now().toString());
     iniciarTimer();
-
-    const q=query(collection(db,"tipminer"),orderBy("criadoEm","desc"),limit(60));
-    onSnapshot(q,(snap)=>{
-      gridTipMiner.innerHTML="";
-      snap.forEach(doc=>{
-        const d=doc.data();
-        const cor=d.multiplicador>=10?"rosa":d.multiplicador>=5?"roxo":d.multiplicador>=2?"verde":"cinza";
-        const card=document.createElement("div");
-        card.className=`tip-card ${cor} pulse`;
-        card.innerHTML=`<div>${d.multiplicador.toFixed(2)}x</div>
-        <span>${String(d.hora).padStart(2,"0")}:${String(d.minuto).padStart(2,"0")}</span>`;
-        gridTipMiner.appendChild(card);
-      });
-    });
-
-    const links=document.querySelectorAll(".footer-bar a"),secoes=document.querySelectorAll(".secao");
-    links.forEach(link=>{
-      link.addEventListener("click",e=>{
-        e.preventDefault();
-        secoes.forEach(sec=>sec.classList.remove("ativo"));
-        links.forEach(l=>l.classList.remove("ativo"));
-        const alvo=link.getAttribute("href").replace("#","");
-        document.getElementById(alvo).classList.add("ativo");
-        link.classList.add("ativo");
-      });
-    });
-
-    document.getElementById("btnLogin").addEventListener("click",e=>{
-      e.preventDefault();
-      document.getElementById("loginModal").style.display="flex";
-    });
   </script>
 </body>
 </html>
