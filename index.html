@@ -4,166 +4,60 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tay Aviator 100x</title>
+<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<style>
-/* ======== BASE ======== */
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:'Poppins',sans-serif;
-  background:linear-gradient(135deg,#1a0f1f,#2a0939,#1a0f1f);
-  color:#fff;
-  padding-top:60px;
-  padding-bottom:70px;
-}
-
-/* ======== CABEÇALHO ======== */
-.topbar{
-  position:fixed;top:0;left:0;width:100%;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 20px;
-  background:#2a0939;border-bottom:2px solid #ff4da6;
-  z-index:1000;
-}
-.logo{font-size:1.4rem;font-weight:700;color:#ff4da6}
-.topbar nav a{
-  margin-left:15px;text-decoration:none;color:#f8bbd0;font-weight:500;
-}
-.topbar nav a:hover{color:#ff4da6}
-
-/* ======== CONTEÚDO ======== */
-.conteudo{text-align:center;padding:20px}
-.secao{display:none}
-.secao.ativo{display:block}
-.foto-principal{width:180px;margin:20px 0;border-radius:15px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
-#home h1{color:#ff4da6}
-#home p{color:#f8bbd0}
-
-/* ======== BOTÃO FLUTUANTE ======== */
-#btnEntrada{
-  position:fixed;
-  bottom:90px;left:20px;
-  background:#ff4da6;
-  color:#fff;border:none;
-  padding:15px 20px;
-  border-radius:50px;
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 0 10px rgba(255,77,166,.6);
-  z-index:1001;
-  display:flex;align-items:center;gap:10px;
-}
-#btnEntrada i{font-size:1.3rem}
-
-/* ======== CARD UNIFICADO ======== */
-#cardEntrada{
-  display:none;
-  position:fixed;
-  bottom:160px;left:20px;
-  width:310px;
-  background:#1c0f2e;
-  border:2px solid #ff4da6;
-  border-radius:16px;
-  box-shadow:0 0 25px rgba(0,0,0,.6);
-  padding:20px;
-  text-align:center;
-  z-index:1002;
-  animation:fadeIn .3s ease;
-}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* Título */
-#cardEntrada h3{
-  font-size:1.3rem;
-  font-weight:700;
-  margin-bottom:15px;
-}
-#cardEntrada h3::before{content:"⏳ ";}
-
-/* Informações */
-#cardEntrada .info p{
-  font-size:1rem;
-  margin:6px 0;
-  display:flex;
-  justify-content:space-between;
-  padding:0 10px;
-}
-#cardEntrada .info b{color:#ff4da6}
-
-/* Faixas internas */
-.faixa-gray{
-  background:#2b2b3f;
-  color:#fff;
-  padding:10px;
-  border-radius:8px;
-  margin-top:15px;
-  font-size:0.9rem;
-}
-.faixa-red{
-  background:#ff3b3b;
-  color:#fff;
-  padding:10px;
-  border-radius:8px;
-  margin-top:10px;
-  font-size:0.9rem;
-  font-weight:bold;
-}
-#cardEntrada button{
-  width:100%;
-  margin-top:12px;
-  background:#ff4da6;
-  color:#fff;
-  border:none;
-  padding:10px;
-  border-radius:8px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-/* ======== RODAPÉ ======== */
-.footer-bar{
-  position:fixed;bottom:0;left:0;width:100%;
-  display:flex;justify-content:space-around;align-items:center;
-  background:#2a0939;border-top:2px solid #ff4da6;
-  padding:8px 0;z-index:1000;
-}
-.footer-bar a{
-  flex:1;text-align:center;color:#f8bbd0;
-  text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;
-}
-.footer-bar a:hover,.footer-bar a.ativo{color:#ff4da6}
-.footer-bar a i{font-size:1.2rem}
-</style>
 </head>
 <body>
 
+<!-- ===== CABEÇALHO ===== -->
 <header class="topbar">
   <div class="logo">GoathBet</div>
   <nav>
-    <a href="planos.html">Planos</a>
+    <a href="#" id="linkPlanos">Planos</a>
     <a href="#" id="btnLogin">Login</a>
   </nav>
 </header>
 
+<!-- ===== CONTEÚDO ===== -->
 <main class="conteudo">
+
+  <!-- HOME -->
   <section id="home" class="secao ativo">
     <img src="img/foto.png" alt="Tay Aviator" class="foto-principal">
     <h1>Tay Aviator 100x</h1>
-    <p>Entradas inteligentes</p>
+    <p>Entradas inteligentes com proteção e probabilidade real.</p>
   </section>
+
+  <!-- TIP MINER -->
+  <section id="calls" class="secao">
+    <div class="calls-box">
+      <h2>📊 Histórico Tip Miner</h2>
+      <div id="historicoTip"></div>
+    </div>
+  </section>
+
+  <!-- JOGAR -->
+  <section id="jogar" class="secao">
+    <div class="jogar-fullscreen">
+      <button id="voltarMenu"><i class="fas fa-arrow-left"></i> Voltar ao Menu</button>
+      <iframe id="iframeJogo" src="https://tayaviator100x.com.br/jogo" class="jogo-frame"></iframe>
+    </div>
+  </section>
+
 </main>
 
+<!-- ===== RODAPÉ ===== -->
 <footer class="footer-bar">
-  <a href="#home" class="ativo"><i class="fas fa-home"></i><span>Home</span></a>
-  <a href="#calls"><i class="fas fa-signal"></i><span>Tip Miner</span></a>
-  <a href="#jogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
+  <a href="#home" id="btnHome" class="ativo"><i class="fas fa-home"></i><span>Home</span></a>
+  <a href="#calls" id="btnCalls"><i class="fas fa-signal"></i><span>Tip Miner</span></a>
+  <a href="#jogar" id="btnJogar"><i class="fas fa-plane"></i><span>Jogar</span></a>
   <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
 </footer>
 
-<!-- BOTÃO FLUTUANTE -->
+<!-- ===== BOTÃO FLUTUANTE ===== -->
 <button id="btnEntrada"><i class="fas fa-bolt"></i><span id="timerText">60s</span></button>
 
-<!-- CARD CORRIGIDO -->
+<!-- ===== CARD DE ENTRADA ===== -->
 <div id="cardEntrada">
   <h3>Próxima Entrada</h3>
   <div class="info">
@@ -173,54 +67,127 @@ body{
   </div>
   <div class="faixa-gray">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
   <div class="faixa-red">⚠️ Jogue com responsabilidade!</div>
-  <button onclick="fecharCard()">Fechar</button>
+  <button class="fechar-card" onclick="fecharCard()">Fechar</button>
 </div>
 
+<!-- ===== SCRIPT PRINCIPAL ===== -->
 <script type="module">
 import { db } from "./firebase.js";
-import { collection, addDoc, serverTimestamp } 
+import { collection, addDoc, onSnapshot, serverTimestamp } 
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const btnEntrada=document.getElementById("btnEntrada");
-const cardEntrada=document.getElementById("cardEntrada");
-const probEntrada=document.getElementById("probEntrada");
-const horaEntrada=document.getElementById("horaEntrada");
-const timerText=document.getElementById("timerText");
-
-btnEntrada.addEventListener("click",()=>cardEntrada.style.display="block");
-window.fecharCard=()=>cardEntrada.style.display="none";
-
-let tempoTotal=60,intervalo;
-function getTempoRestante(){
-  const inicioSalvo=localStorage.getItem("inicioTimer");
-  if(!inicioSalvo)return tempoTotal;
-  const diff=Math.floor((Date.now()-parseInt(inicioSalvo))/1000);
-  const restante=tempoTotal-diff;
-  return restante>0?restante:0;
+/* ===============================
+   SEÇÕES DE NAVEGAÇÃO
+=============================== */
+const secoes = document.querySelectorAll('.secao');
+function mostrarSecao(id) {
+  secoes.forEach(s => s.classList.remove('ativo'));
+  document.querySelector(id).classList.add('ativo');
 }
 
-async function iniciarTimer(){
-  let tempo=getTempoRestante();
+document.getElementById("btnHome").onclick = () => mostrarSecao("#home");
+document.getElementById("btnCalls").onclick = () => mostrarSecao("#calls");
+document.getElementById("btnJogar").onclick = () => {
+  mostrarSecao("#jogar");
+  document.body.requestFullscreen?.(); // entra em tela cheia automática
+};
+
+document.getElementById("voltarMenu").onclick = () => {
+  document.exitFullscreen?.();
+  mostrarSecao("#home");
+};
+
+/* ===============================
+   TIMER PERSISTENTE + FIRESTORE
+=============================== */
+const btnEntrada = document.getElementById("btnEntrada");
+const cardEntrada = document.getElementById("cardEntrada");
+const probEntrada = document.getElementById("probEntrada");
+const horaEntrada = document.getElementById("horaEntrada");
+const timerText = document.getElementById("timerText");
+
+btnEntrada.addEventListener("click", () => cardEntrada.classList.toggle("ativo"));
+window.fecharCard = () => cardEntrada.classList.remove("ativo");
+
+let tempoTotal = 60;
+let intervalo = null;
+
+function getTempoRestante() {
+  const inicioSalvo = localStorage.getItem("inicioTimer");
+  if (!inicioSalvo) {
+    localStorage.setItem("inicioTimer", Date.now().toString());
+    return tempoTotal;
+  }
+  const diff = Math.floor((Date.now() - parseInt(inicioSalvo)) / 1000);
+  const restante = tempoTotal - diff;
+  return restante > 0 ? restante : 0;
+}
+
+function atualizarUI(tempo) {
+  timerText.innerText = tempo + "s";
+}
+
+async function iniciarTimer() {
+  let tempo = getTempoRestante();
   atualizarUI(tempo);
-  intervalo=setInterval(async()=>{
-    tempo--;atualizarUI(tempo);
-    if(tempo<=0){
+
+  if (intervalo) clearInterval(intervalo);
+  intervalo = setInterval(async () => {
+    tempo--;
+    atualizarUI(tempo);
+
+    if (tempo <= 0) {
       clearInterval(intervalo);
-      const multiplicador=parseFloat((Math.random()*99+1).toFixed(2));
-      const agora=new Date();
-      const hora=String(agora.getHours()).padStart(2,"0");
-      const minuto=String(agora.getMinutes()).padStart(2,"0");
-      horaEntrada.innerText=`${hora}:${minuto}`;
-      probEntrada.innerText=`${multiplicador}x`;
-      await addDoc(collection(db,"tipminer"),{multiplicador,hora,minuto,criadoEm:serverTimestamp()});
-      localStorage.setItem("inicioTimer",Date.now().toString());
+      const multiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
+      const agora = new Date();
+      const hora = String(agora.getHours()).padStart(2, "0");
+      const minuto = String(agora.getMinutes()).padStart(2, "0");
+
+      horaEntrada.innerText = `${hora}:${minuto}`;
+      probEntrada.innerText = `${multiplicador}x`;
+
+      await addDoc(collection(db, "tipminer"), {
+        multiplicador,
+        hora,
+        minuto,
+        criadoEm: serverTimestamp()
+      });
+
+      localStorage.setItem("inicioTimer", Date.now().toString());
       iniciarTimer();
     }
-  },1000);
+  }, 1000);
 }
-function atualizarUI(tempo){timerText.innerText=tempo+"s";}
-if(!localStorage.getItem("inicioTimer"))localStorage.setItem("inicioTimer",Date.now().toString());
+
+if (!localStorage.getItem("inicioTimer")) {
+  localStorage.setItem("inicioTimer", Date.now().toString());
+}
 iniciarTimer();
+
+/* ===============================
+   HISTÓRICO AO VIVO (TIP MINER)
+=============================== */
+const historicoTip = document.getElementById("historicoTip");
+
+onSnapshot(collection(db, "tipminer"), (snapshot) => {
+  let html = "";
+  const docs = snapshot.docs
+    .sort((a, b) => b.data().criadoEm?.seconds - a.data().criadoEm?.seconds)
+    .slice(0, 20);
+  
+  docs.forEach(doc => {
+    const d = doc.data();
+    html += `
+      <div class="card-historico ${
+        d.multiplicador < 2 ? "azul" :
+        d.multiplicador < 10 ? "roxo" : "rosa"
+      }">
+        <b>${d.multiplicador}x</b><br>
+        <small>${d.hora}:${d.minuto}</small>
+      </div>`;
+  });
+  historicoTip.innerHTML = `<div id="grade-historico-premium">${html}</div>`;
+});
 </script>
 
 </body>
