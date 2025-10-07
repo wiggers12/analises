@@ -14,11 +14,10 @@
     <button class="menu-btn"><i class="fas fa-bars"></i></button>
     <div class="logo">GoathBet</div>
     <nav>
-    <nav>
-  <a href="planos.html">Planos</a>
-  <a href="#" id="btnLogin" style="display:inline;">Login</a>
-  <a href="#" id="btnLogout" style="display:none;" onclick="logoutUsuario()">Sair</a>
-</nav>
+      <a href="planos.html">Planos</a>
+      <a href="#" id="btnLogin" style="display:inline;">Login</a>
+      <a href="#" id="btnLogout" style="display:none;" onclick="logoutUsuario()">Sair</a>
+    </nav>
   </header>
 
   <!-- =================== CONTEÚDO CENTRAL =================== -->
@@ -35,41 +34,25 @@
 <section id="gerenciamento" class="secao">
   <h2>📊 Gestão Inteligente</h2>
 
-  <!-- Cards de Resumo -->
   <div class="resumos-grid">
-    <div class="resumo-card saldo">
-      <h4>💰 Saldo Atual</h4>
-      <p id="resumoSaldo">R$ 0,00</p>
-    </div>
-    <div class="resumo-card investido">
-      <h4>📩 Investido</h4>
-      <p id="resumoInvestido">R$ 0,00</p>
-    </div>
-    <div class="resumo-card lucro">
-      <h4>📈 Lucro</h4>
-      <p id="resumoLucro">R$ 0,00</p>
-    </div>
-    <div class="resumo-card perdas">
-      <h4>📉 Prejuízo</h4>
-      <p id="resumoPerdas">R$ 0,00</p>
-    </div>
+    <div class="resumo-card saldo"><h4>💰 Saldo Atual</h4><p id="resumoSaldo">R$ 0,00</p></div>
+    <div class="resumo-card investido"><h4>📩 Investido</h4><p id="resumoInvestido">R$ 0,00</p></div>
+    <div class="resumo-card lucro"><h4>📈 Lucro</h4><p id="resumoLucro">R$ 0,00</p></div>
+    <div class="resumo-card perdas"><h4>📉 Prejuízo</h4><p id="resumoPerdas">R$ 0,00</p></div>
   </div>
 
-  <!-- Estatísticas -->
   <div class="estatisticas-box">
     <h3>📊 Estatísticas</h3>
     <p id="taxaAcerto">Taxa de acerto: 0%</p>
     <p id="roi">ROI: 0%</p>
   </div>
 
-  <!-- Dicas -->
   <div class="dicas-box">
     <h3>🤖 Dicas Inteligentes</h3>
     <div id="dicasGerenciamento">Carregando...</div>
   </div>
 
- <!-- Nova Operação -->
-<div class="form-gerenciamento">
+ <div class="form-gerenciamento">
   <h3>➕ Nova Operação</h3>
   <div class="form-grid">
     <input type="number" id="valorEntrada" placeholder="Valor em R$">
@@ -82,18 +65,14 @@
   </div>
 </div>
 
-  <!-- Histórico -->
   <h3>📜 Histórico</h3>
   <div class="tabela-wrapper">
     <table class="tabela-historico">
-      <thead>
-        <tr><th>Data</th><th>Tipo</th><th>Valor</th></tr>
-      </thead>
+      <thead><tr><th>Data</th><th>Tipo</th><th>Valor</th></tr></thead>
       <tbody id="tabelaEntradas"></tbody>
     </table>
   </div>
 
-  <!-- Gráfico -->
   <h3>📉 Evolução do Saldo</h3>
   <canvas id="graficoSaldo" height="250"></canvas>
 </section>
@@ -103,9 +82,7 @@
       <h2>Calls</h2>
       <div class="calls-box">
         <p id="contador" class="contador">Próxima entrada em: --:--</p>
-        <div class="multiplicador-card">
-          <p id="multiplicador" class="multiplicador">-- x</p>
-        </div>
+        <div class="multiplicador-card"><p id="multiplicador" class="multiplicador">-- x</p></div>
         <div class="info-cards">
           <div class="info-card protecao">🛡 Proteção no 2.0x</div>
           <div class="info-card probabilidade">🎯 Probabilidade 100.0x</div>
@@ -135,35 +112,13 @@
       <h2>📊 Histórico Premium</h2>
       <div class="filtros-historico">
         <select id="filtro-dia">
-          <option value="all">Todos os dias</option>
-          <option value="segunda">Segunda</option>
-          <option value="terca">Terça</option>
-          <option value="quarta">Quarta</option>
-          <option value="quinta">Quinta</option>
-          <option value="sexta">Sexta</option>
-          <option value="sabado">Sábado</option>
-          <option value="domingo">Domingo</option>
+          <option value="all">Todos os dias</option><option value="segunda">Segunda</option><option value="terca">Terça</option><option value="quarta">Quarta</option><option value="quinta">Quinta</option><option value="sexta">Sexta</option><option value="sabado">Sábado</option><option value="domingo">Domingo</option>
         </select>
         <select id="filtro-mes">
-          <option value="all">Todos os meses</option>
-          <option value="1">Janeiro</option>
-          <option value="2">Fevereiro</option>
-          <option value="3">Março</option>
-          <option value="4">Abril</option>
-          <option value="5">Maio</option>
-          <option value="6">Junho</option>
-          <option value="7">Julho</option>
-          <option value="8">Agosto</option>
-          <option value="9">Setembro</option>
-          <option value="10">Outubro</option>
-          <option value="11">Novembro</option>
-          <option value="12">Dezembro</option>
+          <option value="all">Todos os meses</option><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
         </select>
         <select id="filtro-valor">
-          <option value="all">Todos os valores</option>
-          <option value="baixo">Abaixo de 2x</option>
-          <option value="medio">Entre 2x e 10x</option>
-          <option value="alto">Acima de 10x</option>
+          <option value="all">Todos os valores</option><option value="baixo">Abaixo de 2x</option><option value="medio">Entre 2x e 10x</option><option value="alto">Acima de 10x</option>
         </select>
       </div>
       <div id="grade-historico-premium" class="grade-historico"></div>
@@ -215,14 +170,75 @@
     #loginMsg { margin-bottom: 10px; color: #fff; }
   </style>
 
-  <!-- =================== SCRIPTS =================== -->
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="script.js"></script>
-  <script type="module" src="auth.js"></script>
+  <!-- ===== BOTÃO FLUTUANTE DE ENTRADA ===== -->
+  <div id="btnEntrada" class="btn-entrada" title="Próxima Entrada">⏳</div>
+
+  <div id="cardEntrada" class="card-entrada" style="display:none;">
+    <div class="card-box">
+      <h3>⏳ Próxima Entrada</h3>
+      <p><strong>Horário:</strong> <span id="horaEntrada">--:--</span></p>
+      <p><strong>Proteção:</strong> <span id="protecaoEntrada">2x</span></p>
+      <p><strong>Probabilidade:</strong> <span id="probEntrada">--x</span></p>
+      <div class="alerta-horario">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
+      <div class="alerta-responsavel">⚠️ Jogue com responsabilidade!</div>
+      <button onclick="fecharCard()">Fechar</button>
+    </div>
+  </div>
+
+  <style>
+    .btn-entrada { position: fixed; bottom: 90px; right: 20px; width: 65px; height: 65px; background: linear-gradient(135deg,#ff4da6,#8e44ad); color: #fff; border-radius: 50%; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 20px rgba(255,77,166,0.6); z-index: 2000; animation: pulseBtn 2s infinite; }
+    @keyframes pulseBtn { 0%,100%{box-shadow:0 0 15px #ff4da6;} 50%{box-shadow:0 0 30px #ffb6e6;} }
+    .card-entrada { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 3000; }
+    .card-box { background: #161032; border-radius: 16px; padding: 25px; text-align: center; width: 90%; max-width: 350px; border: 2px solid #ff4da6; color: #fff; box-shadow: 0 0 30px rgba(255,77,166,0.4); animation: fadeIn 0.4s ease-in; }
+    .card-box h3 { font-size: 1.3rem; color: #fff; margin-bottom: 10px; }
+    .card-box p { margin: 8px 0; font-size: 1rem; }
+    .alerta-horario { background: #1e1b2e; color: #fff; padding: 8px; border-radius: 8px; margin-top: 12px; border: 1px solid #555; }
+    .alerta-responsavel { background: #ff4d4d; color: #fff; padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 10px; }
+    .card-box button { background: #ff4d4d; color: #fff; border: none; padding: 10px 25px; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+    .card-box button:hover { background: #ff1a1a; }
+    @keyframes fadeIn { from {opacity:0;transform:translateY(10px);} to {opacity:1;transform:translateY(0);} }
+  </style>
+
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const btnEntrada = document.getElementById("btnEntrada");
+    const cardEntrada = document.getElementById("cardEntrada");
+    const horaEntrada = document.getElementById("horaEntrada");
+    const probEntrada = document.getElementById("probEntrada");
+
+    btnEntrada.addEventListener("click", () => { cardEntrada.style.display = "flex"; });
+    window.fecharCard = () => { cardEntrada.style.display = "none"; };
+
+    // Mostrar botão apenas na aba "Jogar"
+    const jogarSecao = document.getElementById("jogar");
+    const observer = new MutationObserver(() => {
+      if (jogarSecao.classList.contains("ativo")) btnEntrada.style.display = "flex";
+      else btnEntrada.style.display = "none";
+    });
+    observer.observe(jogarSecao, { attributes: true, attributeFilter: ["class"] });
+
+    // Firebase: ler último sinal
+    const q = query(collection(db, "sinais"), orderBy("criadoEm", "desc"), limit(1));
+    onSnapshot(q, (snapshot) => {
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        const hora = String(d.hora).padStart(2, "0");
+        const minuto = String(d.minuto).padStart(2, "0");
+        const mult = d.multiplicador;
+        horaEntrada.innerText = `${hora}:${minuto}`;
+        probEntrada.innerText = `${mult}x`;
+        if (mult >= 10) btnEntrada.style.background = "linear-gradient(135deg,#ff4da6,#ff85c1)";
+        else if (mult >= 2) btnEntrada.style.background = "linear-gradient(135deg,#a29bfe,#6c5ce7)";
+        else btnEntrada.style.background = "linear-gradient(135deg,#3498db,#2980b9)";
+      });
+    });
+  </script>
+
   <script>
     const links = document.querySelectorAll('.footer-bar a');
     const secoes = document.querySelectorAll('.secao');
-
     links.forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
@@ -233,11 +249,8 @@
         link.classList.add('ativo');
       });
     });
-
-    // abrir modal no botão login
     document.getElementById("btnLogin").addEventListener("click", e => {
-      e.preventDefault();
-      document.getElementById("loginModal").style.display = "flex";
+      e.preventDefault(); document.getElementById("loginModal").style.display = "flex";
     });
   </script>
 </body>
