@@ -53,7 +53,7 @@
 </footer>
 
 <!-- ===== BOTÃO FLUTUANTE ===== -->
-<button id="btnEntrada"><i class="fas fa-bolt"></i><span id="timerText">60s</span></button>
+<button id="btnEntrada"><i class="fas fa-bolt"></i><span id="timerText">--</span></button>
 
 <!-- ===== CARD DE ENTRADA ===== -->
 <div id="cardEntrada">
@@ -100,7 +100,7 @@ import {
   collection, addDoc, onSnapshot, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { 
-  signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile 
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 /* ===============================
@@ -123,7 +123,7 @@ document.getElementById("voltarMenu").onclick = () => {
 };
 
 /* ===============================
-   TIMER + CARD INFO
+   TIMER INTELIGENTE — HORÁRIOS FIXOS
 =============================== */
 const btnEntrada = document.getElementById("btnEntrada");
 const cardEntrada = document.getElementById("cardEntrada");
@@ -131,42 +131,42 @@ const probEntrada = document.getElementById("probEntrada");
 const horaEntrada = document.getElementById("horaEntrada");
 const timerText = document.getElementById("timerText");
 
-btnEntrada.addEventListener("click", () => {
-  cardEntrada.classList.toggle("ativo");
-});
+// Minutos específicos configurados
+const minutosPermitidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,49,51,54,57,59];
+
+// Abrir e fechar card
+btnEntrada.addEventListener("click", () => cardEntrada.classList.toggle("ativo"));
 window.fecharCard = () => cardEntrada.classList.remove("ativo");
 
-let tempoTotal = 60;
-let intervalo = null;
-
-function getTempoRestante() {
-  const inicioSalvo = localStorage.getItem("inicioTimer");
-  if (!inicioSalvo) {
-    localStorage.setItem("inicioTimer", Date.now().toString());
-    return tempoTotal;
-  }
-  const diff = Math.floor((Date.now() - parseInt(inicioSalvo)) / 1000);
-  const restante = tempoTotal - diff;
-  return restante > 0 ? restante : 0;
+// Função para achar o próximo minuto válido
+function proximoMinutoValido() {
+  const agora = new Date();
+  const minutoAtual = agora.getMinutes();
+  const proximo = minutosPermitidos.find(m => m > minutoAtual);
+  return proximo !== undefined ? proximo : minutosPermitidos[0];
 }
 
-function atualizarUI(tempo) {
-  timerText.innerText = tempo + "s";
-}
+// Timer sincronizado
+function iniciarTimerInteligente() {
+  setInterval(async () => {
+    const agora = new Date();
+    const minutoAtual = agora.getMinutes();
+    const segundoAtual = agora.getSeconds();
 
-async function iniciarTimer() {
-  let tempo = getTempoRestante();
-  atualizarUI(tempo);
+    const proximo = proximoMinutoValido();
+    let diferenca = (proximo - minutoAtual) * 60 - segundoAtual;
+    if (diferenca < 0) diferenca += 60 * (60 - minutoAtual + proximo);
 
-  if (intervalo) clearInterval(intervalo);
-  intervalo = setInterval(async () => {
-    tempo--;
-    atualizarUI(tempo);
+    // Atualiza texto no botão
+    timerText.innerText = diferenca > 0 ? `${diferenca}s` : "0s";
 
-    if (tempo <= 0) {
-      clearInterval(intervalo);
+    // Alerta nos últimos 5 segundos
+    if (diferenca <= 5) btnEntrada.classList.add("alerta");
+    else btnEntrada.classList.remove("alerta");
+
+    // Quando chegar no minuto exato, gera nova entrada
+    if (minutosPermitidos.includes(minutoAtual) && segundoAtual === 0) {
       const multiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
-      const agora = new Date();
       const hora = String(agora.getHours()).padStart(2, "0");
       const minuto = String(agora.getMinutes()).padStart(2, "0");
 
@@ -179,29 +179,20 @@ async function iniciarTimer() {
         minuto,
         criadoEm: serverTimestamp()
       });
-
-      localStorage.setItem("inicioTimer", Date.now().toString());
-      iniciarTimer();
     }
   }, 1000);
 }
-
-if (!localStorage.getItem("inicioTimer")) {
-  localStorage.setItem("inicioTimer", Date.now().toString());
-}
-iniciarTimer();
+iniciarTimerInteligente();
 
 /* ===============================
    HISTÓRICO — TIPMINER GRID
 =============================== */
 const historicoTip = document.getElementById("historicoTip");
-
 onSnapshot(collection(db, "tipminer"), (snapshot) => {
   let html = "";
   const docs = snapshot.docs
     .sort((a, b) => b.data().criadoEm?.seconds - a.data().criadoEm?.seconds)
     .slice(0, 25);
-
   docs.forEach(doc => {
     const d = doc.data();
     const cor = d.multiplicador < 2 ? "cinza" : d.multiplicador < 10 ? "verde" : "ouro";
@@ -211,7 +202,6 @@ onSnapshot(collection(db, "tipminer"), (snapshot) => {
         <small>${d.hora}:${d.minuto}</small>
       </div>`;
   });
-
   historicoTip.innerHTML = html;
 });
 
@@ -226,14 +216,13 @@ const areaCadastro = document.getElementById("areaCadastro");
 const titulo = document.getElementById("tituloLogin");
 const msg = document.getElementById("msgLogin");
 
+// Abrir e fechar modal
 btnLogin.addEventListener("click", () => {
   modal.classList.add("ativo");
   mostrarLogin();
 });
 fechar.addEventListener("click", () => modal.classList.remove("ativo"));
-window.addEventListener("click", e => {
-  if (e.target === modal) modal.classList.remove("ativo");
-});
+window.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("ativo"); });
 
 document.getElementById("linkCadastro").onclick = () => mostrarCadastro();
 document.getElementById("linkLogin").onclick = () => mostrarLogin();
@@ -253,14 +242,15 @@ function mostrarLogin() {
 
 // Login
 document.getElementById("btnEntrar").addEventListener("click", async () => {
-  const email = document.getElementById("emailLogin").value;
-  const senha = document.getElementById("senhaLogin").value;
+  const email = document.getElementById("emailLogin").value.trim();
+  const senha = document.getElementById("senhaLogin").value.trim();
+  if (!email || !senha) return msg.innerText = "Preencha todos os campos.";
   try {
     await signInWithEmailAndPassword(auth, email, senha);
     msg.innerText = "✅ Login realizado com sucesso!";
     msg.style.color = "#4caf50";
     setTimeout(() => modal.classList.remove("ativo"), 1500);
-  } catch (error) {
+  } catch {
     msg.innerText = "❌ E-mail ou senha incorretos.";
     msg.style.color = "#ff4d4d";
   }
@@ -268,9 +258,10 @@ document.getElementById("btnEntrar").addEventListener("click", async () => {
 
 // Cadastro
 document.getElementById("btnCadastrar").addEventListener("click", async () => {
-  const nome = document.getElementById("nomeCadastro").value;
-  const email = document.getElementById("emailCadastro").value;
-  const senha = document.getElementById("senhaCadastro").value;
+  const nome = document.getElementById("nomeCadastro").value.trim();
+  const email = document.getElementById("emailCadastro").value.trim();
+  const senha = document.getElementById("senhaCadastro").value.trim();
+  if (!nome || !email || !senha) return msg.innerText = "Preencha todos os campos.";
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
     await updateProfile(userCredential.user, { displayName: nome });
@@ -281,6 +272,11 @@ document.getElementById("btnCadastrar").addEventListener("click", async () => {
     msg.innerText = "❌ Erro: " + error.message;
     msg.style.color = "#ff4d4d";
   }
+});
+
+// Persistência automática do login
+onAuthStateChanged(auth, (user) => {
+  if (user) btnLogin.innerText = user.displayName || "Perfil";
 });
 </script>
 
