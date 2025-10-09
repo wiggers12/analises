@@ -150,7 +150,7 @@ h1, h2, h3 { font-weight: bold; }
 #home p { color: #f8bbd0; }
 
 /* ==========================
-   BOTÃO FLUTUANTE
+   BOTÃO FLUTUANTE (TIMER INTELIGENTE)
 ========================== */
 #btnEntrada {
   position: fixed;
@@ -171,7 +171,7 @@ h1, h2, h3 { font-weight: bold; }
   box-shadow: 0 0 20px rgba(255,77,166,0.8);
   cursor: pointer;
   z-index: 9999;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 #btnEntrada i {
   font-size: 1rem;
@@ -181,15 +181,22 @@ h1, h2, h3 { font-weight: bold; }
   transform: scale(1.1);
   box-shadow: 0 0 35px rgba(255,77,166,1);
 }
-#btnEntrada.ativo {
-  background: #ff008c;
-  animation: pulseBtn 1.5s infinite alternate;
-}
-@keyframes pulseBtn {
-  from { box-shadow: 0 0 15px rgba(255,77,166,0.5); }
-  to { box-shadow: 0 0 35px rgba(255,77,166,1); }
-}
 
+/* ===== EFEITO DE ALERTA NOS ÚLTIMOS SEGUNDOS ===== */
+#btnEntrada.alerta {
+  background: #ff0000;
+  animation: alertaPulse 0.8s infinite alternate;
+}
+@keyframes alertaPulse {
+  from {
+    box-shadow: 0 0 10px #ff4da6;
+    transform: scale(1.0);
+  }
+  to {
+    box-shadow: 0 0 25px #ff0000;
+    transform: scale(1.1);
+  }
+}
 /* ==========================
    CARD DE INFORMAÇÕES
 ========================== */
