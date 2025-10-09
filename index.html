@@ -123,7 +123,7 @@ document.getElementById("voltarMenu").onclick = () => {
 };
 
 /* ===============================
-   TIMER INTELIGENTE — HORÁRIOS FIXOS
+   TIMER INTELIGENTE — PREVISÃO ANTECIPADA
 =============================== */
 const btnEntrada = document.getElementById("btnEntrada");
 const cardEntrada = document.getElementById("cardEntrada");
@@ -131,14 +131,16 @@ const probEntrada = document.getElementById("probEntrada");
 const horaEntrada = document.getElementById("horaEntrada");
 const timerText = document.getElementById("timerText");
 
-// Minutos específicos configurados
 const minutosPermitidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,49,51,54,57,59];
 
-// Abrir e fechar card
+// Toggle card
 btnEntrada.addEventListener("click", () => cardEntrada.classList.toggle("ativo"));
 window.fecharCard = () => cardEntrada.classList.remove("ativo");
 
-// Função para achar o próximo minuto válido
+// Armazena previsão atual e próxima
+let proximoMultiplicador = null;
+let minutoPrevisto = null;
+
 function proximoMinutoValido() {
   const agora = new Date();
   const minutoAtual = agora.getMinutes();
@@ -146,42 +148,49 @@ function proximoMinutoValido() {
   return proximo !== undefined ? proximo : minutosPermitidos[0];
 }
 
-// Timer sincronizado
+// Função principal
 function iniciarTimerInteligente() {
   setInterval(async () => {
     const agora = new Date();
     const minutoAtual = agora.getMinutes();
     const segundoAtual = agora.getSeconds();
-
     const proximo = proximoMinutoValido();
+
+    // segundos até o próximo minuto permitido
     let diferenca = (proximo - minutoAtual) * 60 - segundoAtual;
     if (diferenca < 0) diferenca += 60 * (60 - minutoAtual + proximo);
+    timerText.innerText = `${diferenca}s`;
 
-    // Atualiza texto no botão
-    timerText.innerText = diferenca > 0 ? `${diferenca}s` : "0s";
+    // ======== MOSTRAR PREVISÃO 30s ANTES ========
+    if (diferenca === 30 && !proximoMultiplicador) {
+      proximoMultiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
+      minutoPrevisto = proximo;
 
-    // Alerta nos últimos 5 segundos
-    if (diferenca <= 5) btnEntrada.classList.add("alerta");
-    else btnEntrada.classList.remove("alerta");
-
-    // Quando chegar no minuto exato, gera nova entrada
-    if (minutosPermitidos.includes(minutoAtual) && segundoAtual === 0) {
-      const multiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
       const hora = String(agora.getHours()).padStart(2, "0");
-      const minuto = String(agora.getMinutes()).padStart(2, "0");
+      horaEntrada.innerText = `${hora}:${String(proximo).padStart(2, "0")}`;
+      probEntrada.innerText = `${proximoMultiplicador}x`;
+      btnEntrada.classList.add("alerta"); // muda cor para chamar atenção
+    }
 
-      horaEntrada.innerText = `${hora}:${minuto}`;
-      probEntrada.innerText = `${multiplicador}x`;
-
+    // ======== QUANDO CHEGAR NO HORÁRIO PREVISTO ========
+    if (minutosPermitidos.includes(minutoAtual) && segundoAtual === 0 && proximoMultiplicador) {
+      const hora = String(agora.getHours()).padStart(2, "0");
       await addDoc(collection(db, "tipminer"), {
-        multiplicador,
+        multiplicador: proximoMultiplicador,
         hora,
-        minuto,
+        minuto: minutoPrevisto,
         criadoEm: serverTimestamp()
       });
+      btnEntrada.classList.remove("alerta");
+      proximoMultiplicador = null;
     }
+
+    // ======== EFEITO VISUAL DE ALERTA ========
+    if (diferenca <= 5) btnEntrada.classList.add("alerta");
+    else if (diferenca > 5 && !proximoMultiplicador) btnEntrada.classList.remove("alerta");
   }, 1000);
 }
+
 iniciarTimerInteligente();
 
 /* ===============================
