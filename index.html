@@ -123,7 +123,7 @@ document.getElementById("voltarMenu").onclick = () => {
 };
 
 /* ===============================
-   TIMER INTELIGENTE — PREVISÃO ANTECIPADA (FUNCIONAL)
+   TIMER INTELIGENTE — VERSÃO FINAL FUNCIONAL
 =============================== */
 const btnEntrada = document.getElementById("btnEntrada");
 const cardEntrada = document.getElementById("cardEntrada");
@@ -132,72 +132,70 @@ const horaEntrada = document.getElementById("horaEntrada");
 const timerText = document.getElementById("timerText");
 
 const minutosPermitidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,49,51,54,57,59];
-
-let proximoAlvo = null;
-let proximoMultiplicador = null;
 let previsaoFeita = false;
+let proximoMultiplicador = null;
 
-// Toggle card
+// Alternar card
 btnEntrada.addEventListener("click", () => cardEntrada.classList.toggle("ativo"));
 window.fecharCard = () => cardEntrada.classList.remove("ativo");
 
-// Define o próximo minuto válido na lista
-function definirProximoAlvo() {
+function proximoMinutoValido() {
   const agora = new Date();
   const minutoAtual = agora.getMinutes();
-  const horaAtual = agora.getHours();
-
   const futuro = minutosPermitidos.find(m => m > minutoAtual);
-  const minutoAlvo = futuro !== undefined ? futuro : minutosPermitidos[0];
-  const novaHora = futuro !== undefined ? horaAtual : (horaAtual + 1) % 24;
-
-  proximoAlvo = { hora: novaHora, minuto: minutoAlvo };
-  previsaoFeita = false;
-  proximoMultiplicador = null;
+  return futuro !== undefined ? futuro : minutosPermitidos[0];
 }
 
 function atualizarTimer() {
   const agora = new Date();
-  const alvo = new Date();
-  alvo.setHours(proximoAlvo.hora, proximoAlvo.minuto, 0, 0);
+  const minutoAtual = agora.getMinutes();
+  const segundoAtual = agora.getSeconds();
+  const proximo = proximoMinutoValido();
 
-  let diferenca = Math.floor((alvo - agora) / 1000);
-  if (diferenca < 0) diferenca += 3600; // caso passe da hora
+  // calcula segundos até o próximo minuto permitido
+  let diferenca;
+  if (minutoAtual >= minutosPermitidos[minutosPermitidos.length - 1]) {
+    // se passou do último minuto permitido, vai pro primeiro da próxima hora
+    diferenca = ((60 - minutoAtual + minutosPermitidos[0]) * 60) - segundoAtual;
+  } else {
+    diferenca = ((proximo - minutoAtual) * 60) - segundoAtual;
+  }
 
+  // atualiza contagem
   timerText.innerText = `${diferenca}s`;
 
-  // MOSTRAR PREVISÃO — quando faltar 30 segundos
+  // 30 segundos antes — gera previsão
   if (diferenca <= 30 && !previsaoFeita) {
+    const hora = String(agora.getHours()).padStart(2, "0");
+    const minutoFmt = String(proximo).padStart(2, "0");
+    horaEntrada.innerText = `${hora}:${minutoFmt}`;
     proximoMultiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
-    const horaFmt = String(proximoAlvo.hora).padStart(2, "0");
-    const minutoFmt = String(proximoAlvo.minuto).padStart(2, "0");
-    horaEntrada.innerText = `${horaFmt}:${minutoFmt}`;
     probEntrada.innerText = `${proximoMultiplicador}x`;
     btnEntrada.classList.add("alerta");
     previsaoFeita = true;
   }
 
-  // ALERTA VISUAL — últimos 5 segundos
+  // alerta visual nos últimos 5s
   if (diferenca <= 5) btnEntrada.classList.add("alerta");
-  else if (diferenca > 5 && !previsaoFeita) btnEntrada.classList.remove("alerta");
+  else if (diferenca > 5 && previsaoFeita) btnEntrada.classList.remove("alerta");
 
-  // QUANDO CHEGAR NO HORÁRIO PREVISTO
+  // minuto atingido — salva e reinicia ciclo
   if (diferenca <= 0 && previsaoFeita && proximoMultiplicador !== null) {
+    const hora = String(agora.getHours()).padStart(2, "0");
     addDoc(collection(db, "tipminer"), {
       multiplicador: proximoMultiplicador,
-      hora: String(proximoAlvo.hora).padStart(2, "0"),
-      minuto: String(proximoAlvo.minuto).padStart(2, "0"),
+      hora,
+      minuto: String(proximo).padStart(2, "0"),
       criadoEm: serverTimestamp()
     });
+    previsaoFeita = false;
+    proximoMultiplicador = null;
     btnEntrada.classList.remove("alerta");
-    definirProximoAlvo(); // novo ciclo
   }
 }
 
 // Inicia o processo
-definirProximoAlvo();
 setInterval(atualizarTimer, 1000);
-iniciarTimerInteligente();
 
 /* ===============================
    HISTÓRICO — TIPMINER GRID
