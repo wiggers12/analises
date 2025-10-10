@@ -123,7 +123,7 @@ document.getElementById("voltarMenu").onclick = () => {
 };
 
 /* ===============================
-   TIMER INTELIGENTE — PREVISÃO ANTECIPADA
+   TIMER INTELIGENTE — PREVISÃO ANTECIPADA (FUNCIONAL)
 =============================== */
 const btnEntrada = document.getElementById("btnEntrada");
 const cardEntrada = document.getElementById("cardEntrada");
@@ -133,64 +133,70 @@ const timerText = document.getElementById("timerText");
 
 const minutosPermitidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,49,51,54,57,59];
 
+let proximoAlvo = null;
+let proximoMultiplicador = null;
+let previsaoFeita = false;
+
 // Toggle card
 btnEntrada.addEventListener("click", () => cardEntrada.classList.toggle("ativo"));
 window.fecharCard = () => cardEntrada.classList.remove("ativo");
 
-// Armazena previsão atual e próxima
-let proximoMultiplicador = null;
-let minutoPrevisto = null;
-
-function proximoMinutoValido() {
+// Define o próximo minuto válido na lista
+function definirProximoAlvo() {
   const agora = new Date();
   const minutoAtual = agora.getMinutes();
-  const proximo = minutosPermitidos.find(m => m > minutoAtual);
-  return proximo !== undefined ? proximo : minutosPermitidos[0];
+  const horaAtual = agora.getHours();
+
+  const futuro = minutosPermitidos.find(m => m > minutoAtual);
+  const minutoAlvo = futuro !== undefined ? futuro : minutosPermitidos[0];
+  const novaHora = futuro !== undefined ? horaAtual : (horaAtual + 1) % 24;
+
+  proximoAlvo = { hora: novaHora, minuto: minutoAlvo };
+  previsaoFeita = false;
+  proximoMultiplicador = null;
 }
 
-// Função principal
-function iniciarTimerInteligente() {
-  setInterval(async () => {
-    const agora = new Date();
-    const minutoAtual = agora.getMinutes();
-    const segundoAtual = agora.getSeconds();
-    const proximo = proximoMinutoValido();
+function atualizarTimer() {
+  const agora = new Date();
+  const alvo = new Date();
+  alvo.setHours(proximoAlvo.hora, proximoAlvo.minuto, 0, 0);
 
-    // segundos até o próximo minuto permitido
-    let diferenca = (proximo - minutoAtual) * 60 - segundoAtual;
-    if (diferenca < 0) diferenca += 60 * (60 - minutoAtual + proximo);
-    timerText.innerText = `${diferenca}s`;
+  let diferenca = Math.floor((alvo - agora) / 1000);
+  if (diferenca < 0) diferenca += 3600; // caso passe da hora
 
-    // ======== MOSTRAR PREVISÃO 30s ANTES ========
-    if (diferenca === 30 && !proximoMultiplicador) {
-      proximoMultiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
-      minutoPrevisto = proximo;
+  timerText.innerText = `${diferenca}s`;
 
-      const hora = String(agora.getHours()).padStart(2, "0");
-      horaEntrada.innerText = `${hora}:${String(proximo).padStart(2, "0")}`;
-      probEntrada.innerText = `${proximoMultiplicador}x`;
-      btnEntrada.classList.add("alerta"); // muda cor para chamar atenção
-    }
+  // MOSTRAR PREVISÃO — quando faltar 30 segundos
+  if (diferenca <= 30 && !previsaoFeita) {
+    proximoMultiplicador = parseFloat((Math.random() * 99 + 1).toFixed(2));
+    const horaFmt = String(proximoAlvo.hora).padStart(2, "0");
+    const minutoFmt = String(proximoAlvo.minuto).padStart(2, "0");
+    horaEntrada.innerText = `${horaFmt}:${minutoFmt}`;
+    probEntrada.innerText = `${proximoMultiplicador}x`;
+    btnEntrada.classList.add("alerta");
+    previsaoFeita = true;
+  }
 
-    // ======== QUANDO CHEGAR NO HORÁRIO PREVISTO ========
-    if (minutosPermitidos.includes(minutoAtual) && segundoAtual === 0 && proximoMultiplicador) {
-      const hora = String(agora.getHours()).padStart(2, "0");
-      await addDoc(collection(db, "tipminer"), {
-        multiplicador: proximoMultiplicador,
-        hora,
-        minuto: minutoPrevisto,
-        criadoEm: serverTimestamp()
-      });
-      btnEntrada.classList.remove("alerta");
-      proximoMultiplicador = null;
-    }
+  // ALERTA VISUAL — últimos 5 segundos
+  if (diferenca <= 5) btnEntrada.classList.add("alerta");
+  else if (diferenca > 5 && !previsaoFeita) btnEntrada.classList.remove("alerta");
 
-    // ======== EFEITO VISUAL DE ALERTA ========
-    if (diferenca <= 5) btnEntrada.classList.add("alerta");
-    else if (diferenca > 5 && !proximoMultiplicador) btnEntrada.classList.remove("alerta");
-  }, 1000);
+  // QUANDO CHEGAR NO HORÁRIO PREVISTO
+  if (diferenca <= 0 && previsaoFeita && proximoMultiplicador !== null) {
+    addDoc(collection(db, "tipminer"), {
+      multiplicador: proximoMultiplicador,
+      hora: String(proximoAlvo.hora).padStart(2, "0"),
+      minuto: String(proximoAlvo.minuto).padStart(2, "0"),
+      criadoEm: serverTimestamp()
+    });
+    btnEntrada.classList.remove("alerta");
+    definirProximoAlvo(); // novo ciclo
+  }
 }
 
+// Inicia o processo
+definirProximoAlvo();
+setInterval(atualizarTimer, 1000);
 iniciarTimerInteligente();
 
 /* ===============================
