@@ -277,6 +277,118 @@ h1, h2, h3 { font-weight: bold; }
 }
 
 /* ==========================
+   BOTÃO FLUTUANTE DICAS
+========================== */
+#btnDicas {
+  position: fixed;
+  bottom: 10px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #ffb84d;
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 0 20px rgba(255,184,77,0.8);
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.3s ease;
+}
+#btnDicas:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(255,184,77,1);
+}
+
+/* ==========================
+   CARD DE DICAS INTELIGENTES
+========================== */
+#cardDicas {
+  position: fixed;
+  bottom: 85px;
+  left: 100px;
+  background: #1c0f2e;
+  border: 2px solid #ffb84d;
+  border-radius: 15px;
+  width: 240px;
+  color: #fff;
+  padding: 15px;
+  z-index: 9998;
+  box-shadow: 0 0 25px rgba(255,184,77,0.6);
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+#cardDicas.ativo { display: block; }
+
+#cardDicas h3 {
+  color: #ffb84d;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+#cardDicas p {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+#cardDicas input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ffb84d;
+  background: #2b1b3f;
+  color: #fff;
+  margin-bottom: 10px;
+  text-align: center;
+}
+#cardDicas input::placeholder {
+  color: #ccc;
+}
+#cardDicas button {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: #ffb84d;
+  color: #1c0f2e;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#cardDicas button:hover {
+  background: #ffd280;
+}
+#resultadoDica {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+/* CORES DE RESULTADO */
+#resultadoDica.media { color: #00e0ff; }   /* 70% */
+#resultadoDica.alta { color: #ffb84d; animation: glowPulse 1s infinite alternate; }
+
+/* Botão de fechar */
+#cardDicas .fechar-card {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #ffb84d;
+  border: none;
+  color: #1c0f2e;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  width: 100%;
+  font-weight: bold;
+}
+#cardDicas .fechar-card:hover {
+  background: #ffd280;
+}
+
+/* ==========================
    HISTÓRICO (TIPMINER GRID)
 ========================== */
 #historicoTip {
