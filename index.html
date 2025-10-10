@@ -52,8 +52,11 @@
   <a href="#live"><i class="fas fa-video"></i><span>Live</span></a>
 </footer>
 
-<!-- ===== BOTÃO FLUTUANTE ===== -->
+<!-- ===== BOTÃO FLUTUANTE TIMER ===== -->
 <button id="btnEntrada"><i class="fas fa-bolt"></i><span id="timerText">--</span></button>
+
+<!-- ===== BOTÃO FLUTUANTE DICAS ===== -->
+<button id="btnDicas"><i class="fas fa-lightbulb"></i></button>
 
 <!-- ===== CARD DE ENTRADA ===== -->
 <div id="cardEntrada">
@@ -66,6 +69,16 @@
   <div class="faixa-gray">⏰ Entrar 30 segundos antes e 30 segundos depois</div>
   <div class="faixa-red">⚠️ Jogue com responsabilidade!</div>
   <button class="fechar-card" onclick="fecharCard()">Fechar</button>
+</div>
+
+<!-- ===== CARD DE DICAS ===== -->
+<div id="cardDicas">
+  <h3>Dica Inteligente</h3>
+  <p>Quantas velas <b>azuis</b> seguidas saíram?</p>
+  <input type="number" id="inputAzuis" min="1" max="9" placeholder="Ex: 3" />
+  <button id="btnCalcularDica">Calcular</button>
+  <div id="resultadoDica"></div>
+  <button class="fechar-card" onclick="fecharDica()">Fechar</button>
 </div>
 
 <!-- ===== MODAL LOGIN / CADASTRO ===== -->
@@ -123,7 +136,7 @@ document.getElementById("voltarMenu").onclick = () => {
 };
 
 /* ===============================
-   TIMER INTELIGENTE — VERSÃO FINAL FUNCIONAL
+   TIMER INTELIGENTE — FINAL FUNCIONAL
 =============================== */
 const btnEntrada = document.getElementById("btnEntrada");
 const cardEntrada = document.getElementById("cardEntrada");
@@ -135,7 +148,6 @@ const minutosPermitidos = [1,4,7,9,11,14,17,19,21,24,27,29,31,34,37,39,41,44,47,
 let previsaoFeita = false;
 let proximoMultiplicador = null;
 
-// Alternar card
 btnEntrada.addEventListener("click", () => cardEntrada.classList.toggle("ativo"));
 window.fecharCard = () => cardEntrada.classList.remove("ativo");
 
@@ -152,19 +164,15 @@ function atualizarTimer() {
   const segundoAtual = agora.getSeconds();
   const proximo = proximoMinutoValido();
 
-  // calcula segundos até o próximo minuto permitido
   let diferenca;
   if (minutoAtual >= minutosPermitidos[minutosPermitidos.length - 1]) {
-    // se passou do último minuto permitido, vai pro primeiro da próxima hora
     diferenca = ((60 - minutoAtual + minutosPermitidos[0]) * 60) - segundoAtual;
   } else {
     diferenca = ((proximo - minutoAtual) * 60) - segundoAtual;
   }
 
-  // atualiza contagem
   timerText.innerText = `${diferenca}s`;
 
-  // 30 segundos antes — gera previsão
   if (diferenca <= 30 && !previsaoFeita) {
     const hora = String(agora.getHours()).padStart(2, "0");
     const minutoFmt = String(proximo).padStart(2, "0");
@@ -175,11 +183,9 @@ function atualizarTimer() {
     previsaoFeita = true;
   }
 
-  // alerta visual nos últimos 5s
   if (diferenca <= 5) btnEntrada.classList.add("alerta");
   else if (diferenca > 5 && previsaoFeita) btnEntrada.classList.remove("alerta");
 
-  // minuto atingido — salva e reinicia ciclo
   if (diferenca <= 0 && previsaoFeita && proximoMultiplicador !== null) {
     const hora = String(agora.getHours()).padStart(2, "0");
     addDoc(collection(db, "tipminer"), {
@@ -193,9 +199,51 @@ function atualizarTimer() {
     btnEntrada.classList.remove("alerta");
   }
 }
-
-// Inicia o processo
 setInterval(atualizarTimer, 1000);
+
+/* ===============================
+   SISTEMA DE DICAS INTELIGENTES
+=============================== */
+const btnDicas = document.getElementById("btnDicas");
+const cardDicas = document.getElementById("cardDicas");
+const inputAzuis = document.getElementById("inputAzuis");
+const btnCalcularDica = document.getElementById("btnCalcularDica");
+const resultadoDica = document.getElementById("resultadoDica");
+
+btnDicas.addEventListener("click", () => cardDicas.classList.toggle("ativo"));
+window.fecharDica = () => cardDicas.classList.remove("ativo");
+
+btnCalcularDica.addEventListener("click", () => {
+  const n = parseInt(inputAzuis.value);
+  if (isNaN(n) || n < 1) {
+    resultadoDica.textContent = "Informe um número válido.";
+    resultadoDica.className = "";
+    return;
+  }
+
+  let prob = 0;
+  let mensagem = "";
+
+  if (n >= 7 && n <= 9) {
+    prob = 95;
+    mensagem = "🔥 Alta probabilidade de vela ROXA ou ROSA!";
+    resultadoDica.className = "alta";
+  } else if (n >= 5) {
+    prob = 80;
+    mensagem = "💥 Grande chance de vela ROXA ou ROSA!";
+    resultadoDica.className = "alta";
+  } else if (n >= 3) {
+    prob = 70;
+    mensagem = "⚡ Boa chance de vela ROXA!";
+    resultadoDica.className = "media";
+  } else {
+    prob = 0;
+    mensagem = "📉 Probabilidade baixa de vela roxa.";
+    resultadoDica.className = "";
+  }
+
+  resultadoDica.textContent = `${mensagem} (${prob}%)`;
+});
 
 /* ===============================
    HISTÓRICO — TIPMINER GRID
@@ -209,11 +257,7 @@ onSnapshot(collection(db, "tipminer"), (snapshot) => {
   docs.forEach(doc => {
     const d = doc.data();
     const cor = d.multiplicador < 2 ? "cinza" : d.multiplicador < 10 ? "verde" : "ouro";
-    html += `
-      <div class="card-historico ${cor}">
-        <b>${d.multiplicador}x</b>
-        <small>${d.hora}:${d.minuto}</small>
-      </div>`;
+    html += `<div class="card-historico ${cor}"><b>${d.multiplicador}x</b><small>${d.hora}:${d.minuto}</small></div>`;
   });
   historicoTip.innerHTML = html;
 });
@@ -229,11 +273,7 @@ const areaCadastro = document.getElementById("areaCadastro");
 const titulo = document.getElementById("tituloLogin");
 const msg = document.getElementById("msgLogin");
 
-// Abrir e fechar modal
-btnLogin.addEventListener("click", () => {
-  modal.classList.add("ativo");
-  mostrarLogin();
-});
+btnLogin.addEventListener("click", () => { modal.classList.add("ativo"); mostrarLogin(); });
 fechar.addEventListener("click", () => modal.classList.remove("ativo"));
 window.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("ativo"); });
 
@@ -253,7 +293,6 @@ function mostrarLogin() {
   msg.innerText = "";
 }
 
-// Login
 document.getElementById("btnEntrar").addEventListener("click", async () => {
   const email = document.getElementById("emailLogin").value.trim();
   const senha = document.getElementById("senhaLogin").value.trim();
@@ -269,7 +308,6 @@ document.getElementById("btnEntrar").addEventListener("click", async () => {
   }
 });
 
-// Cadastro
 document.getElementById("btnCadastrar").addEventListener("click", async () => {
   const nome = document.getElementById("nomeCadastro").value.trim();
   const email = document.getElementById("emailCadastro").value.trim();
@@ -287,10 +325,7 @@ document.getElementById("btnCadastrar").addEventListener("click", async () => {
   }
 });
 
-// Persistência automática do login
-onAuthStateChanged(auth, (user) => {
-  if (user) btnLogin.innerText = user.displayName || "Perfil";
-});
+onAuthStateChanged(auth, (user) => { if (user) btnLogin.innerText = user.displayName || "Perfil"; });
 </script>
 
 </body>
